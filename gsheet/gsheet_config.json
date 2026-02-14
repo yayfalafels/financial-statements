@@ -1,0 +1,25 @@
+{
+  "wkbid":"1-Gy9kEUF0RbKWsztoZbVwbi65PXNhP1qPdylXod5JBE",
+  "balances": {
+    "data":"balances!A2:D",
+    "header":"balances!A1:D1",
+    "data_types": {
+      "year":"int",
+      "month":"int",
+      "account":"str",
+      "balance":"float"
+    }
+  },
+  "forex_rates": {
+    "data":"forex_rates!A3:F",
+    "header":"forex_rates!A12:F1",
+    "date_format": "%Y-%m-%d",
+    "data_types": {
+      "year":"int",
+      "month":"int",
+      "date":"date",
+      "currency":"str",
+      "rate_SGD":"float"
+    }
+  }
+}
