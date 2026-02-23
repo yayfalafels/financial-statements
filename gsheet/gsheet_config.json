@@ -12,7 +12,7 @@
   },
   "forex_rates": {
     "data":"forex_rates!A3:F",
-    "header":"forex_rates!A12:F1",
+    "header":"forex_rates!A1:F1",
     "date_format": "%Y-%m-%d",
     "data_types": {
       "year":"int",
