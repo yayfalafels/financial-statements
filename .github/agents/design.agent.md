@@ -16,15 +16,23 @@ user-invokable: true
 
 - `homebudget` skill for HomeBudget data access patterns and category/account discovery.
 - `gsheet-inspect` for inspecting existing helper workbook structures and data.
+- `variable-naming` for consistient naming conventions in design documents.
 
 ## Primary References
 
 - `.github/prompts/plan-closing-design.prompt.md`
 - `docs/about.md`
-- `docs/workflow.md`
+- `docs/current-workflow.md`
+- `docs/develop/app-workflows.md`
 - `docs/accounting-logic.md`
 - `docs/account-classification.md`
 - `docs/develop/*.md`
+  - `docs/develop/app-architecture.md`
+  - `docs/develop/app-workflows.md`
+  - `docs/develop/data-flow.md`
+  - `docs/develop/domain-model.md`
+  - `docs/develop/module-design.md`
+  - `docs/develop/database-schema.md` 
 - `reference/hb-finances/`
 - `reference/hb-reconcile/`
 

@@ -199,6 +199,12 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+# Test mock databases (generated artifacts only)
+tests/.test_data/*.db
+tests/.test_data/*-journal.db
+tests/.test_data/*-shm.db
+tests/.test_data/*-wal.db
+
 # Cursor
 #  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
 #  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data

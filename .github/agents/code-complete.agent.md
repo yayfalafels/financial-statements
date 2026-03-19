@@ -16,6 +16,7 @@ user-invokable: true
 
 - `homebudget` skill for HomeBudget data access patterns and category/account discovery.
 - `gsheet-inspect` for inspecting existing helper workbook structures and data.
+- `variable-naming` for decisions on naming conventions in code implementation.
 
 ## Primary References
 

@@ -27,21 +27,21 @@ The general aim of the account classification system is to accurately reflect cu
 
 ## Account definitions
 
-The mapping logic both between data sources and classification, should ultimately be defined in a database, and intermediate solution local JSON  file `data/monthly-closing/accounts.json`. For now the information exists in disparate sources in the HomeBudget database and financial statements google sheets workbook. In a separate step this consolidated accounts.json should be schema defined and then populated.
+The mapping logic both between data sources and classification, should ultimately be defined in a database, and intermediate solution local JSON  file `data/monthly-closing/accounts.json`. Currently the information exists in disparate sources in the HomeBudget database and legacy financial statements google sheets workbook which is being deprecated. The consolidated accounts.json should be schema defined and then populated as the canonical app-owned source.
 
 For investments which have combinations of mixes of asset types such as cash accounts for cash inflows and outflows, and illiquid assets which can appreciate or depreciate in value, the different components of the investment are tracked in separate accounts, such as a cash account for the cash balance and a position account for the value of the investment. 
 
 ## Scope of accounts
 
-The financal statements google sheets workbook contains the definitive complete comprehensive list of accounts used for financial statements reporting and net worth tracking, which includes both HomeBudget accounts, plus a few additional off-HB accounts only tracked in the financial statements workbook for reporting purposes. 
+The financial statements google sheets workbook (legacy, being deprecated) previously contained the definitive list of accounts used for financial statements reporting and net worth tracking, which includes both HomeBudget accounts, plus a few additional off-HB accounts only tracked in the financial statements workbook for reporting purposes. 
 
-Ultimately the financial statements workbook should be deprecated and migrated to a bespoke application with a database backend which this app aims to deliver.
+The financial statements workbook is being deprecated and migrated to app-native SQLite storage and JSON configuration owned by this application.
 
-| cat | HomeBudget | financial statements wkb | included | description |
-| --- | ---------- | ----------------------- | -------- | ----------- |
-| 01  | X          | X                        | yes      | active tracked accounts |
-| 02  | X          |                          | no       | legacy accounts no longer in use, such as `TWH - Common` |
-| 03  |            | X                        | yes       | off-HB accounts only tracked in financial statements workbook, for reporting purposes |
+| cat | HomeBudget | financial statements wkb (legacy) | included | description |
+| --- | ---------- | --------------------------------- | -------- | ----------- |
+| 01  | X          | X                                  | yes      | active tracked accounts |
+| 02  | X          |                                    | no       | legacy accounts no longer in use, such as `TWH - Common` |
+| 03  |            | X                                  | yes      | off-HB accounts only tracked in legacy financial statements workbook, migrating to app storage |
 
 ## HomeBudget Account types
 
@@ -93,12 +93,12 @@ All other accounts are classified as external, such as investment position accou
 
 ### Asset type mapping
 
-The account asset type mapping can currently be found in the financial statements google sheets workbook `gsheet/financial-statements.json` range `accounts`. 
+The account asset type mapping can currently be found in the legacy financial statements google sheets workbook `gsheet/financial-statements.json` range `accounts` which is being migrated to app-owned SQLite storage and JSON configuration. 
 
-| field         | example value     | notes                                      |
-| --------------|-------------------|--------------------------------------------|
-| id            | TWH DBS MULTI SGD | name used in financial statements workbook |
-| type          | bank account      | asset subcategory                          |
+| field         | example value     | notes                                             |
+| --------------|-------------------|---------------------------------------------------|
+| id            | TWH DBS MULTI SGD | name used in legacy financial statements workbook |
+| type          | bank account      | asset subcategory                                 |
 | owner         | TWH               | not used, only TWH owner accounts in scope |
 | name          | DBS MULTI         | account tag                                |
 | currency      | SGD               | currency                                   |

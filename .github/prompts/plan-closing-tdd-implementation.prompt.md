@@ -17,7 +17,8 @@ phase: Implementation Planning
 deliverable: Phase-by-phase TDD implementation roadmap with AI prompts and user workflows
 related_files:
   - .github/prompts/plan-design-closing.prompt.md
-  - docs/workflow.md
+  - docs/current-workflow.md
+  - docs/develop/app-workflows.md
   - docs/develop/environment.md
   - docs/develop/cash-reconcile-implementation-summary.md
 ---
@@ -92,7 +93,7 @@ Analyze the closing workflow and generate complete type definitions specificatio
 
 Input:
 - Workflow steps: forex, accounts (wallets, IBKR, CPF), bill-payment, cash-reconcile, hb-reconcile, statements
-- Reference: docs/workflow.md, plan-design-closing.prompt.md
+- Reference: docs/current-workflow.md (manual baseline), docs/develop/app-workflows.md (design target), plan-design-closing.prompt.md
 
 Output JSON spec with:
 1. Period class (year/month/validation)
@@ -412,7 +413,9 @@ Dependencies:
 - Use data/monthly-closing/transaction_defaults.json for defaults
 
 Test files: tests/unit/accounting/*.test.py
-Reference: docs/accounting-logic.md for business rules
+Reference: 
+- docs/accounting-logic.md for business rules
+- docs/develop/app-workflows.md for workflow integration context
 
 Return:
 - src/python/closing/accounting/*.py (~200 lines total)
@@ -1766,8 +1769,9 @@ Phase N complete?
 
 **Design documents**:
 - [Consolidated Monthly Closing Automation](.github/prompts/plan-design-closing.prompt.md)
-- [docs/workflow.md](docs/workflow.md)
-- [docs/develop/](docs/develop/)
+- [docs/current-workflow.md](docs/current-workflow.md) - baseline manual workflow
+- [docs/develop/app-workflows.md](docs/develop/app-workflows.md) - target automated workflow design
+- [docs/develop/](docs/develop/) - detailed design specifications
 
 **Skills**:
 - [HomeBudget wrapper](.github/skills/homebudget/SKILL.md)

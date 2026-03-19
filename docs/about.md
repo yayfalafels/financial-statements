@@ -10,7 +10,8 @@ The financial statements app aims to streamline the financial statements workflo
 
 ## Related resources
 
-- [Workflow](workflow.md) - detailed description of the financial statements workflow, including sequential steps, time estimates, and flowcharts for account update and report generation.
+- [Current Workflow](current-workflow.md) - description of the existing manual financial statements workflow, including sequential steps and time estimates.
+- [App Workflows Design](develop/app-workflows.md) - intended automated workflow design for the MVP application.
 - [HomeBudget](homebudget.md) - guide to interfacing with the HomeBudget App, including reference to the `hb-finances` repository for code examples on how to read and update expenses in the HomeBudget local sqlite database.
 - [Google Sheets](google-sheets.md) - guide to interfacing with Google Sheets via the Google Sheets API and the `sqlite-gsheet` utility for using pandas with Google Sheets and SQL Alchemy supported database connections.
 - [Dependencies](dependencies.md) - list of dependencies, including `sqlite-gsheet`, a Python library for using pandas with Google Sheets and SQL Alchemy supported database connections.

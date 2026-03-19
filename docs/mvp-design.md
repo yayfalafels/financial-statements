@@ -15,7 +15,7 @@
 
 ## Overview
 
-This document defines the MVP design for workflow automation. The MVP runs locally, targets a single operator, and produces PDF statements with S3 upload. It follows the workflow described in [docs/workflow.md](docs/workflow.md) and supports the project goals in [docs/about.md](docs/about.md).
+This document defines the MVP design for workflow automation. The MVP runs locally, targets a single operator, and produces PDF statements with S3 upload. It automates the workflow steps described in [docs/current-workflow.md](docs/current-workflow.md) following the design in [docs/develop/app-workflows.md](docs/develop/app-workflows.md) and supports the project goals in [docs/about.md](docs/about.md).
 
 ## Goals
 
@@ -44,7 +44,7 @@ Automated steps
 - Pre flight checks for required files, credentials, and sheet access.
 - Session close out steps that consolidate logs and artifacts.
 - Forex rate fetch and sheet update.
-- Calculations in helper workbooks for IBKR and CPF.
+- Calculations for IBKR and CPF using app-native adapters (legacy helper workbooks used only for migration parity).
 - CRUD updates to the balances sheet.
 - CRUD updates to the HomeBudget database for income, expenses, and transfers.
 - PDF statement upload to S3.
@@ -58,10 +58,10 @@ Manual steps
 
 External systems
 
-- Google Sheets for workbook storage and worksheet updates.
 - HomeBudget local database for transaction updates.
 - AWS S3 for statement storage.
 - Yahoo Finance for USD to SGD forex rates.
+- Google Sheets retained for cash-expense raw capture (Google Forms-linked), plus optional summary output publication for user review
 
 Local components
 
@@ -74,11 +74,15 @@ Local components
 Inputs
 
 - Statement files downloaded manually.
-- Existing Google Sheets workbook and helper worksheets.
+- Cash expenses Google Sheet (`Google Forms -> Google Sheets`) as retained raw source for cash reconciliation.
+- Legacy Google Sheets workbook and helper worksheets (non-cash-expense) for parity and backfill only.
+- local JSON files for configuration and unstructured memory such as novel reconciliation use cases.
+- Bespoke SQLite database for app data model and financial statements.
 - HomeBudget local database.
 
 Outputs
 
+- Updated SQLite database for app data model and financial statements.
 - Updated worksheet tabs for forex rates, balances, and supporting calculations.
 - Updated HomeBudget transactions for income, expenses, and transfers.
 - PDF statements stored locally and uploaded to S3.

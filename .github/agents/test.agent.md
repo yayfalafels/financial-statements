@@ -21,8 +21,11 @@ user-invokable: true
 
 - `.github/prompts/plan-closing-tdd-implementation.prompt.md`
 - `.github/prompts/plan-closing-design.prompt.md`
-- `docs/workflow.md`
+- `docs/current-workflow.md`
+- `docs/develop/app-workflows.md`
 - `docs/develop/*.md`
+  - `docs/develop/test-strategy.md`
+  - `docs/develop/test-phase-acceptance-criteria.md`
 - `tests/`
 - `src/python/`
 

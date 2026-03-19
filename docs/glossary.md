@@ -34,7 +34,8 @@
 
 - [Account classification](account-classification.md), account types, mapping rules, and reporting classifications
 - [Accounting logic](accounting-logic.md), booking rules, reconciliation rules, and transaction uniqueness
-- [Workflow](workflow.md), monthly closing sequence and manual review points
+- [Current Workflow](current-workflow.md), existing manual monthly closing sequence
+- [App Workflows Design](develop/app-workflows.md), intended automated workflow design
 - [Bill payment](bill-payment.md), shared cost allocation and bill processing context
 
 ## Period

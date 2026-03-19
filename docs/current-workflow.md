@@ -16,12 +16,12 @@ This document describes the financial statements workflow, beginning with the se
 
 ## Sequential steps and time estimates
 
-| id | workflow       | account    | duration min  | description                         |
-| -- | -------------- | ---------- | ------------- | ----------------------------------- |
-| 01 | forex          |            | 3 min         | fetch USD.SGD forex rates           |
-| 02 | account update | wallets    | 20 to 40 min  | direct read from HB app             |
-| 03 | account update | IBKR       | 50 to 110 min | brokerage with helper workbook      |
-| 04 | account update | CPF        | 20 to 80 min  | Singapore retirement CPF            |
+| id | workflow       | account    | duration min  | description                                 |
+| -- | -------------- | ---------- | ------------- | ------------------------------------------- |
+| 01 | forex          |            | 3 min         | fetch USD.SGD forex rates                   |
+| 02 | account update | wallets    | 20 to 40 min  | direct read from HB app                     |
+| 03 | account update | IBKR       | 50 to 110 min | brokerage (legacy used helper workbook)     |
+| 04 | account update | CPF        | 20 to 80 min  | Singapore retirement CPF                    |
 | 07 | report update  | reconcile  | 30 to 140 min | review and close reconcile gaps     |
 | 08 | report update  | statements | 45 to 90 min  | review and update statements        |
 | 09 | report update  | print-out  | 20 min        | print-out statements to PDF report  |
@@ -45,15 +45,15 @@ USD.SGD forex rates url: [USD.SGD](https://sg.finance.yahoo.com/quote/SGD%3DX/)
 
 ### Account update
 
-The account update flow starts from statement download and moves through worksheets and balances, with reviews at several points.
+The account update flow starts from statement download and moves through app-native adapters and balances, with reviews at several points.
 
 - authenticate to website either password or MFA
 - statement download from website
 - statement backup to S3
-- use worksheet as intermediate calculator to determine balances and transactions
+- use app-native adapters to determine balances and transactions (legacy interim solution used worksheet as intermediate calculator)
 - human review of balances and transactions for errors
 - update HomeBudget with transactions - income, expenses, transfers
-- update balances sheet in financial statements workbook
+- update app-owned SQLite balance storage (legacy interim solution used balances sheet in financial statements workbook)
 
 ### Report update
 

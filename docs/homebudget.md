@@ -1,14 +1,3 @@
 # HomeBudget
 
-This document describes interfacing with the HomeBudget App
-
-## Reference hb-finances
-
-Github repository: [hb-finances](https://github.com/taylorhickem/hb-finances)
-
-The hb-finances repository, which includes `homebudget.py`, is available as a source code reference for how to interface with the HomeBudget local sqlite database to read and update expenses. Methods were not developed to add income or transfers.
-
-## Read tables
-
-## Add expenses
-
+Refer to the skill `homebudget` for details on interfacing with the HomeBudget local database for transaction updates. This document provides an overview of the HomeBudget app and its role in the financial statements workflow.
