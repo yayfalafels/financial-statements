@@ -9,17 +9,74 @@ metadata:
   repository: https://github.com/taylorhickem/sqlite-gsheet
 ---
 
+## Contents
+
+- Overview
+- Summary
+- Related skills
+- Related documentation
+- Project source-of-truth boundary
+- Prerequisites
+- Gsheet config file structure
+- Using the existing inspection script
+- Direct API usage
+- When to create a new script
+- Common workflows
+- Troubleshooting
+- Best practices
+- Integration with monthly closing
+
 ## Overview
 
 The `sqlite-gsheet` package provides a Python interface to read Google Sheets data via the Google Sheets API with pandas integration. This skill guides you through inspecting helper workbooks to discover schemas, validate data, and support monthly closing operations.
 
 **Repository:** https://github.com/taylorhickem/sqlite-gsheet
 
+## Related Skills
+
+- `data-sources-inspect`: cross-source inspection methodology and stage mapping context
+
 ## Related Documentation
 
-- **[docs/google-sheets.md](../../../docs/google-sheets.md)** - Configuration and credentials setup
-- **[docs/dependencies.md](../../../docs/dependencies.md)** - sqlite-gsheet dependency overview
-- **[docs/develop/helper-workbooks-schema-profiles.md](../../../docs/develop/helper-workbooks-schema-profiles.md)** - Documented workbook schemas
+- **[docs/requirements/google-sheets.md](../../../docs/requirements/google-sheets.md)** - Requirement boundary and usage scope
+- **[docs/requirements/dependencies.md](../../../docs/requirements/dependencies.md)** - sqlite-gsheet dependency overview
+- **[docs/develop/data-sources/google-sheets-source-data.md](../../../docs/develop/data-sources/google-sheets-source-data.md)** - Source-data inventory and workbook/config references
+
+## Summary
+
+**Quick Reference:**
+
+| id | task                    | path                                   |
+| -- | ----------------------- | -------------------------------------- |
+| 01 | inspect workbook schema | `.dev/scripts/python/inspect_helper_schemas.py` |
+| 02 | configure credentials   | `.credentials/client_secret.json`      |
+| 03 | define workbook mapping | `gsheet/*.json`                        |
+| 04 | document source data    | `docs/develop/data-sources/google-sheets-source-data.md` |
+| 05 | add custom logic        | `.dev/scripts/python/*`                |
+| 06 | deep diagnostic profile | `.dev/scripts/python/profile_workbook.py` |
+
+Reference notes:
+
+- Requirement boundary and usage scope: [docs/requirements/google-sheets.md](../../../docs/requirements/google-sheets.md)
+- Mapping and inspection method details: this skill
+- Cross-source method context: skill `data-sources-inspect`
+- Source-data reference details: [google-sheets-source-data.md](../../../docs/develop/data-sources/google-sheets-source-data.md)
+
+**Remember:** Reuse existing scripts. Create new ones only for edge cases.
+
+Tool selection guidance:
+
+- Use `inspect_helper_schemas.py` as the default for routine multi-workbook schema inspection.
+- Use `profile_workbook.py` only when you need deeper single-workbook diagnostics than the standard helper output provides.
+- No single script is best for all cases; choose by inspection intent and scope.
+
+## Project Source-of-Truth Boundary
+
+Use this skill as the source of truth for Google Sheets inspection procedures and implementation details.
+
+- Keep requirement documents focused on what the system must do.
+- Keep procedural steps, scripts, and troubleshooting in this skill.
+- For non-tool source-data references, update the data-source guide in `docs/develop/data-sources/`.
 
 ## Prerequisites
 
@@ -94,36 +151,57 @@ Config files are located in `gsheet/*.json` and define workbook mappings.
 
 ### Available Config Files
 
-| Config File | Purpose | Workbook |
-|-------------|---------|----------|
-| `cpf.json` | CPF account balances by subaccount | CPF helper workbook |
-| `ibkr-iba.json` | IBKR IBA account balances | IBKR helper workbook |
-| `shared-expenses.json` | Shared expense allocations | Shared expenses workbook |
-| `cash-expenses.json` | Cash expense tracking | Cash expenses workbook |
-| `financial-statements.json` | Financial statement consolidation | Financial statements workbook |
-| `homebudget-workbook.json` | HomeBudget category/account mapping | HomeBudget mapping workbook |
+| id | config file                | purpose                          | workbook                      |
+| -- | -------------------------- | -------------------------------- | ----------------------------- |
+| 01 | `cpf.json`                 | CPF account balances by subaccount | CPF helper workbook         |
+| 02 | `ibkr-iba.json`            | IBKR IBA account balances        | IBKR helper workbook         |
+| 03 | `shared-expenses.json`     | Shared expense allocations       | Shared expenses workbook     |
+| 04 | `cash-expenses.json`       | Cash expense tracking            | Cash expenses workbook       |
+| 05 | `financial-statements.json`| Financial statement consolidation| Financial statements workbook|
+| 06 | `homebudget-workbook.json` | HomeBudget category/account mapping | HomeBudget mapping workbook |
+| 07 | `closing-session.json`     | Monthly closing session register | Closing session workbook     |
 
 ## Using the Existing Inspection Script
 
-**Primary Tool:** `.dev/.scripts/python/inspect_helper_schemas.py`
+**Primary Tool:** `.dev/scripts/python/inspect_helper_schemas.py`
 
 This script provides comprehensive schema inspection for helper workbooks.
+
+## Optional Diagnostic Profiler
+
+Use `profile_workbook.py` when you need deeper investigation for a single workbook, such as expanded row samples, inferred key hints, or focused type and null-pattern review.
+
+Example:
+
+```bash
+# Activate environment first
+.dev\env\Scripts\Activate.ps1
+
+# Profile one workbook config
+.dev\env\Scripts\python.exe .dev/scripts/python/profile_workbook.py gsheet/financial-statements.json
+```
+
+Expected output evidence includes:
+
+- configured sheet names discovered from the workbook config
+- per-sheet row count and column count
+- inferred column types and sample rows
 
 ### Run the Script
 
 ```bash
 # Activate environment first
-env\Scripts\activate
+.dev\env\Scripts\Activate.ps1
 
 # Run inspection
-python .dev/.scripts/python/inspect_helper_schemas.py
+.dev\env\Scripts\python.exe .dev/scripts/python/inspect_helper_schemas.py
 ```
 
 ### What It Does
 
 1. **Loads credentials** from `.credentials/client_secret.json`
 2. **Reads config files** from `gsheet/` directory
-3. **Inspects multiple workbooks:** IBKR, CPF, category mapping
+3. **Inspects multiple workbooks in one batch run:** IBKR, CPF, category mapping, financial statements, cash-expenses, shared-expenses, closing-session
 4. **For each region:**
    - Reads header row
    - Reads data rows
@@ -235,7 +313,7 @@ df = pd.DataFrame(data_values, columns=header)
 
 ## When to Create a New Script
 
-**Reuse `.dev/.scripts/python/inspect_helper_schemas.py` for:**
+**Reuse `.dev/scripts/python/inspect_helper_schemas.py` for:**
 - Inspecting standard helper workbook schemas
 - Validating config file mappings
 - Discovering column names and data types
@@ -286,7 +364,7 @@ if __name__ == "__main__":
     main()
 ```
 
-**Save location:** `.dev/.scripts/python/your_script_name.py`
+**Save location:** `.dev/scripts/python/your_script_name.py`
 
 ## Common Workflows
 
@@ -305,7 +383,7 @@ if __name__ == "__main__":
 
 2. **Update inspection script** to include new workbook:
    ```python
-   # Add to .dev/.scripts/python/inspect_helper_schemas.py main()
+  # Add to .dev/scripts/python/inspect_helper_schemas.py main()
    new_config = gsheet_dir / "new_workbook.json"
    inspect_workbook(str(new_config), "new_workbook")
    ```
@@ -400,7 +478,7 @@ with open('schema_report.json', 'w') as f:
 
 ## Best Practices
 
-1. **Always use the existing script first** - `.dev/.scripts/python/inspect_helper_schemas.py` covers most use cases
+1. **Always use the existing script first** - `.dev/scripts/python/inspect_helper_schemas.py` covers most use cases
 2. **Set credentials path early** - Before creating `gsheet.SheetsEngine()`
 3. **Cache headers when processing multiple regions** - Avoid redundant API calls
 4. **Use last row for multi-row headers** - Gives clean column names
@@ -408,6 +486,7 @@ with open('schema_report.json', 'w') as f:
 6. **Document new schemas** - Update `docs/develop/helper-workbooks-schema-profiles.md`
 7. **Version config files** - Track changes to range mappings in git
 8. **Test with small ranges first** - Validate A1 notation before full reads
+9. **Choose tool by intent** - use `inspect_helper_schemas.py` for primary batch coverage and `profile_workbook.py` only for deeper single-workbook diagnostics
 
 ## Integration with Monthly Closing
 
@@ -415,7 +494,7 @@ with open('schema_report.json', 'w') as f:
 
 Helper workbooks are **reference artifacts only** for the monthly closing system. The app-native workflow uses embedded adapters, not workbook ingestion.
 
-**See:** [docs/develop/helper-workbooks-consolidated-model.md](../../../docs/develop/helper-workbooks-consolidated-model.md) for deprecation policy.
+**See:** skill `data-sources-inspect` for current inspection boundaries and migration context.
 
 ### When to Inspect Workbooks
 
@@ -433,18 +512,5 @@ Runtime mode gates enforced in app:
 - `parity_mode` - Workbook comparison allowed (with approval)
 - `backfill_mode` - Historical workbook import allowed (with approval)
 
-**See:** [docs/develop/helper-workbooks-verification-checklist.md](../../../docs/develop/helper-workbooks-verification-checklist.md) for enforcement rules.
+**See:** skill `data-sources-inspect` for enforcement and mode-usage guidance.
 
-## Summary
-
-**Quick Reference:**
-
-| Task | Tool | Documentation |
-|------|------|---------------|
-| Inspect helper workbook schemas | `.dev/.scripts/python/inspect_helper_schemas.py` | This skill |
-| Configure credentials | `.credentials/client_secret.json` | [docs/google-sheets.md](../../../docs/google-sheets.md) |
-| Define workbook mappings | `gsheet/*.json` | This skill (Config File Format) |
-| Document discovered schemas | `docs/develop/helper-workbooks-schema-profiles.md` | [helper-workbooks-schema-profiles.md](../../../docs/develop/helper-workbooks-schema-profiles.md) |
-| Custom inspection logic | Create new script in `.dev/.scripts/python/` | This skill (Template for New Scripts) |
-
-**Remember:** Reuse existing scripts. Create new ones only for edge cases.

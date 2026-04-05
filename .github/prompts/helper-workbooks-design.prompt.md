@@ -1,4 +1,4 @@
-# Helper Workbooks Design Plan
+﻿# Helper Workbooks Design Plan
 
 ## Table of contents
 
@@ -70,7 +70,7 @@ Maintain two separate table groups:
 
 Current baseline schema reference:
 
-- `docs/develop/database-schema.md`
+- `docs/develop/design/database-schema.md`
 
 ## Environment and tooling
 
@@ -88,15 +88,15 @@ Focus on `load_gsheet` and `get_sheet` style behavior for range reads and type h
 ### CRITICAL: Environment management rules
 
 1. **Development scaffolding** (construction tools, temporary only)
-   - `.dev/env/` — Python virtual environment for helper scripts ONLY
-   - `.dev/.scripts/python/` — Python helper scripts for diagnostics, analysis, DB inspection
-   - `.dev/.scripts/bash/` — Bash helper scripts
-   - `.dev/.scripts/cmd/` — Windows batch helper scripts
+   - `.dev/env/` â€” Python virtual environment for helper scripts ONLY
+   - `.dev/.scripts/python/` â€” Python helper scripts for diagnostics, analysis, DB inspection
+   - `.dev/.scripts/bash/` â€” Bash helper scripts
+   - `.dev/.scripts/cmd/` â€” Windows batch helper scripts
    - **DO NOT CREATE A NEW VIRTUAL ENV** - Reuse existing `.dev/env/`
    - **DO NOT USE `.dev/env` FOR MAIN APP** - This is scaffolding only
 
 2. **Main application environment** (production runtime)
-   - `env/` — Python virtual environment for wrapper package and tests (root level)
+   - `env/` â€” Python virtual environment for wrapper package and tests (root level)
    - Used by: wrapper package, test scripts, CLI commands
    - This is the "finished building" environment
 
@@ -108,9 +108,9 @@ Focus on `load_gsheet` and `get_sheet` style behavior for range reads and type h
 
 Primary design inputs:
 
-- `docs/develop/database-schema.md`
+- `docs/develop/design/database-schema.md`
 - `docs/google-sheets.md`
-- `docs/develop/data-source-inventory.md`
+- `docs/develop/design/design-source-alignment.md`
 - `reference/hb-finances/database.py`
 
 Workbook configs:
@@ -403,3 +403,5 @@ Minimum controls:
 5. Cross workbook contract issues are either resolved or explicitly documented.
 6. The proposed model preserves two stage separation in one database.
 7. Design outputs are ready for migration and ETL implementation planning.
+
+

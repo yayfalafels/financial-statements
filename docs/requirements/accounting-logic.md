@@ -18,7 +18,7 @@ Custom accounting logic guides how expenses and income are categorized, tracked,
 
 ## Related documents
 
-- [Accounts Reconcile](../reference/hb-reconcile/docs/reconcile.md): defines the reconciliation methods for bank and credit card accounts applied to the hb-reconcile local app.
+- [Accounts Reconcile](../../reference/hb-reconcile/docs/reconcile.md): defines the reconciliation methods for bank and credit card accounts applied to the hb-reconcile local app.
 
 ## Personal expenses
 

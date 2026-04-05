@@ -1,4 +1,4 @@
----
+﻿---
 name: test-agent
 description: TDD testing agent for strategy, SIT and UAT test design, coverage, and validation of monthly closing features.
 user-invokable: true
@@ -14,6 +14,8 @@ user-invokable: true
 
 ## Skills
 
+- `task-definition`: for creating and updating dynamic project task completion status and definition.
+- `documentation`: for working with documentation, plain text markdown files.
 - `homebudget` skill for HomeBudget data access patterns and category/account discovery.
 - `gsheet-inspect` for inspecting existing helper workbook structures and data.
 
@@ -22,10 +24,10 @@ user-invokable: true
 - `.github/prompts/plan-closing-tdd-implementation.prompt.md`
 - `.github/prompts/plan-closing-design.prompt.md`
 - `docs/current-workflow.md`
-- `docs/develop/app-workflows.md`
-- `docs/develop/*.md`
-  - `docs/develop/test-strategy.md`
-  - `docs/develop/test-phase-acceptance-criteria.md`
+- `docs/develop/design/app-workflows.md`
+- `docs/develop/design/*.md`
+  - `docs/develop/testing/test-strategy.md`
+  - `docs/develop/testing/test-phase-acceptance-criteria.md`
 - `tests/`
 - `src/python/`
 
@@ -102,4 +104,6 @@ user-invokable: true
 - Coverage meets the phase target.
 - SIT and UAT scenarios are documented for the feature.
 - Residual risks and gaps are explicitly listed.
+
+
 

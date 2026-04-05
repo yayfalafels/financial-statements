@@ -108,7 +108,7 @@ Shared expense occurs
 
 ### Data Format: Shared-Expenses Google Sheet
 
-Based on [gsheet/shared-expenses.json](../gsheet/shared-expenses.json):
+Based on [gsheet/shared-expenses.json](../../gsheet/shared-expenses.json):
 
 ```json
 {
@@ -184,7 +184,7 @@ To automate bill payment and shared costs reconciliation, the system must:
 
 ## Accounts in Scope
 
-Based on [Monthly closing documentation](../reference/notion/Optimize%20monthly%20closing/Monthly%20closing%2020bc378f707580f99849e024db8f12fb.md):
+Based on [Monthly closing documentation](../../reference/notion/Optimize monthly closing/Monthly closing 20bc378f707580f99849e024db8f12fb.md):
 
 | id | account | type | currency | bank | description |
 | --- | --- | --- | --- | --- | --- |
@@ -220,7 +220,7 @@ To proceed with implementation:
 5. **Implement consumption extraction and persistence for utility metrics**
 6. **Implement CLI workflow and reporting commands**
 
-Detailed design and roadmap are documented in [docs/develop/bill-payment-shared-costs-automation-design.md](develop/bill-payment-shared-costs-automation-design.md).
+Detailed design and roadmap are documented in [bill-payment-shared-costs.md](bill-payment-shared-costs.md).
 
 ## Decisions and Open Questions
 

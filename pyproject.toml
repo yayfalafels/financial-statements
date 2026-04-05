@@ -12,7 +12,7 @@ requires-python = ">=3.9"
 
 dependencies = [
     "sqlite-gsheet>=2.0.0",
-    "homebudget>=2.0.0",
+    "homebudget>=2.1.1",
 ]
 
 [project.optional-dependencies]

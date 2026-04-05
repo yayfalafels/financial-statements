@@ -14,6 +14,8 @@ user-invokable: true
 
 ## Skills
 
+- `task-definition`: for creating and updating dynamic project task completion status and definition.
+- `documentation`: for working with documentation, plain text markdown files.
 - `homebudget` skill for HomeBudget data access patterns and category/account discovery.
 - `gsheet-inspect` for inspecting existing helper workbook structures and data.
 - `variable-naming` for decisions on naming conventions in code implementation.
@@ -22,7 +24,7 @@ user-invokable: true
 
 - `.github/prompts/plan-closing-design.prompt.md`
 - `.github/prompts/plan-closing-tdd-implementation.prompt.md`
-- `docs/develop/*.md`
+- `docs/develop/design/*.md`
 - `src/python/`
 - `tests/`
 

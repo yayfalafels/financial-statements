@@ -1,4 +1,4 @@
-# Financial Statements Application Design Plan
+﻿# Financial Statements Application Design Plan
 
 **Document Type**: Design Planning (not implementation)  
 **Status**: In Progress - Hybrid workflow with AI-guided discovery and design decisions  
@@ -69,15 +69,15 @@ The app brings together 5+ independent systems (HomeBudget, Google Sheets, bank 
 ### CRITICAL: Environment management rules
 
 1. **Development scaffolding** (construction tools, temporary only)
-   - `.dev/env/` — Python virtual environment for helper scripts ONLY
-   - `.dev/.scripts/python/` — Python helper scripts for diagnostics, analysis, DB inspection
-   - `.dev/.scripts/bash/` — Bash helper scripts
-   - `.dev/.scripts/cmd/` — Windows batch helper scripts
+   - `.dev/env/` â€” Python virtual environment for helper scripts ONLY
+   - `.dev/scripts/python/` â€” Python helper scripts for diagnostics, analysis, DB inspection
+   - `.dev/scripts/bash/` â€” Bash helper scripts
+   - `.dev/scripts/cmd/` â€” Windows batch helper scripts
    - **DO NOT CREATE A NEW VIRTUAL ENV** - Reuse existing `.dev/env/`
    - **DO NOT USE `.dev/env` FOR MAIN APP** - This is scaffolding only
 
 2. **Main application environment** (production runtime)
-   - `env/` — Python virtual environment for wrapper package and tests (root level)
+   - `env/` â€” Python virtual environment for wrapper package and tests (root level)
    - Used by: wrapper package, test scripts, CLI commands
    - This is the "finished building" environment
 
@@ -110,28 +110,28 @@ The design process should be **data-driven** rather than assumption-driven. Befo
    - CPF: `gsheet/cpf.json`
 
 3. **Reference Implementation Patterns**
-   - `reference/hb-reconcile/` — Transaction reconciliation algorithm and Excel-based GL pattern
-   - `reference/hb-finances/` —  example usage for importing bank statements from source into statements SQLite digital twin
+   - `reference/hb-reconcile/` â€” Transaction reconciliation algorithm and Excel-based GL pattern
+   - `reference/hb-finances/` â€”  example usage for importing bank statements from source into statements SQLite digital twin
 
 4. **Configuration Files**
-   - `data/monthly-closing/accounts.json` — Account definitions (to be created)
-   - `data/monthly-closing/inputs.json` — User inputs for monthly closing
+   - `data/monthly-closing/accounts.json` â€” Account definitions (to be created)
+   - `data/monthly-closing/inputs.json` â€” User inputs for monthly closing
 
 ### Helper Scripts Strategy
 
-**Purpose**: Create lightweight Python scripts in `.dev/.scripts/python/` to inspect and analyze source data during the design phase. These scripts are temporary scaffolding and will be discarded after design is complete.
+**Purpose**: Create lightweight Python scripts in `.dev/scripts/python/` to inspect and analyze source data during the design phase. These scripts are temporary scaffolding and will be discarded after design is complete.
 
-**Location**: `.dev/.scripts/python/`
+**Location**: `.dev/scripts/python/`
 
 **Environment**: Use `.dev/env/` virtual environment
 
 **Typical helper scripts**:
-1. `inspect_hb_schema.py` — Query HomeBudget DB schema, list tables/columns
-2. `inspect_hb_accounts.py` — Export account list with types and currencies
-3. `inspect_hb_transactions.py` — Sample transactions by account type
-4. `inspect_gsheet_ranges.py` — Fetch Google Sheets data to verify structure
-5. `validate_account_mapping.py` — Cross-check HB accounts vs. GSheet accounts
-6. `analyze_reconcile_patterns.py` — Inspect hb-reconcile Excel workbook structure
+1. `inspect_hb_schema.py` â€” Query HomeBudget DB schema, list tables/columns
+2. `inspect_hb_accounts.py` â€” Export account list with types and currencies
+3. `inspect_hb_transactions.py` â€” Sample transactions by account type
+4. `inspect_gsheet_ranges.py` â€” Fetch Google Sheets data to verify structure
+5. `validate_account_mapping.py` â€” Cross-check HB accounts vs. GSheet accounts
+6. `analyze_reconcile_patterns.py` â€” Inspect hb-reconcile Excel workbook structure
 
 **Script template pattern**:
 ```python
@@ -171,7 +171,7 @@ if __name__ == '__main__':
 
 **Investigation Process**:
 ```
-1. Read documentation → 2. Inspect source data → 3. Analyze patterns → 4. Infer rules → 5. Verify cross-source consistency → 6. Only prompt if genuine ambiguity remains
+1. Read documentation â†’ 2. Inspect source data â†’ 3. Analyze patterns â†’ 4. Infer rules â†’ 5. Verify cross-source consistency â†’ 6. Only prompt if genuine ambiguity remains
 ```
 
 ---
@@ -180,7 +180,7 @@ if __name__ == '__main__':
 
 1. **Statements are the source of truth**: All account balances and transactions are ultimately reconciled to the statements. HomeBudget is a ledger that reflects the statement data and provides classifiation and re-organization of transactions, but the net transactions and balances must match the statements after reconciliation.
 2. **Accounting precision**: Precision is based on currency rules (2 decimal places for SGD, 2 for USD) and all calculations must adhere to these rules to avoid rounding issues.
-3. **reconciliation tolerance and algorithm**: There are four reconciliation workflows: cash, account statements, homebudget (expenses) and financial statements. For now cash, account statements and homebudget reconciliation is in scope.  The details for the homebudget reconciliation algorithm, design and tolerance can all be found in the reference docs and source code in `references/hb-reconcile`. the cash reconcile procedure can be found in `docs/develop/cash-reconcile-workflow.md`. The tolerance is exact match to precision limit 0.00 SGD for cash, account statements and homebudget expense reconciliation. 
+3. **reconciliation tolerance and algorithm**: There are four reconciliation workflows: cash, account statements, homebudget (expenses) and financial statements. For now cash, account statements and homebudget reconciliation is in scope.  The details for the homebudget reconciliation algorithm, design and tolerance can all be found in the reference docs and source code in `references/hb-reconcile`. the cash reconcile procedure can be found in `.dev/docs/sandbox/cash-reconcile/cash-reconcile-workflow.md`. The tolerance is exact match to precision limit 0.00 SGD for cash, account statements and homebudget expense reconciliation. 
 4. **account reconciliation workflow**: The account statement reconciliation workflow starts with user MFA authenticate and login to bank, download PDF and CSV/Excel statements, then this is the start of the automated workflow, first to import transactions in CSV and Excel from bank website download and import them into the existing SQLite DB, then save the raw PDF to AWS S3.  After ingesting the txns to the SQLite DB, the ending balance should match the balance reflected from the bank online portal read by the user and saved to JSON. Prior to committing changes to DB, the transaction imports should be pre-verified to match the ending balance and in case the validation fails, should flag to the user.  
 5. **cash reconciliation alert threshold**: for the cash reconciliation workflow, an adjustment expense is created to close the gap. The threshold for alerting user is +/- SGD $20 per month. If the adjustment exceeds this threshold, then the program should notify the user to review.
 6. **bill payments**: bills are treated the same as any other expense, with double-entry transfer+expense booking in HomeBudget, where the transfer from the real wallet should have a corresponding record from the account statement for that payment method if it is in the statement period.  Each bill has it's own logic for expense breakdown and for shared costs, the cost splitting accounting.
@@ -197,36 +197,36 @@ Establish a shared understanding of the current system design, identify inconsis
 
 ### 1.1: Document Review and Analysis
 
-**Status**: ✓ Complete
+**Status**: âœ“ Complete
 
 **Key Findings**:
 
-#### A. Consistent Themes ✓
+#### A. Consistent Themes âœ“
 
 1. **Multi-source integration** with 5+ independent data systems
 2. **Monthly closing workflow** as the central orchestration pattern
 3. **Domain-driven design** with immutable value objects (Period, Money, CashBalance)
 4. **Currency-aware architecture** (SGD primary, USD secondary)
-5. **Hierarchical accounting** (asset class → accounts, categories -> subcategories)
+5. **Hierarchical accounting** (asset class â†’ accounts, categories -> subcategories)
 6. **Manual review checkpoints** at each workflow step
 
 ### 1.2: Current Design Documentation Assessment
 
 **Sources reviewed**:
-- `docs/current-workflow.md` — Current, heavily manual with minor automation help high-level workflow (15 sequential steps)
-- `docs/develop/financial-statements-spec.md` — Report structure and calculation rules
-- `docs/account-classification.md` — Classification of account types and mapping logic
-- `docs/accounting-logic.md` — Accounting rules, patterns and techniques used in the personal finance system
-- `reference/hb-reconcile/docs/reconcile.md` — Transaction reconciliation algorithm for statements vs. HomeBudget ledger
-- `docs/glossary.md` — Definitions of key terms (account, transaction, reconciliation, etc.)
-- `docs/bill-payment.md` — Shared cost allocation subprocess
-- `docs/develop/data-source-inventory.md` — Data source APIs and refresh cadences
-- `docs/develop/cash-reconcile-*.md` — Domain model and algorithms (well-specified)
+- `docs/current-workflow.md` â€” Current, heavily manual with minor automation help high-level workflow (15 sequential steps)
+- `docs/develop/design/financial-statements-spec.md` â€” Report structure and calculation rules
+- `docs/account-classification.md` â€” Classification of account types and mapping logic
+- `docs/accounting-logic.md` â€” Accounting rules, patterns and techniques used in the personal finance system
+- `reference/hb-reconcile/docs/reconcile.md` â€” Transaction reconciliation algorithm for statements vs. HomeBudget ledger
+- `docs/glossary.md` â€” Definitions of key terms (account, transaction, reconciliation, etc.)
+- `docs/bill-payment.md` â€” Shared cost allocation subprocess
+- `docs/develop/design/design-source-alignment.md` â€” Data source APIs and refresh cadences
+- `docs/develop/cash-reconcile-*.md` â€” Domain model and algorithms (well-specified)
 
 **Additional sources added**:
-- `reference/hb-finances/` — Reference implementation for HomeBudget database access
-- `reference/hb-reconcile/src/reconcile/reconcile.py` — Working reconciliation algorithm
-- `gsheet/*.json` — Google Sheets configuration files
+- `reference/hb-finances/` â€” Reference implementation for HomeBudget database access
+- `reference/hb-reconcile/src/reconcile/reconcile.py` â€” Working reconciliation algorithm
+- `gsheet/*.json` â€” Google Sheets configuration files
 - HomeBudget SQLite database schema (via inspection)
 - Google Sheets workbooks (via API inspection)
 
@@ -271,7 +271,7 @@ Define the overall application structure, module boundaries, data flow, and orch
    - Fetch Google Sheets data to verify account classifications
    - Analyze hb-reconcile workbook structure
 
-3. Create helper script `.dev/.scripts/python/extract_terminology.py` to:
+3. Create helper script `.dev/scripts/python/extract_terminology.py` to:
    - Scan all markdown files for domain-specific terms
    - Cross-reference with glossary.md
    - Output list of undefined terms
@@ -326,7 +326,7 @@ User input
 >Two options: primary 1) CLI command for individual steps with checkpoints and inputs 4) Interactive web UI with step-by-step guidance. 
 
 3. **Persistent State Model**: How should the app track workflow progress between steps?
-   1. No persistence — each step is independent; user documents progress manually
+   1. No persistence â€” each step is independent; user documents progress manually
    2. Session file (JSON) tracking completed steps, errors, decisions
    3. Database (SQLite) with step log and decision history
    4. Google Sheets integration (log progress back to sheets)
@@ -343,12 +343,12 @@ User input
    - Analyze reference/hb-reconcile/ for reconciliation architecture
    - Review existing src/ directory structure (if any)
 
-2. Create helper script `.dev/.scripts/python/analyze_reference_patterns.py` to:
+2. Create helper script `.dev/scripts/python/analyze_reference_patterns.py` to:
    - Extract module structure from reference implementations
    - Identify reusable patterns vs. bespoke logic needed
    - Map reference functions to planned workflow steps
 
-3. Design docs/develop/app-architecture.md with:
+3. Design docs/develop/design/app-architecture.md with:
 
    a. Architectural diagram (ASCII or Mermaid)
    
@@ -378,8 +378,8 @@ User input
    
    c. Data flow diagram:
       ```
-      Period Input → Data Adapters (parallel fetch) → Domain Logic (transform, validate) → 
-      Orchestration (sequence steps) → Financial Statements Output
+      Period Input â†’ Data Adapters (parallel fetch) â†’ Domain Logic (transform, validate) â†’ 
+      Orchestration (sequence steps) â†’ Financial Statements Output
       ```
    
    d. Module dependency graph (which calls which, directional)
@@ -398,7 +398,7 @@ Reference:
 - reference/hb-finances/database.py (DB access pattern)
 - reference/hb-reconcile/src/reconcile/reconcile.py (reconciliation pattern)
 
-Expected output: docs/develop/app-architecture.md (~5-7 pages with diagrams and code examples)
+Expected output: docs/develop/design/app-architecture.md (~5-7 pages with diagrams and code examples)
 ```
 
 ### 2.3: Data Flow and Transformation Boundaries
@@ -410,7 +410,7 @@ Expected output: docs/develop/app-architecture.md (~5-7 pages with diagrams and 
 ```
 1. **Before designing data flow, trace actual data movement:**
 
-   a. Create `.dev/.scripts/python/trace_data_sources.py` to:
+   a. Create `.dev/scripts/python/trace_data_sources.py` to:
       - Enumerate all data sources (HB DB, GSheets, local files)
       - For each source, list what data is read vs. written
       - Identify data freshness requirements (real-time, daily, monthly)
@@ -428,19 +428,19 @@ Expected output: docs/develop/app-architecture.md (~5-7 pages with diagrams and 
 2. **Map end-to-end data flow for monthly closing workflow:**
 
 **Sources reviewed**:
-- `docs/current-workflow.md` — Current manual workflow (15 sequential steps)
-- `docs/develop/app-workflows.md` — Intended automated workflow design (target state)
-- `docs/develop/financial-statements-spec.md` — Report structure and calculation rules
-- `docs/account-classification.md` — Classification of account types and mapping logic
-- `docs/accounting-logic.md` — Accounting rules, patterns and techniques used in the personal finance system
-- `reference/hb-reconcile/docs/reconcile.md` — Transaction reconciliation algorithm
-- `docs/glossary.md` — Definitions of key terms
-- `docs/bill-payment.md` — Shared cost allocation subprocess
-- `docs/develop/data-source-inventory.md` — Data source APIs and refresh cadences
-- `docs/develop/cash-reconcile-*.md` — Domain model and algorithms
+- `docs/current-workflow.md` â€” Current manual workflow (15 sequential steps)
+- `docs/develop/design/app-workflows.md` â€” Intended automated workflow design (target state)
+- `docs/develop/design/financial-statements-spec.md` â€” Report structure and calculation rules
+- `docs/account-classification.md` â€” Classification of account types and mapping logic
+- `docs/accounting-logic.md` â€” Accounting rules, patterns and techniques used in the personal finance system
+- `reference/hb-reconcile/docs/reconcile.md` â€” Transaction reconciliation algorithm
+- `docs/glossary.md` â€” Definitions of key terms
+- `docs/bill-payment.md` â€” Shared cost allocation subprocess
+- `docs/develop/design/design-source-alignment.md` â€” Data source APIs and refresh cadences
+- `docs/develop/cash-reconcile-*.md` â€” Domain model and algorithms
 - Helper script outputs from trace_data_sources.py
 
-**Design docs/develop/data-flow.md covering:**
+**Design docs/develop/design/data-flow.md covering:**
 
 1. **Input sources** (with actual access patterns from inspection):
    - HomeBudget SQLite: query_balance(), query_transactions(), add_transaction()
@@ -454,15 +454,15 @@ Expected output: docs/develop/app-architecture.md (~5-7 pages with diagrams and 
 2. **Transformation pipeline** (with validation gates):
    
    Stage 1 - Data Acquisition (parallel):
-   - Fetch forex rates → validate currency pairs exist
-   - Query HB balances → validate accounts exist
-   - Parse bank statements → validate schema matches
-   - Read user inputs → validate required fields present
+   - Fetch forex rates â†’ validate currency pairs exist
+   - Query HB balances â†’ validate accounts exist
+   - Parse bank statements â†’ validate schema matches
+   - Read user inputs â†’ validate required fields present
    
    Stage 2 - Normalization (sequential):
    - Convert all amounts to Decimal(2 places)
    - Convert all dates to standard format
-   - Map account names across systems (HB ↔ Canonical Registry ↔ Statement)
+   - Map account names across systems (HB â†” Canonical Registry â†” Statement)
    - Apply currency conversions using fetched forex rates
    
    Stage 3 - Calculation (sequential):
@@ -503,26 +503,26 @@ Expected output: docs/develop/app-architecture.md (~5-7 pages with diagrams and 
 5. **Data dependencies diagram**:
    ```
    Period Input
-       ↓
+       â†“
    [Data Acquisition Layer - Parallel]
-       ├─→ HomeBudget DB (balances, transactions)
-      ├─→ Canonical App Data (accounts, forex, shared costs)
-       ├─→ Bank Statements (CSV/PDF parsing)
-       ├─→ Yahoo Finance (forex rates)
-       └─→ User Inputs (cash counts, confirmations)
-       ↓
+       â”œâ”€â†’ HomeBudget DB (balances, transactions)
+      â”œâ”€â†’ Canonical App Data (accounts, forex, shared costs)
+       â”œâ”€â†’ Bank Statements (CSV/PDF parsing)
+       â”œâ”€â†’ Yahoo Finance (forex rates)
+       â””â”€â†’ User Inputs (cash counts, confirmations)
+       â†“
    [Normalization Layer]
-       → Validate schemas → Map cross-system IDs → Convert currencies
-       ↓
+       â†’ Validate schemas â†’ Map cross-system IDs â†’ Convert currencies
+       â†“
    [Calculation Layer]
-       → Balances → Forex M2M → Allocations → Expected values
-       ↓
+       â†’ Balances â†’ Forex M2M â†’ Allocations â†’ Expected values
+       â†“
    [Reconciliation Layer]
-       → Variance detection → Transaction matching → Edit generation → User review
-       ↓
+       â†’ Variance detection â†’ Transaction matching â†’ Edit generation â†’ User review
+       â†“
    [Finalization Layer]
-      → Post to HB → Save to SQLite → Archive to S3 → Optional report publication
-       ↓
+      â†’ Post to HB â†’ Save to SQLite â†’ Archive to S3 â†’ Optional report publication
+       â†“
    Financial Statements Output
    ```
 
@@ -534,11 +534,11 @@ Expected output: docs/develop/app-architecture.md (~5-7 pages with diagrams and 
 Format: Mermaid diagrams + narrative descriptions
 Reference: 
 - docs/current-workflow.md for baseline manual workflow
-- docs/develop/app-workflows.md for target automated workflow
-- docs/develop/cash-reconcile-workflow.md for detailed algorithm example
+- docs/develop/design/app-workflows.md for target automated workflow
+- .dev/docs/sandbox/cash-reconcile/cash-reconcile-workflow.md for detailed algorithm example
 - reference/hb-reconcile/ for working transformation pipeline
 
-Expected output: docs/develop/data-flow.md (~5-7 pages with flow diagrams)
+Expected output: docs/develop/design/data-flow.md (~5-7 pages with flow diagrams)
 ```
 
 ---
@@ -553,7 +553,7 @@ Establish a consistent, comprehensive domain model that applies across all modul
 
 **Status**: TO DO (Design spec + implementation guidance)
 
-**Reference**: `docs/develop/cash-reconcile-domain-model.md` defines good patterns; generalize to all domains.
+**Reference**: `.dev/docs/sandbox/cash-reconcile/cash-reconcile-domain-model.md` defines good patterns; generalize to all domains.
 
 **AI Prompt**:
 
@@ -578,7 +578,7 @@ Establish a consistent, comprehensive domain model that applies across all modul
       - Identify forex transaction patterns
       - Extract M2M adjustment patterns for investments
 
-2. **Design docs/develop/domain-model.md as a data-validated specification:**
+2. **Design docs/develop/design/domain-model.md as a data-validated specification:**
 
    1. Core Value Objects (immutable, validated against actual data):
       - Period (year: int, month: int) 
@@ -680,7 +680,7 @@ Reference:
 - HomeBudget database inspection results
 - Google Sheets data inspection results
 
-Expected output: docs/develop/domain-model.md (~8-10 pages with data-backed examples)
+Expected output: docs/develop/design/domain-model.md (~8-10 pages with data-backed examples)
 ```
 
 ---
@@ -701,14 +701,14 @@ Design the persistent storage layer, focusing on:
 General guidance
 
 1. **Financial Statements Storage**: Where should financial statements snapshots be stored?
-   1. Google Sheets (current approach) — keep using gsheet/financial-statements.json
-   2. Local JSON files (per-period) — data/monthly-closing/{YYYY-MM}/financial-statements.json
-   3. SQLite database — dedicated financial_statements.db with tables per entity
+   1. Google Sheets (current approach) â€” keep using gsheet/financial-statements.json
+   2. Local JSON files (per-period) â€” data/monthly-closing/{YYYY-MM}/financial-statements.json
+   3. SQLite database â€” dedicated financial_statements.db with tables per entity
    4. Hybrid: JSON for snapshots + SQLite for historical analysis
 
 User input
 
->3) SQLite database — dedicated financial_statements.db with tables per entity with db backup to S3, PDF reports upload to S3, and post reports to Google Sheets of total ledger + summary reports for user review and data exploration.
+>3) SQLite database â€” dedicated financial_statements.db with tables per entity with db backup to S3, PDF reports upload to S3, and post reports to Google Sheets of total ledger + summary reports for user review and data exploration.
 
 2. **Reconciliation Record Storage**: How should reconciliation decisions (gap explanations, approvals) be stored?
    1. In HomeBudget as transaction notes (leave there)
@@ -721,14 +721,14 @@ User input
 >2) for gap explanations and decisions use a local JSON file for purpose of refining the algorithm and process. For routine reconciliation patterns well learned and captured in source code or in docs, skills, there is no need to capture these, focus on novel or edge cases that require manual review and decision that are still interrupting the workflow with human intervention needed. 
 
 3. **Exchange Rate Archive**: Should the app maintain its own archive of exchange rates?
-   1. No — always fetch from Yahoo Finance on demand
-   2. Yes — SQLite table (date, pair, rate, source) for audit trail
-   3. Yes — JSON file per period (data/monthly-closing/{YYYY-MM}/forex-rates.json)
-   4. Yes — cached locally but read-only (user maintains via config)
+   1. No â€” always fetch from Yahoo Finance on demand
+   2. Yes â€” SQLite table (date, pair, rate, source) for audit trail
+   3. Yes â€” JSON file per period (data/monthly-closing/{YYYY-MM}/forex-rates.json)
+   4. Yes â€” cached locally but read-only (user maintains via config)
 
 User input
 
->2) Yes — SQLite table (date, pair, rate, source) for past 2 years history on monthly basis for all currencies used during that period.
+>2) Yes â€” SQLite table (date, pair, rate, source) for past 2 years history on monthly basis for all currencies used during that period.
 
 ### 4.2: Database Schema Design
 
@@ -756,7 +756,7 @@ User input
       - Document structure of inputs.json, reconciliation files
       - Identify what data is already being persisted locally
 
-2. **Design docs/develop/database-schema.md defining app's persistent storage:**
+2. **Design docs/develop/design/database-schema.md defining app's persistent storage:**
 
    **Schema Overview**:
    - **App-owned data**: Financial statements snapshots, reconciliation decisions, workflow state
@@ -880,11 +880,11 @@ User input
    - HomeBudget: One-way write (app adds reconciliation transactions)
    - Google Sheets: Required operational read for cash-expense raw source, plus optional report publishing and parity/backfill reads for non-cash helper workbooks
    - Update cadence: Per workflow step (not real-time)
-   - Conflict resolution: HB changes during period close → flag as error, user must re-run
+   - Conflict resolution: HB changes during period close â†’ flag as error, user must re-run
 
 5. **Backup Strategy** (based on user input: S3):
-   - financial_statements.db → S3 after each period finalization
-   - PDF reports → S3 in organized structure (year/month/)
+   - financial_statements.db â†’ S3 after each period finalization
+   - PDF reports â†’ S3 in organized structure (year/month/)
    - Optional summary report published for user review
 
 6. **Helper scripts to validate design**:
@@ -897,7 +897,7 @@ Reference:
 - reference/hb-reconcile/data/reconcile.xlsx structure
 - gsheet/financial-statements.json configuration
 
-Expected output: docs/develop/database-schema.md (~6-8 pages with SQL DDL and JSON schemas)
+Expected output: docs/develop/design/database-schema.md (~6-8 pages with SQL DDL and JSON schemas)
 ```
 
 ---
@@ -914,7 +914,7 @@ Define the complete monthly closing workflow, including:
 
 ### 5.1: Workflow Architecture
 
-**Status**: TO DO (Design spec, target state documented in docs/develop/app-workflows.md)
+**Status**: TO DO (Design spec, target state documented in docs/develop/design/app-workflows.md)
 
 **AI Prompt**:
 
@@ -936,7 +936,7 @@ Define the complete monthly closing workflow, including:
       - What validation occurs between steps?
       - How are errors handled and recovered?
 
-2. **Design docs/develop/workflow-architecture.md as a detailed workflow specification:**
+2. **Design docs/develop/design/workflow-architecture.md as a detailed workflow specification:**
 
 1. Workflow Overview:
    - Start condition: User initiates closing for period {YYYY-MM}
@@ -944,9 +944,9 @@ Define the complete monthly closing workflow, including:
    - Total estimated time: (from current-workflow.md baseline and app-workflows.md target)
    - Failure modes: What can go wrong? Rollback strategy?
 
-2. Workflow Steps (from docs/develop/app-workflows.md design):
+2. Workflow Steps (from docs/develop/design/app-workflows.md design):
    
-   Group A – Data Acquisition (parallel):
+   Group A â€“ Data Acquisition (parallel):
      Step A1: Fetch forex rates
      Step A2: Query wallet/checking balances from HomeBudget
      Step A3: Download bank statements and current account balances (manual)
@@ -954,14 +954,14 @@ Define the complete monthly closing workflow, including:
      Step A5: Read CPF balance (manual, semi-annual)
      Checkpoint A: All data sources validated and available
    
-   Group B – Data Entry and Transformation (human-intensive):
+   Group B â€“ Data Entry and Transformation (human-intensive):
      Step B1: App parses bank statements; prepares ingestion into SQLite DB and verifies with current balances
        Step B2: App parses IBKR statement data and persists normalized IBKR metrics
        Step B3: App captures CPF balances and contribution metrics through app-native input and validation
      Step B4: User reviews and approves data entries; resolves any parsing or ingestion flags
      Checkpoint B: All account data current and validated with the statements SQLite DB digital twin
    
-   Group C – Calculation and Reconciliation:
+   Group C â€“ Calculation and Reconciliation:
      Step C2: Post forex adjustment transactions to HomeBudget
      Step C3: Calculate expected balance for each account (from opening + transactions)
      Step C4: Compare to statement balance; detect variances
@@ -969,7 +969,7 @@ Define the complete monthly closing workflow, including:
      Step C6: User reviews and approves reconciliation decisions, or manually intervenes to close gaps
      Checkpoint C: All variances closed or documented, HomeBudget ledger updated 
    
-   Group D – Financial Statements Generation:
+   Group D â€“ Financial Statements Generation:
      Step D1: Aggregate all account balances into trial balance
      Step D2: Apply consolidation rules (forex rate conversions, eliminations)
      Step D3: Calculate M2M forex on foreign currency accounts (IBKR) using fetched rates
@@ -979,7 +979,7 @@ Define the complete monthly closing workflow, including:
      Step D7: User review and approval
      Checkpoint D: Statements match expectations; user approves
    
-   Group E – Closure and Archival:
+   Group E â€“ Closure and Archival:
      Step E1: Commit transactions and updates to local SQLite DB and JSON file
      Step E2: Save financial statements snapshot (JSON + PDF)
      Step E3: Upload to S3 (if configured)
@@ -1012,32 +1012,32 @@ Define the complete monthly closing workflow, including:
 
 Reference: 
 - docs/current-workflow.md (existing manual process baseline)
-- docs/develop/app-workflows.md (target automated workflow design)
-- docs/develop/cash-reconcile-workflow.md (subprocess example)
-Expected output: docs/develop/workflow-architecture.md (~8-10 pages, with diagrams)
+- docs/develop/design/app-workflows.md (target automated workflow design)
+- .dev/docs/sandbox/cash-reconcile/cash-reconcile-workflow.md (subprocess example)
+Expected output: docs/develop/design/workflow-architecture.md (~8-10 pages, with diagrams)
 ```
 
 ### 5.2: Bill Payment and Shared Costs Subprocess
 
 **Status**: INCOMPLETE in current docs
 
-**Reference**: `docs/bill-payment.md` and `docs/develop/bill-payment-shared-costs-automation-design.md` (partial)
+**Reference**: `docs/bill-payment.md` and `.dev/docs/sandbox/bill-payment/bill-payment-shared-costs-automation-design.md` (partial)
 
 **AI Prompt**:
 
 ```
 Complete the design of the bill payment subprocess (currently 72 minutes, >50% automatable):
 
-Design docs/develop/bill-payment-workflow.md covering:
+Design docs/develop/design/bill-payment-workflow.md covering:
 
 1. Current Subprocess Steps (from bill-payment.md):
-   B1: Download statements (10 min) — manual
-   B2: Parse statements (12 min) — automatable
-   B3: Form update in Sheets (8 min) — automatable
-   B4: Fetch shared costs (5 min) — automatable
-   B5: Add to HomeBudget (12 min) — automatable
-   B6: Update consumption DB (8 min) — automatable
-   B7: Verification (7 min) — manual
+   B1: Download statements (10 min) â€” manual
+   B2: Parse statements (12 min) â€” automatable
+   B3: Form update in Sheets (8 min) â€” automatable
+   B4: Fetch shared costs (5 min) â€” automatable
+   B5: Add to HomeBudget (12 min) â€” automatable
+   B6: Update consumption DB (8 min) â€” automatable
+   B7: Verification (7 min) â€” manual
    TOTAL: 72 min (design target: 36 min, 50% reduction)
 
 2. Detailed Design for Each Step:
@@ -1058,7 +1058,7 @@ Design docs/develop/bill-payment-workflow.md covering:
    - Integration with HomeBudget (post allocation entries to settlement account)
 
 5. Consumption Tracking:
-   - Current: Utility usage (kWh, m³, GB) mentioned; no schema
+   - Current: Utility usage (kWh, mÂ³, GB) mentioned; no schema
    - Design: SQLite table or JSON file to track consumption metrics
    - Reconciliation: Link consumption to bill amount
 
@@ -1068,7 +1068,7 @@ Design docs/develop/bill-payment-workflow.md covering:
    - Data refresh cadence (monthly, as-needed, real-time)?
 
 Reference: docs/bill-payment.md, docs/accounting-logic.md (shared cost rules)
-Expected output: docs/develop/bill-payment-workflow.md (~6-8 pages)
+Expected output: docs/develop/design/bill-payment-workflow.md (~6-8 pages)
 ```
 
 ---
@@ -1086,16 +1086,16 @@ Define module boundaries, interfaces, and responsibilities.
 **AI Prompt**:
 
 ```
-Create docs/develop/module-design.md defining the app's modular structure:
+Create docs/develop/design/module-design.md defining the app's modular structure:
 
 1. Module Taxonomy:
    Classify all modules into 3 layers:
    
-   Layer 1 — Domain/Logic Modules (independent of data sources):
+   Layer 1 â€” Domain/Logic Modules (independent of data sources):
    
-   Layer 2 — Adapter Modules (bridge to external systems):
+   Layer 2 â€” Adapter Modules (bridge to external systems):
    
-   Layer 3 — Orchestration/Support:
+   Layer 3 â€” Orchestration/Support:
      - cli_module (user interface: commands, prompts)
      - workflow_runner (orchestrate steps, manage checkpoints)
      - session_manager (track progress, resume capability)
@@ -1131,7 +1131,7 @@ Create docs/develop/module-design.md defining the app's modular structure:
    - Financial statement line items (new category = configuration, not code)
 
 Reference: Phase 5 (workflow steps map to module responsibilities)
-Expected output: docs/develop/module-design.md (~10-12 pages, with pseudocode)
+Expected output: docs/develop/design/module-design.md (~10-12 pages, with pseudocode)
 ```
 
 ---
@@ -1149,7 +1149,7 @@ Define a unified error handling and validation strategy across all modules.
 **AI Prompt**:
 
 ```
-Design docs/develop/error-handling-validation.md defining unified error strategy:
+Design docs/develop/design/error-handling-validation.md defining unified error strategy:
 
 1. Error Taxonomy:
    - DataQuality errors (malformed input, missing required field, type mismatch)
@@ -1159,7 +1159,7 @@ Design docs/develop/error-handling-validation.md defining unified error strategy
    - PostingError (transaction failed to save, balance mismatch)
    - ExternalAPI errors (Yahoo Finance timeout, Google Sheets auth failure)
    - ConfigError (required setting missing, invalid value)
-   - LogicError (algorithm invariant violated, e.g., debit ≠ credit)
+   - LogicError (algorithm invariant violated, e.g., debit â‰  credit)
 
 2. For Each Error Type:
    - Severity: Fatal (stop workflow) vs. Recoverable (warn, skip, retry)
@@ -1186,8 +1186,8 @@ Design docs/develop/error-handling-validation.md defining unified error strategy
    - Capture user decisions (approve variance, force past checkpoint)
    - Enable later analysis (e.g., "how many variances per period?" trends)
 
-Reference: docs/develop/validation-error-handling-spec.md (existing, to be extended)
-Expected output: docs/develop/error-handling-validation.md (~6-8 pages)
+Reference: .dev/docs/sandbox/account-statements/validation-error-handling-spec.md (existing, to be extended)
+Expected output: docs/develop/design/error-handling-validation.md (~6-8 pages)
 ```
 
 ---
@@ -1196,16 +1196,16 @@ Expected output: docs/develop/error-handling-validation.md (~6-8 pages)
 
 Once complete, design documents should be read in this order:
 
-1. `docs/glossary.md` — Define all terms (foundation)
-2. `docs/develop/app-architecture.md` — Understand module structure
-3. `docs/develop/domain-model.md` — Learn core entities and rules
-4. `docs/develop/data-flow.md` — Trace data transformations
-5. `docs/develop/database-schema.md` — See what data app owns
-6. `docs/develop/workflow-architecture.md` — Understand main workflow
-7. `docs/develop/bill-payment-workflow.md` — Understand subprocess
-8. `docs/develop/module-design.md` — Learn module interfaces and responsibilities
-9. `docs/develop/error-handling-validation.md` — Understand error strategy
-10. `.github/prompts/plan-closing-tdd-implementation.prompt.md` — Then ready for implementation planning
+1. `docs/glossary.md` â€” Define all terms (foundation)
+2. `docs/develop/design/app-architecture.md` â€” Understand module structure
+3. `docs/develop/design/domain-model.md` â€” Learn core entities and rules
+4. `docs/develop/design/data-flow.md` â€” Trace data transformations
+5. `docs/develop/design/database-schema.md` â€” See what data app owns
+6. `docs/develop/design/workflow-architecture.md` â€” Understand main workflow
+7. `docs/develop/design/bill-payment-workflow.md` â€” Understand subprocess
+8. `docs/develop/design/module-design.md` â€” Learn module interfaces and responsibilities
+9. `docs/develop/design/error-handling-validation.md` â€” Understand error strategy
+10. `.github/prompts/plan-closing-tdd-implementation.prompt.md` â€” Then ready for implementation planning
 
 ---
 
@@ -1275,7 +1275,7 @@ Remove all temporary scaffolding helper scripts and artifacts created during the
         - Identified gaps or inconsistencies
      
      **Design Decisions Made**:
-     - Architecture: 3-tier layered (Adapters → Domain → Orchestration)
+     - Architecture: 3-tier layered (Adapters â†’ Domain â†’ Orchestration)
      - Storage: SQLite for app data, S3 for backups
      - Workflow: CLI primary, web UI future
      - Reconciliation: Transaction-level matching with tolerance
@@ -1332,18 +1332,22 @@ This section documents inconsistencies identified during design alignment and ho
 ### Resolved Items
 
 1. **Forex revaluation logic location**: Resolved.
-   - `docs/develop/module-design.md` now explicitly assigns reporting-currency conversion and month-end revaluation ownership to `FinancialStatementsDomain.apply_fx_revaluation`.
+   - `docs/develop/design/module-design.md` now explicitly assigns reporting-currency conversion and month-end revaluation ownership to `FinancialStatementsDomain.apply_fx_revaluation`.
 
 2. **Financial statement revision workflow**: Resolved.
-   - `docs/develop/app-workflows.md` now defines draft revision creation in Step 7 and final promotion and supersede behavior in Step 8, aligned with SCD Type 2 in `docs/develop/domain-model.md` and `docs/develop/database-schema.md`.
+   - `docs/develop/design/app-workflows.md` now defines draft revision creation in Step 7 and final promotion and supersede behavior in Step 8, aligned with SCD Type 2 in `docs/develop/design/domain-model.md` and `docs/develop/design/database-schema.md`.
 
 3. **Helper workbook deprecation timeline**: Resolved for design baseline.
-   - `docs/develop/app-architecture.md` now includes a phased workbook deprecation timeline (parity default, parity opt-in, backfill-only, then workbook-free operations with a retained exception for cash-expense raw intake from Google Sheets).
+   - `docs/develop/design/app-architecture.md` now includes a phased workbook deprecation timeline (parity default, parity opt-in, backfill-only, then workbook-free operations with a retained exception for cash-expense raw intake from Google Sheets).
 
 4. **Cash reconciliation equation**: Resolved.
-   - `docs/develop/domain-model.md` now includes an explicit cash reconciliation equation and tolerance checkpoint behavior in the reconciliation model.
+   - `docs/develop/design/domain-model.md` now includes an explicit cash reconciliation equation and tolerance checkpoint behavior in the reconciliation model.
 
 5. **Error taxonomy consistency**: Resolved.
-   - Canonical detailed classification is now defined in `docs/develop/error-handling-validation.md`, and `docs/develop/app-workflows.md` was aligned to a higher-level operational summary that maps directly to the canonical classes.
+   - Canonical detailed classification is now defined in `docs/develop/design/error-handling-validation.md`, and `docs/develop/design/app-workflows.md` was aligned to a higher-level operational summary that maps directly to the canonical classes.
 
 ---
+
+
+
+

@@ -1,4 +1,4 @@
-# MVP design
+# MVP scope
 
 ## Table of contents
 
@@ -15,7 +15,7 @@
 
 ## Overview
 
-This document defines the MVP design for workflow automation. The MVP runs locally, targets a single operator, and produces PDF statements with S3 upload. It automates the workflow steps described in [docs/current-workflow.md](docs/current-workflow.md) following the design in [docs/develop/app-workflows.md](docs/develop/app-workflows.md) and supports the project goals in [docs/about.md](docs/about.md).
+This document defines the scope of the MVP, the first phase of the implementation roadmap. The MVP runs locally, targets a single operator, and produces PDF statements with S3 upload. It automates the workflow steps described in [current-workflow.md](current-workflow.md) following the design in [docs/develop/010/design/app-workflows.md](../develop/010/design/app-workflows.md) and supports the project goals in [docs/about.md](../about.md).
 
 ## Goals
 
@@ -33,11 +33,11 @@ This document defines the MVP design for workflow automation. The MVP runs local
 ## Assumptions
 
 - The operator can access all websites needed for statement download and authentication.
-- Google Sheets access is configured using the paths in [docs/google-sheets.md](docs/google-sheets.md).
-- HomeBudget data is available locally as described in [docs/homebudget.md](docs/homebudget.md).
+- Google Sheets access is configured using the paths in [google-sheets.md](google-sheets.md).
+- HomeBudget data is available locally as described in [homebudget.md](homebudget.md).
 - S3 credentials are available in the local environment.
 
-## Scope and workflow boundaries
+## MVP scope and workflow boundaries
 
 Automated steps
 
@@ -90,9 +90,9 @@ Outputs
 
 Storage locations
 
-- Workspace data and logs under [data/](data/).
-- Configuration under [gsheet/](gsheet/).
-- Reference content under [reference/](reference/).
+- Workspace data and logs under [data/](../../data/).
+- Configuration under [gsheet/](../../gsheet/).
+- Reference content under [reference/](../../reference/).
 
 ## Automation design
 
@@ -116,7 +116,7 @@ Script boundaries
 Integration contracts
 
 - Google Sheets uses `sqlite-gsheet` with a defined worksheet mapping.
-- HomeBudget access follows the patterns in [docs/homebudget.md](docs/homebudget.md).
+- HomeBudget access follows the patterns in [homebudget.md](homebudget.md).
 - S3 uploads use a standard naming convention and folder prefix by month.
 
 Error handling and recovery

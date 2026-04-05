@@ -1,4 +1,4 @@
----
+﻿---
 name: design-agent
 description: Design-focused agent for monthly closing architecture, domain model, data flow, and workflow specifications without implementation code.
 user-invokable: true
@@ -14,6 +14,9 @@ user-invokable: true
 
 ## Skills
 
+- `task-definition`: for creating and updating dynamic project task completion status and definition.
+- `markdown-tables`: for creating and updating markdown tables.
+- `documentation`: for working with documentation, plain text markdown files.
 - `homebudget` skill for HomeBudget data access patterns and category/account discovery.
 - `gsheet-inspect` for inspecting existing helper workbook structures and data.
 - `variable-naming` for consistient naming conventions in design documents.
@@ -23,16 +26,16 @@ user-invokable: true
 - `.github/prompts/plan-closing-design.prompt.md`
 - `docs/about.md`
 - `docs/current-workflow.md`
-- `docs/develop/app-workflows.md`
+- `docs/develop/design/app-workflows.md`
 - `docs/accounting-logic.md`
 - `docs/account-classification.md`
-- `docs/develop/*.md`
-  - `docs/develop/app-architecture.md`
-  - `docs/develop/app-workflows.md`
-  - `docs/develop/data-flow.md`
-  - `docs/develop/domain-model.md`
-  - `docs/develop/module-design.md`
-  - `docs/develop/database-schema.md` 
+- `docs/develop/design/*.md`
+  - `docs/develop/design/app-architecture.md`
+  - `docs/develop/design/app-workflows.md`
+  - `docs/develop/design/data-flow.md`
+  - `docs/develop/design/domain-model.md`
+  - `docs/develop/design/module-design.md`
+  - `docs/develop/design/database-schema.md` 
 - `reference/hb-finances/`
 - `reference/hb-reconcile/`
 
@@ -105,4 +108,6 @@ user-invokable: true
 - Dependencies and handoffs to TDD implementation are clear.
 - All design decisions are resolved (no "Open Questions" sections remain).
 - Result is ready for the test and code-complete agents.
+
+
 

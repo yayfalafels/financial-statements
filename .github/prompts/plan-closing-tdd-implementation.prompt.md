@@ -1,7 +1,7 @@
----
+﻿---
 name: plan-closing-tdd-implementation
 title: Closing Automation TDD Implementation Plan
-description: Complete TDD implementation plan for the consolidated monthly closing workflow, following design documentation → test cases (SIT/UAT) → build → validate pattern for each feature. Hybrid workflow with AI prompts and user inputs.
+description: Complete TDD implementation plan for the consolidated monthly closing workflow, following design documentation â†’ test cases (SIT/UAT) â†’ build â†’ validate pattern for each feature. Hybrid workflow with AI prompts and user inputs.
 status: active
 version: 1.0
 created_date: 2026-02-28
@@ -16,11 +16,11 @@ keywords:
 phase: Implementation Planning
 deliverable: Phase-by-phase TDD implementation roadmap with AI prompts and user workflows
 related_files:
-  - .github/prompts/plan-design-closing.prompt.md
+  - .github/prompts/plan-closing-design.prompt.md
   - docs/current-workflow.md
-  - docs/develop/app-workflows.md
-  - docs/develop/environment.md
-  - docs/develop/cash-reconcile-implementation-summary.md
+  - docs/develop/design/app-workflows.md
+  - docs/environment.md
+  - .dev/docs/sandbox/cash-reconcile/cash-reconcile-implementation-summary.md
 ---
 
 ## Table of Contents
@@ -43,22 +43,22 @@ related_files:
 
 # Plan: Closing Automation TDD Implementation
 
-Complete test-driven development implementation plan for the consolidated monthly closing workflow. Each feature follows the cycle: **design documentation → test cases (SIT/UAT) → implementation → validation → commit**.
+Complete test-driven development implementation plan for the consolidated monthly closing workflow. Each feature follows the cycle: **design documentation â†’ test cases (SIT/UAT) â†’ implementation â†’ validation â†’ commit**.
 
 ## Environment usage
 
 **CRITICAL: Environment management rules**
 
 1. **Development scaffolding** (construction tools, temporary only)
-   - `.dev/env` — Python virtual environment for helper scripts ONLY
-   - `.dev/.scripts/python` — Helper scripts for diagnostics, analysis, PDF extraction
-   - `.dev/.scripts/bash` — Bash helper scripts
-   - `.dev/.scripts/cmd` — Windows batch helper scripts
+   - `.dev/env` â€” Python virtual environment for helper scripts ONLY
+   - `.dev/.scripts/python` â€” Helper scripts for diagnostics, analysis, PDF extraction
+   - `.dev/.scripts/bash` â€” Bash helper scripts
+   - `.dev/.scripts/cmd` â€” Windows batch helper scripts
    - **DO NOT CREATE A NEW VIRTUAL ENV** - Reuse existing `.dev/env`
    - **DO NOT USE `.dev/env` FOR MAIN APP** - This is scaffolding only
 
 2. **Main application environment** (production runtime)
-   - `env/` — Python virtual environment for wrapper package and tests (root level)
+   - `env/` â€” Python virtual environment for wrapper package and tests (root level)
    - Used by: wrapper package, test scripts, CLI commands
    - This is the "finished building" environment
 
@@ -81,8 +81,8 @@ All remaining phases depend on this foundation. Build first, validate thoroughly
 **Goal**: Define core data classes used across all modules
 
 **Reference documents**:
-- [Shared Utilities Details](plan-design-closing.prompt.md#shared-utilities-details)
-- `docs/develop/configuration-setup-spec.md`
+- [Shared Utilities Details](plan-closing-design.prompt.md#shared-utilities-details)
+- `.dev/docs/sandbox/account-statements/configuration-setup-spec.md`
 
 #### Design phase
 
@@ -93,7 +93,7 @@ Analyze the closing workflow and generate complete type definitions specificatio
 
 Input:
 - Workflow steps: forex, accounts (wallets, IBKR, CPF), bill-payment, cash-reconcile, hb-reconcile, statements
-- Reference: docs/current-workflow.md (manual baseline), docs/develop/app-workflows.md (design target), plan-design-closing.prompt.md
+- Reference: docs/current-workflow.md (manual baseline), docs/develop/design/app-workflows.md (design target), plan-closing-design.prompt.md
 
 Output JSON spec with:
 1. Period class (year/month/validation)
@@ -146,7 +146,7 @@ Requirements:
 4. Include docstrings
 5. Add type hints (from typing import)
 
-Reference: Test cases in tests/unit/types.test.py and plan-design-closing.prompt.md § Shared Utilities Details
+Reference: Test cases in tests/unit/types.test.py and plan-closing-design.prompt.md Â§ Shared Utilities Details
 
 Implement in order:
 - Period (year, month with validation)
@@ -167,7 +167,7 @@ Ensure all tests pass. No external dependencies except dataclasses.
 **Steps**:
 
 1. Run tests: `pytest tests/unit/types.test.py -v`
-2. Verify: All tests pass ✓
+2. Verify: All tests pass âœ“
 3. Code review: Check for over-engineering, simplify if needed
 4. Coverage: `pytest --cov=src/python/closing/util/types tests/unit/types.test.py`
 5. Manual check: Type hints work with IDE autocomplete
@@ -326,14 +326,14 @@ Source of truth for all account information:
 Implement business logic that handles:
 
 1. **Personal Expenses** (cost center pattern)
-   - Double-entry: wallet → personal cost center → expense
+   - Double-entry: wallet â†’ personal cost center â†’ expense
    - Auto-detect payment method by matching transfers
-   - Example: "Cash TWH SGD" → "TWH - Personal" → "Groceries"
+   - Example: "Cash TWH SGD" â†’ "TWH - Personal" â†’ "Groceries"
 
 2. **Personal Income** (consolidated account pattern)
    - All income flows through "TWH DBS Multi SGD"
-   - Double-entry: source → TWH DBS → income category
-   - Example: Salary → "TWH DBS Multi SGD" → "Employment Income"
+   - Double-entry: source â†’ TWH DBS â†’ income category
+   - Example: Salary â†’ "TWH DBS Multi SGD" â†’ "Employment Income"
 
 3. **Investment Accounts** (net P&L pattern)
    - Track M2M gains/losses, dividends, interest separately
@@ -415,7 +415,7 @@ Dependencies:
 Test files: tests/unit/accounting/*.test.py
 Reference: 
 - docs/accounting-logic.md for business rules
-- docs/develop/app-workflows.md for workflow integration context
+- docs/develop/design/app-workflows.md for workflow integration context
 
 Return:
 - src/python/closing/accounting/*.py (~200 lines total)
@@ -453,10 +453,10 @@ Return:
 **CRITICAL DISTINCTION**: 
 - **HomeBudget** stores detailed transaction-level data (accounts, expenses, income)
 - **Financial Statements** stores consolidated period-end data (account balances, forex rates, aggregated P&L, closing entries)
-- Currently using Google Sheets (gsheet/financial-statements.json) — this needs custom local storage/DB
+- Currently using Google Sheets (gsheet/financial-statements.json) â€” this needs custom local storage/DB
 
 **Reference documents**:
-- `docs/financial-statements-spec.md`
+- `docs/develop/design/financial-statements-spec.md`
 - `gsheet/financial-statements.json` (current Google Sheets config)
 - `data/monthly-closing/` (period-specific data directory)
 
@@ -503,7 +503,7 @@ Return:
 4. Query balances by account, date range
 5. Audit trail (versioning per period)
 
-**NOT needed**: Complex query patterns—simple flat JSON files per period suffice.
+**NOT needed**: Complex query patternsâ€”simple flat JSON files per period suffice.
 
 #### Test design phase
 
@@ -555,12 +555,12 @@ Requirements:
    - Data type validation (floats, dates, strings)
 
 4. Error handling:
-   - File not found → DataSourceError
-   - Invalid JSON → ValidationError
-   - Missing required fields → ValidationError
+   - File not found â†’ DataSourceError
+   - Invalid JSON â†’ ValidationError
+   - Missing required fields â†’ ValidationError
 
 Test file: tests/unit/financial_statements/storage.test.py
-Reference: docs/financial-statements-spec.md
+Reference: docs/develop/design/financial-statements-spec.md
 
 Return: src/python/closing/financial_statements/storage.py (~120 lines)
 ```
@@ -600,8 +600,8 @@ Return: src/python/closing/financial_statements/storage.py (~120 lines)
 **Goal**: Unified error handling and structured reporting
 
 **Reference documents**:
-- `plan-design-closing.prompt.md § Shared Utilities Details`
-- `docs/develop/validation-error-handling-spec.md`
+- `plan-closing-design.prompt.md Â§ Shared Utilities Details`
+- `.dev/docs/sandbox/account-statements/validation-error-handling-spec.md`
 
 #### Design phase
 
@@ -654,7 +654,7 @@ logging.py (~150 lines):
 3. Thread-safe reporter singleton
 
 Test files: tests/unit/util/exceptions.test.py and tests/unit/util/logging.test.py
-Reference: plan-design-closing.prompt.md
+Reference: plan-closing-design.prompt.md
 
 Return: 
 - src/python/closing/util/exceptions.py (~80 lines)
@@ -687,7 +687,7 @@ Return:
 **Goal**: Load and validate configuration from JSON, environment, CLI
 
 **Reference documents**:
-- `docs/develop/configuration-setup-spec.md`
+- `.dev/docs/sandbox/account-statements/configuration-setup-spec.md`
 
 #### Design phase
 
@@ -771,7 +771,7 @@ Requirements:
 4. Provide sensible defaults
 
 Test file: tests/unit/config/config.test.py
-Reference: docs/develop/configuration-setup-spec.md and user inputs
+Reference: .dev/docs/sandbox/account-statements/configuration-setup-spec.md and user inputs
 
 Return: src/python/closing/util/config.py (~200 lines)
 ```
@@ -800,16 +800,16 @@ Return: src/python/closing/util/config.py (~200 lines)
 ## Phase 1 Completion
 
 **Deliverables**:
-- ✓ `src/python/closing/util/types.py` with Period, Account, TransactionData (amounts as float)
-- ✓ `src/python/closing/util/gsheet.py` thin read-only wrapper (~80 lines) around sqlgsheet
-- ✓ `src/python/closing/accounting/` modules for personal expenses, income, forex, investment (~200 lines)
-- ✓ `src/python/closing/financial_statements/storage.py` custom period snapshot storage (~120 lines)
-- ✓ `src/python/closing/util/exceptions.py` with unified exception hierarchy
-- ✓ `src/python/closing/util/logging.py` with Reporter and structured logging
-- ✓ `src/python/closing/util/config.py` with configuration management
-- ✓ `data/monthly-closing/accounts.json` account metadata (source of truth)
-- ✓ `data/monthly-closing/transaction_defaults.json` transaction templates
-- ✓ All test suites passing (>85% coverage)
+- âœ“ `src/python/closing/util/types.py` with Period, Account, TransactionData (amounts as float)
+- âœ“ `src/python/closing/util/gsheet.py` thin read-only wrapper (~80 lines) around sqlgsheet
+- âœ“ `src/python/closing/accounting/` modules for personal expenses, income, forex, investment (~200 lines)
+- âœ“ `src/python/closing/financial_statements/storage.py` custom period snapshot storage (~120 lines)
+- âœ“ `src/python/closing/util/exceptions.py` with unified exception hierarchy
+- âœ“ `src/python/closing/util/logging.py` with Reporter and structured logging
+- âœ“ `src/python/closing/util/config.py` with configuration management
+- âœ“ `data/monthly-closing/accounts.json` account metadata (source of truth)
+- âœ“ `data/monthly-closing/transaction_defaults.json` transaction templates
+- âœ“ All test suites passing (>85% coverage)
 
 **Validation**:
 ```bash
@@ -823,7 +823,7 @@ pytest tests/unit/ tests/integration/ -v --cov=src/python/closing --cov-report=h
 - **Financial statements layer**: Manages period snapshots and consolidated data (custom storage)
 - **Shared utilities**: Types, exceptions, logging, configuration
 
-**Go/No-Go Decision**: All tests passing? Accounting logic matches accounting-logic.md? Financial statements storage validated? → Proceed to Phase 2
+**Go/No-Go Decision**: All tests passing? Accounting logic matches accounting-logic.md? Financial statements storage validated? â†’ Proceed to Phase 2
 
 ---
 
@@ -846,7 +846,7 @@ pytest tests/unit/ tests/integration/ -v --cov=src/python/closing --cov-report=h
 **Goal**: Calculate and post M2M forex adjustments for multi-currency accounts
 
 **Reference documents**:
-- `docs/accounting-logic.md § Forex → M2M forex on balances`
+- `docs/accounting-logic.md Â§ Forex â†’ M2M forex on balances`
 - `src/python/closing/accounting/forex.py` (from Phase 1.3)
 
 #### Design phase
@@ -1042,19 +1042,19 @@ Return: src/python/closing/workflow/period_snapshot.py (~80 lines)
 ## Phase 2 Completion
 
 **Deliverables**:
-- ✓ `src/python/closing/workflow/forex_m2m.py` - Forex M2M calculation and posting
-- ✓ `src/python/closing/workflow/wallet_snapshot.py` - Wallet balance capture
-- ✓ `src/python/closing/workflow/period_snapshot.py` - Unified snapshot assembly
-- ✓ `data/monthly-closing/{YYYY-MM}/financial-statements.json` (generated per period)
-- ✓ All integration tests passing
-- ✓ Manual closing workflow validation complete
+- âœ“ `src/python/closing/workflow/forex_m2m.py` - Forex M2M calculation and posting
+- âœ“ `src/python/closing/workflow/wallet_snapshot.py` - Wallet balance capture
+- âœ“ `src/python/closing/workflow/period_snapshot.py` - Unified snapshot assembly
+- âœ“ `data/monthly-closing/{YYYY-MM}/financial-statements.json` (generated per period)
+- âœ“ All integration tests passing
+- âœ“ Manual closing workflow validation complete
 
 **Validation**:
 ```bash
 pytest tests/integration/closing/ -v
 ```
 
-**Go/No-Go Decision**: Workflow completes successfully? Snapshots validated? → Proceed to Phase 3
+**Go/No-Go Decision**: Workflow completes successfully? Snapshots validated? â†’ Proceed to Phase 3
 
 ---
 
@@ -1062,7 +1062,7 @@ pytest tests/integration/closing/ -v
 
 **Duration**: 1-2 weeks  
 **Features**: Refactor and simplify existing cash_reconcile module  
-**Lines of code**: Reduce from 745 → ~200  
+**Lines of code**: Reduce from 745 â†’ ~200  
 **Complexity**: Medium-High (refactor existing code)
 
 ### 3.1: Analyze and plan refactoring
@@ -1087,10 +1087,10 @@ pytest tests/integration/closing/ -v
 ```python
 # Reduced test suite focusing on core logic
 tests/integration/cash_reconcile/
-├── test_reconcile_calculation.py      (gap calculation)
-├── test_reconcile_posting.py          (HB transaction creation)
-├── test_reconcile_integration.py      (end-to-end with fixture HB)
-└── test_reconcile_reporting.py        (JSON + markdown reports)
+â”œâ”€â”€ test_reconcile_calculation.py      (gap calculation)
+â”œâ”€â”€ test_reconcile_posting.py          (HB transaction creation)
+â”œâ”€â”€ test_reconcile_integration.py      (end-to-end with fixture HB)
+â””â”€â”€ test_reconcile_reporting.py        (JSON + markdown reports)
 ```
 
 #### Build phase
@@ -1116,7 +1116,7 @@ Target (200 lines):
 
 Steps:
 1. Delete domain.py, core.py, persistence.py, data_sources.py, reports.py, config.py, exceptions.py
-2. Refactor reconciliation.py → reconcile.py:
+2. Refactor reconciliation.py â†’ reconcile.py:
    - Import util modules (types, exceptions, logging, config)
    - Keep core functions: reconcile(), post_adjustment()
    - Use Reporter instead of SessionRepository
@@ -1172,7 +1172,7 @@ Return:
 **Goal**: Detect and parse bank statements (PDF/CSV) for 4 accounts
 
 **Reference documents**:
-- `docs/develop/parser-spec.md`
+- `.dev/docs/sandbox/account-statements/parser-spec.md`
 - `reference/hb-finances/statements.py` (Python reference implementation)
 
 #### Design phase
@@ -1268,7 +1268,7 @@ User inputs from design phase:
 Test file: tests/unit/bill_payment/parsers.test.py
 Test data: Sample statements in tests/fixtures/statements/
 
-Reference: docs/develop/parser-spec.md and reference/hb-finances/statements.py
+Reference: .dev/docs/sandbox/account-statements/parser-spec.md and reference/hb-finances/statements.py
 
 Return:
 - src/python/closing/bill_payment/__init__.py (empty)
@@ -1304,7 +1304,7 @@ Return:
 
 **Reference documents**:
 - `docs/bill-payment.md`
-- `docs/develop/bill-payment-shared-costs-automation-design.md`
+- `.dev/docs/sandbox/bill-payment/bill-payment-shared-costs-automation-design.md`
 
 #### Design phase
 
@@ -1415,7 +1415,7 @@ Return: src/python/closing/bill_payment/shared_costs.py (~100 lines)
 
 **Reference documents**:
 - `.github/skills/homebudget/SKILL.md`
-- `docs/develop/database-operations-spec.md`
+- `docs/develop/design/database-schema.md`
 
 #### Test design phase
 
@@ -1495,8 +1495,8 @@ Return: src/python/closing/bill_payment/posting.py (~80 lines)
 **Goal**: Parse Interactive Brokers statement and calculate holdings
 
 **Reference documents**:
-- `docs/account-statements.md`
-- `docs/develop/parser-spec.md § IBKR`
+- `.dev/docs/sandbox/account-statements/account-statements.md`
+- `.dev/docs/sandbox/account-statements/parser-spec.md Â§ IBKR`
 
 #### Design phase
 
@@ -1563,7 +1563,7 @@ User inputs from design phase:
 Test file: tests/unit/accounts/ibkr.test.py
 Test data: Sample IBKR statements in tests/fixtures/statements/
 
-Reference: docs/account-statements.md
+Reference: .dev/docs/sandbox/account-statements/account-statements.md
 
 Return: src/python/closing/accounts/ibkr.py (~120 lines)
 ```
@@ -1580,8 +1580,8 @@ Return: src/python/closing/accounts/ibkr.py (~120 lines)
 **Goal**: Parse CPF statement and extract account values
 
 **Reference documents**:
-- `docs/account-statements.md`
-- `docs/develop/parser-spec.md § CPF`
+- `.dev/docs/sandbox/account-statements/account-statements.md`
+- `.dev/docs/sandbox/account-statements/parser-spec.md Â§ CPF`
 
 #### Build phase
 
@@ -1615,7 +1615,7 @@ Requirements:
 Test file: tests/unit/accounts/cpf.test.py
 Test data: Sample CPF statements in tests/fixtures/statements/
 
-Reference: docs/account-statements.md
+Reference: .dev/docs/sandbox/account-statements/account-statements.md
 
 Return: src/python/closing/accounts/cpf.py (~100 lines)
 ```
@@ -1718,22 +1718,22 @@ UAT workflow (after all features complete):
 ## Validation Gates
 
 Each phase requires:
-- ✓ All unit + integration tests passing
-- ✓ Code coverage > 85%
-- ✓ No linting errors (flake8, black format)
-- ✓ No type errors (mypy strict)
-- ✓ User validation of configuration
-- ✓ Manual smoke test if applicable
+- âœ“ All unit + integration tests passing
+- âœ“ Code coverage > 85%
+- âœ“ No linting errors (flake8, black format)
+- âœ“ No type errors (mypy strict)
+- âœ“ User validation of configuration
+- âœ“ Manual smoke test if applicable
 
 **Go/No-Go process**:
 ```
 Phase N complete?
-├─ Tests pass? (100%)
-├─ Coverage adequate? (>85%)
-├─ Code reviewed? (simplified, no over-engineering)
-├─ User inputs documented?
-├─ Configuration examples provided?
-└─ Ready for next phase? (all gates clear)
+â”œâ”€ Tests pass? (100%)
+â”œâ”€ Coverage adequate? (>85%)
+â”œâ”€ Code reviewed? (simplified, no over-engineering)
+â”œâ”€ User inputs documented?
+â”œâ”€ Configuration examples provided?
+â””â”€ Ready for next phase? (all gates clear)
 ```
 
 ---
@@ -1755,28 +1755,31 @@ Phase N complete?
 
 ## Success Criteria
 
-✓ All 7 phases complete  
-✓ All test suites passing (>85% coverage)  
-✓ CLI commands working (`closing reconcile --period YYYY-MM`)  
-✓ Full closing workflow automated  
-✓ 80% code reduction vs existing codebase  
-✓ User documentation complete  
-✓ User validation sign-off
+âœ“ All 7 phases complete  
+âœ“ All test suites passing (>85% coverage)  
+âœ“ CLI commands working (`closing reconcile --period YYYY-MM`)  
+âœ“ Full closing workflow automated  
+âœ“ 80% code reduction vs existing codebase  
+âœ“ User documentation complete  
+âœ“ User validation sign-off
 
 ---
 
 ## References
 
 **Design documents**:
-- [Consolidated Monthly Closing Automation](.github/prompts/plan-design-closing.prompt.md)
-- [docs/current-workflow.md](docs/current-workflow.md) - baseline manual workflow
-- [docs/develop/app-workflows.md](docs/develop/app-workflows.md) - target automated workflow design
-- [docs/develop/](docs/develop/) - detailed design specifications
+- [Consolidated Monthly Closing Automation](plan-closing-design.prompt.md)
+- [docs/current-workflow.md](../../docs/current-workflow.md) - baseline manual workflow
+- [docs/develop/design/app-workflows.md](../../docs/develop/design/app-workflows.md) - target automated workflow design
+- [docs/develop/](../../docs/develop/) - detailed design specifications
 
 **Skills**:
-- [HomeBudget wrapper](.github/skills/homebudget/SKILL.md)
-- [Python conventions](.copilot/skills/python/SKILL.md)
-- [Documentation](.copilot/skills/documentation/SKILL.md)
+- [HomeBudget wrapper](../skills/homebudget/SKILL.md)
+- Python conventions: see user-level .copilot skills configuration
+- Documentation conventions: see user-level .copilot skills configuration
 
 **Environment**:
-- [docs/develop/environment.md](docs/develop/environment.md)
+- [docs/environment.md](../../docs/environment.md)
+
+
+
