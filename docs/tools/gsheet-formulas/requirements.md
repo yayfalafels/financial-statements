@@ -31,6 +31,7 @@
 - [Acceptance Criteria](#acceptance-criteria)
 - [SIT Traceability](#sit-traceability)
 - [UAT Traceability](#uat-traceability)
+- [Batch Enhancement 02141809](#batch-enhancement-02141809)
 - [Decisions Captured From User Input](#decisions-captured-from-user-input)
 
 ## Document Control
@@ -163,6 +164,35 @@ Acceptance criteria detail:
 - UAT-02 operator creates and updates formula in one cell and confirms workbook outcome.
 - UAT-03 operator clears formula and confirms cell is empty.
 - UAT-04 operator reviews JSON audit and console summary for one successful and one failed mutation.
+
+## Batch Enhancement 02141809
+
+Batch enhancement scope extends the utility with multi-range formula operations while preserving
+single-cell command behavior.
+
+Batch functional requirements:
+
+- BFR-01: batch read must retrieve formula tokens for multiple A1 ranges in one request.
+- BFR-02: batch create must write formulas for multiple ranges in one request.
+- BFR-03: batch update must overwrite formulas for multiple ranges in one request.
+- BFR-04: batch clear must clear formulas and values for multiple ranges in one request.
+- BFR-05: batch create and update must verify results with follow-up batch read.
+- BFR-06: batch mutation commands must support JSON audit output.
+
+Batch input contract:
+
+- BIN-01: batch read and clear accept `ranges` as comma-separated single-cell A1 values.
+- BIN-02: batch create and update accept a JSON file list with `range` and `formula` keys.
+- BIN-03: every batch formula must start with `=`.
+
+Batch acceptance criteria:
+
+- BAC-01: batch read returns success with formula map for all requested ranges.
+- BAC-02: batch create writes formulas and read-after-write verification passes.
+- BAC-03: batch update writes formulas and read-after-write verification passes.
+- BAC-04: batch clear empties all target ranges and verification passes.
+- BAC-05: invalid range or formula in batch input returns validation error.
+- BAC-06: batch mutation writes JSON audit records with operation and range summary.
 
 ## Decisions Captured From User Input
 
