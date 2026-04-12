@@ -42,6 +42,7 @@ Requirements work in this prompt should prioritize defining what is required for
 Use these skills during requirements definition and evidence gathering.
 
 - `task-definition` for status updates in `docs/develop/010/project-management/02-requirements.md`
+- `markddown-tables` when creating or updating markdown tables in *.md markdown documents
 - `documentation` for drafting and refining requirement artifacts
 - `homebudget` for HomeBudget data-access and schema-inspection patterns
 - `gsheet-inspect` for helper-workbook schema inspection and validation
@@ -79,11 +80,64 @@ Use these skills during requirements definition and evidence gathering.
 - `docs/requirements/homebudget.md`
 - `docs/requirements/google-sheets.md`
 - `docs/requirements/glossary.md`
+- `docs/requirements/ibkr-integration.md`
+- `docs/requirements/cpf-integration.md`
+- `docs/requirements/transaction-category-mapping.md`
+- `docs/develop/data-sources/inventory.md`
+- `docs/develop/data-sources/bank-statements-source-data.md`
 - `reference/hb-finances/`
 - `reference/hb-reconcile/`
 
-## Inspection Methodology
+## Documentation rules
 
+- follow the guidelines in skills `documentation` and `markdown-tables` for writing and formatting plaintext and markdown documents.
+- **Table of Contents (TOC)** include a table of contents at the top of every markdown document. Use anchor links unless the document is a prompt `*.prompt.md` or a skill `SKILL.md` as anchor links are not supported in these special markdown file sub-types.
+- **markdown tables** follow the `markdown-tables` skill guidelines fo readability. limit row length to max < 115 char and use fixed width columns.
+- **Task ID** references such as `02.01` and `02.01.01` must only appear in the tracking document `docs/develop/010/project-management/02-requirements.md`. Primary requirement docs, subtopic docs, design artifacts, and guides must not contain task ID references — use descriptive section headings and document names instead.
+
+## Account and Data Lineage Overview
+
+The POC financial close workflow processes four distinct account reconciliation paths. Understanding path boundaries is critical for inspecting primary sources correctly.
+
+### Bank statement digital twin path
+
+Four bank accounts use statement-source transaction files and are ingested into `statements.db` via `statements.py`, with PDFs retained as archive evidence where available. This is the only account group represented in the `stm_txns` region of the financial statements workbook.
+
+| id | account_name        | db_table           | currency |
+| -- | ------------------- | ------------------ | -------- |
+| 01 | TWH DBS Multi SGD   | TWH_DBS_MULTI_SGD  | SGD      |
+| 02 | TWH CITI            | TWH_CITI_USD       | USD      |
+| 03 | TWH UOB One SGD     | TWH_UOB_ONE_SGD    | SGD      |
+| 04 | TWH Visa USD        | TWH_BOA_TRAVEL_USD | USD      |
+
+The `stm account` field in the `accounts` gsheet region is the join key from account classification to the bank statement digital twin. IBKR is NOT in this path.
+
+Wells Fargo USD is a bank account but is outside the regular `statements.py` and `statements.db` process in current operations.
+
+### IBKR path
+
+IBKR accounts derive balances from CSV Activity Statements using top-down NAV derivation. IBKR is not part of `stm_txns` or `statements.db`.
+
+- `TWH IB USD` — IBA cash, classified as savings when positive and credit when negative
+- `IB POSITION USD` — IBA investment position
+- `IB IRA USD` — IRA position, all income booked as capital gains
+
+### CPF path
+
+CPF accounts use manual JSON inputs only — no statement download exists. Contributions are transfers, interest is capital gains, Medisave gaps are healthcare expenses. Sub-accounts: OA, SA, MA.
+
+### Balance-only path
+
+Seven accounts are tracked by observed balance only with no transaction-level statement: TWH EZLink, EZCash, TWH Amazon, Cash TWH USD, EZ MasterCard, 30 CC Hashemis, Cash TWH SGD.
+
+### Key terminology
+
+- "statement digital twin" — `statements.db` SQLite database of parsed bank transactions
+- "financial statements" — the income statement and balance sheet output documents
+- "financial statements workbook" — the Google Sheets workbook at `gsheet/financial-statements.json`
+- "stm_txns" — period-level aggregate in the financial statements workbook, path 1 accounts only
+
+## Inspection Methodology
 For guidance on navigating primary sources and inspection patterns, refer to:
 
 - ** skill `data-sources-inspect`** — Complete methodology for HomeBudget, Google Sheets and other primary sources references used in the current workflows.
@@ -225,8 +279,8 @@ Use an evidence-first sequence:
 
 ### Script Locations
 
-- Preferred: `.dev/.scripts/python/`
-- Optional by tool type: `.dev/.scripts/bash/`, `.dev/.scripts/cmd/`
+- Preferred: `.dev/scripts/python/`
+- Optional by tool type: `.dev/scripts/bash/`, `.dev/scripts/cmd/`
 
 ### Environment Rules
 

@@ -22,6 +22,38 @@
       "rate_SGD":"float"
     }
   },
+  "income_statement": {
+    "data":"income_statement!A4:P74",
+    "header":"income_statement!A3:P3"
+  },
+  "balance_sheet": {
+    "data":"balance_sheet!A4:P58",
+    "header":"balance_sheet!A3:P3"
+  },
+  "hb_gl": {
+    "data":"hb_gl!A2:W",
+    "header":"hb_gl!A1:W1"
+  },
+  "hb_ext": {
+    "data":"hb_ext!A2:E",
+    "header":"hb_ext!A1:E1"
+  },
+  "stm_txns": {
+    "data":"stm_txns!A2:E",
+    "header":"stm_txns!A1:E1"
+  },
+  "hb_xfr": {
+    "data":"hb_xfr!A2:E",
+    "header":"hb_xfr!A1:E1"
+  },
+  "hb_exp": {
+    "data":"hb_exp!A2:E",
+    "header":"hb_exp!A1:E1"
+  },
+  "hb_inc": {
+    "data":"hb_inc!A2:E",
+    "header":"hb_inc!A1:E1"
+  },
   "accounts": {
     "data":"accounts!A2:G500",
     "header":"accounts!A1:G1"
@@ -29,5 +61,65 @@
   "fin_exp_cat_map": {
     "data":"fin_expense_cat_map!A2:E500",
     "header":"fin_expense_cat_map!A1:E1"
+  },
+  "reconcile_cash_acct_summary": {
+    "data":"reconcile_cash_acct_summary",
+    "header":"reconcile!G2:T2"
+  },
+  "reconcile_cash_acct_summary_sgd": {
+    "data":"reconcile_cash_acct_summary_sgd",
+    "header":"reconcile!G2:T2"
+  },
+  "reconcile_cash_acct_summary_usd": {
+    "data":"reconcile_cash_acct_summary_usd",
+    "header":"reconcile!G2:T2"
+  },
+  "reconcile_cash_accts": {
+    "data":"reconcile_cash_accts",
+    "header":"reconcile!A2:T2"
+  },
+  "reconcile_pos_xfr_summary": {
+    "data":"reconcile_pos_xfr_summary",
+    "header":"reconcile!G2:T2"
+  },
+  "reconcile_pos_accts": {
+    "data":"reconcile_pos_accts",
+    "header":"reconcile!A2:T2"
+  },
+  "reconcile_bal_summary": {
+    "data":"reconcile_bal_summary",
+    "header":"reconcile!G2:T2"
+  },
+  "reconcile_bal_by_acct": {
+    "data":"reconcile_bal_by_acct",
+    "header":"reconcile!G2:T2"
+  },
+  "reconcile_exp_cost_centers": {
+    "data":"reconcile_exp_cost_centers",
+    "header":"reconcile!A2:T2"
+  },
+  "reconcile_fx_m2m_summary": {
+    "data":"reconcile_fx_m2m_summary",
+    "header":"reconcile!G2:T2"
+  },
+  "reconcile_pvt_fx_xfr_sgd": {
+    "data":"reconcile_pvt_fx_xfr_data_sgd",
+    "header":"reconcile_pvt_fx_xfr_header_sgd"
+  },
+  "reconcile_pvt_fx_xfr_usd": {
+    "data":"reconcile_pvt_fx_xfr_data_usd",
+    "header":"reconcile_pvt_fx_xfr_header_usd"
+  },
+  "reconcile_fin_stm_summary": {
+    "data":"reconcile_fin_stm_summary",
+    "header":"reconcile!A2:T2"
+  },
+  "reconcile_pvt_inc_sgd": {
+    "data":"reconcile_pvt_inc_data_sgd",
+    "header":"reconcile_pvt_inc_header_sgd"
+  },
+  "reconcile_pvt_inc_usd": {
+    "data":"reconcile_pvt_inc_data_usd",
+    "header":"reconcile_pvt_inc_header_usd"
   }
 }
