@@ -30,7 +30,7 @@ Ensure the HomeBudget cash account ("Cash TWH SGD") accurately reflects the actu
 - Manual HB balance reading from app (30+ seconds)
 - Intermediate Google Sheet transfers (multiple steps)
 - No programmatic audit trail
-- No configurable tolerance thresholds
+- Tolerance policy must be aligned to reconciliation-engine source of truth
 - Manual mobile app synchronization required
 
 ---
@@ -151,7 +151,7 @@ If Residual Gap ≠ 0, then:
   - Create adjustment transaction (if variance acceptable)
 ```
 
-**Tolerance Threshold:** Currently undefined (all gaps require review)
+**Tolerance Threshold:** Alert threshold is plus or minus SGD 20.
 
 **Example Calculation:**
 ```
@@ -298,6 +298,16 @@ Sync mobile app ──────────────>  Log session
 ---
 
 ## Data Sources
+
+## Canonical account naming rule
+
+- Canonical account names come from the financial statements gsheet accounts region.
+- Source-system account names are mapped to canonical names through the account mapping mechanism.
+
+## Tolerance source of truth
+
+- Tolerance policy values are owned by docs/requirements/reconciliation-engine.md.
+- Cash-reconcile policy uses the reconciliation-engine cash adjustment alert threshold of plus or minus SGD 20.
 
 ### Input Data Sources
 

@@ -497,12 +497,13 @@ Sample JSON and CSV files in `data/monthly-closing/` are sample template example
 
 ### Overview
 
-Non-tool source inspection covers informational reference repositories in `reference/hb-finances/` and `reference/hb-reconcile/`.
+Non-tool source inspection covers informational reference repositories in `reference/hb-finances/`, `reference/hb-reconcile/`, and `reference/notion-bills/`.
 
 **Repository Interpretation**
 
 `reference/hb-finances/` is a legacy integration repository that contains statement ingestion, account mapping, and posting patterns.
 `reference/hb-reconcile/` is a legacy reconciliation repository that contains matching logic and edit-generation methods for closing account gaps.
+`reference/notion-bills/` is a Notion export repository that captures bill-cycle planning and payment-status workflow evidence.
 
 **Monthly Closing Relevance**
 
@@ -514,6 +515,10 @@ Non-tool source inspection covers informational reference repositories in `refer
 | 04 | reference/hb-reconcile/docs/reconcile.md            | reconciliation algorithm and gap equation      |
 | 05 | reference/hb-reconcile/src/reconcile/reconcile.py   | forward and backward transaction matching      |
 | 06 | reference/hb-reconcile/account_settings/txn_heuristics.json | account tolerance and heuristic controls |
+| 07 | reference/notion-bills/Bills 15ac378f707580ee8fe2e596ca250260.md | exported index linking bill datasets |
+| 08 | reference/notion-bills/bills 16ec378f707580fabf99f572568f5f60.csv | bill-level status, amount, payee, and payment date |
+| 09 | reference/notion-bills/billing_period 16ec378f707580d7b472d37487ec8127.csv | month-level bill coverage and paid-count rollup |
+| 10 | reference/notion-bills/bill_payee 16ec378f707580e2ae93e4173891d72c.csv | recurring payee-level grouping evidence |
 
 ### Standard Inspection Command
 
@@ -525,11 +530,13 @@ Expected artifact: `.dev/.artifacts/non_tool_sources_inspection.json`
 
 ### Minimum Checks
 
-- repository file inventory is captured for both source roots
+- repository file inventory is captured for all source roots
 - doc, code, config, and data counts are present
 - sample file paths are recorded for traceability
 - reconcile or lineage mention samples are captured for evidence review
+- bill and payee mention samples are captured for bill-payment evidence review
 - reference-repo boundary is explicit: `hb-reconcile` treated as legacy reference, not baseline contract
+- notion-export boundary is explicit: `notion-bills` treated as process evidence, not authoritative runtime ledger data
 
 ### Schema Reference
 
@@ -609,6 +616,7 @@ This reference matrix maps all POC primary sources to their inspection procedure
 | 11 | data/monthly-closing/*     | Local inputs         | dropped template scope    | n/a                |
 | 12 | hb-finances/*              | Ref repos            | non-tool guide + script   | inspect_non_tool   |
 | 13 | hb-reconcile/*             | Ref repos            | non-tool guide + script   | inspect_non_tool   |
+| 14 | notion-bills/*             | Ref repos            | non-tool guide + script   | inspect_non_tool   |
 
 **How to use this reference:**
 

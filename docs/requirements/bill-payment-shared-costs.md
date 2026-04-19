@@ -1,14 +1,103 @@
-# Bill Payment and Shared Costs
+# Bill Payment Shared Costs
 
-This document is a placeholder for detailed requirements on bill payment and shared costs.
+## Table of contents
 
-## Related sources
+- [Purpose and boundary](#purpose-and-boundary)
+- [Reference documents](#reference-documents)
+- [Primary scope](#primary-scope)
+- [Out of scope](#out-of-scope)
+- [Lifecycle-link ownership rule](#lifecycle-link-ownership-rule)
+- [Field-level contract baseline](#field-level-contract-baseline)
+- [Shared-cost parameter constraints](#shared-cost-parameter-constraints)
+- [Session completion rule](#session-completion-rule)
+- [Consumption baseline](#consumption-baseline)
+- [Consumption parameter constraints](#consumption-parameter-constraints)
+- [Cross-page validation rules](#cross-page-validation-rules)
 
-- [Bill payment](bill-payment.md)
-- [Current workflow](current-workflow.md)
+## Purpose and boundary
 
-## Draft focus
+This page is the normative owner for shared-cost allocation and settlement requirements.
 
-- bill capture and parsing requirements
-- shared-cost allocation and settlement requirements
-- payment and settlement audit trail requirements
+## Primary scope
+
+- Shared-cost record contracts and validation baseline
+- Shared-cost parameter constraints and settlement requirements
+- Shared-cost lifecycle-link dependency on bill amount
+- Consumption baseline and constraints
+
+## Out of scope
+
+- Bill lifecycle state model ownership
+- Bill-level and period-level bill-payment reconciliation ownership
+
+## Reference documents
+
+- [bill payment](bill-payment.md)
+- [reconciliation engine](reconciliation-engine.md)
+- [exception and error handling](exception-error-handling.md)
+
+## Lifecycle-link ownership rule
+
+- Bill payment and shared-cost settlement are separate process tracks.
+- Bill records may be paid or unpaid independent of settlement status.
+- Shared-cost records may be settled or unsettled independent of bill status.
+- The only lifecycle dependency is that bill amount must be defined before shared-cost settlement can occur.
+
+## Field-level contract baseline
+
+Field-level contract means each in-scope field has explicit type, requiredness, allowed values, derivation rule, and failure action.
+
+Validation baseline for shared-cost records, gsheet/shared-expenses.json range records A to H:
+
+| id | field             | type    | req | rule                    | validation baseline            |
+| -- | ----------------- | ------- | --- | ----------------------- | ------------------------------ |
+| 01 | record_date       | date    | y   | posting date            | valid date and within close mo |
+| 02 | description       | text    | y   | short narrative         | 1 to 200 chars                 |
+| 03 | total_amount_sgd  | decimal | y   | gross shared amount     | signed decimal and scale 2     |
+| 04 | user_share_pct    | decimal | n   | percent split input     | more than 0 and up to 1.0      |
+| 05 | user_share_amount | decimal | n   | derived pct times total | abs value up to abs total      |
+| 06 | category          | text    | y   | allocation class        | in allowed shared-cost set     |
+| 07 | payee             | text    | y   | settlement counterparty | non-empty and mapped party     |
+| 08 | status            | enum    | y   | HB record state         | created or recorded            |
+
+## Shared-cost parameter constraints
+
+| id | parameter              | type    | req | rule                  | validation baseline         |
+| -- | ---------------------- | ------- | --- | --------------------- | --------------------------- |
+| 01 | split_basis            | const   | y   | percentage split only | pct                         |
+| 02 | rounding_mode          | enum    | y   | monetary rounding     | half-up to 2 dp             |
+| 03 | settlement_account     | text    | y   | HB settlement account | must equal 30 CC Hashemis   |
+| 04 | settlement_currency    | enum    | y   | posting currency      | SGD only                    |
+| 05 | variance_tolerance_sgd | decimal | y   | max allowed variance  | fixed 0.00                  |
+
+## Session completion rule
+
+- If any shared-cost record remains incomplete for HomeBudget recording, the shared-cost session is incomplete.
+
+## Consumption baseline
+
+| id | field                | type    | req | rule                  | validation baseline            |
+| -- | -------------------- | ------- | --- | --------------------- | ------------------------------ |
+| 01 | period_year          | int     | y   | close period year     | 2000 to 2100                   |
+| 02 | period_month         | int     | y   | close period month    | 1 to 12                        |
+| 03 | utility_type         | enum    | y   | metric family         | electricity water gas          |
+| 04 | usage_value          | decimal | y   | measured quantity     | signed decimal                 |
+| 05 | usage_unit           | enum    | y   | measurement unit      | kwh or m3                      |
+| 06 | billed_amount_sgd    | decimal | y   | billed total          | signed decimal and scale 2     |
+| 07 | statement_issue_date | date    | y   | source statement date | valid date                     |
+| 08 | statement_due_date   | date    | n   | payment due date      | more than or equal issue date  |
+| 09 | source_account       | text    | y   | paying account        | in bills in-scope account list |
+| 10 | source_statement_ref | text    | y   | lineage key           | unique within period and payee |
+
+## Consumption parameter constraints
+
+| id | parameter            | type | req | rule          | validation baseline         |
+| -- | -------------------- | ---- | --- | ------------- | --------------------------- |
+| 01 | missing_value_policy | enum | y   | null handling | block                       |
+| 02 | duplicate_row_policy | enum | y   | dedupe policy | reject same ref same period |
+
+## Cross-page validation rules
+
+- Shared-cost ownership boundaries are explicit and cross-linked to bill-payment owner page.
+- Lifecycle-link dependency rule is published in this page.
+- Shared-cost and consumption contracts are explicit and testable.

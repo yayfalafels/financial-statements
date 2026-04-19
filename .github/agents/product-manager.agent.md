@@ -107,7 +107,11 @@ hooks:
 - Own creation and maintenance of release project-management artifacts in `docs/develop/<version>/project-management/*`.
 - Keep milestone, backlog, and status-tracking documents synchronized with roadmap and requirement updates.
 - Ensure documentation reflects current decisions, not historical intent.
+- Keep closure and status-tracking metadata in tracker docs under `docs/develop/<version>/project-management/*`; do not place closure-method steps, closure checklists, status traces, or completion notes in requirements, design, testing, or guide content docs.
 - Limit task ID references (e.g. `02.09`, `02.01.01`) to task tracker documents only. Primary requirement documents, subtopic docs, and design artifacts must not reference task IDs; use descriptive section headings and document names instead.
+- Treat `docs/requirements.md` as a one-page POC requirements overview and entry point, not just an ownership index.
+- When overview and scope summaries are intentionally repeated across `docs/requirements.md`, `docs/requirements/poc.md`, `docs/requirements/implementation-roadmap.md`, and `docs/about.md`, keep them synchronized as part of the agent workflow.
+- Keep that synchronization responsibility in agent and prompt guidance rather than stating it inside requirement documents.
 
 ## Core Responsibilities
 

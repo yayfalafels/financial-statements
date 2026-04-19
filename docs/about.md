@@ -20,9 +20,14 @@ Current version: `0.1.0` POC
 
 **Included in this release**:
 
-- local cli-based application that works with multiple integrates multiple data sources, implements accounting logic and automates data processing workflows
 - current local-only workflow, one operator, zero cloud cost, and session-based updates.
-- Add local sqlite as the working persistence layer while retaining Google Sheets assets and JSON config files.
+- Retain Google Sheets as the primary session UI.
+- Retain Google Sheets workbook configs and assets.
+- Retain HomeBudget integration for monthly close workflows.
+- Add local sqlite as the working persistence layer.
+- Add CLI as a parallel interface for scripting and automation.
+- Add a modularized backend API.
+- Add backend integration across source systems and accounting workflows.
 - Move management of HomeBudget session transactions from user-managed activity to app-supported workflow.
 
 for detailed release scope and features, refer to the [requirements](requirements.md) 

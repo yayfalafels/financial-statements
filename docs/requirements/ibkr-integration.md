@@ -20,6 +20,20 @@ Detailed requirements for the IBKR integration.
 - [Source systems and lineage](source-systems-lineage.md)
 - [Transaction category mapping](transaction-category-mapping.md)
 
+## Inherits from accounting policy
+
+- This page inherits global accounting policy from accounting-logic.md.
+
+## Integration-specific overrides
+
+- IRA income treatment is constrained to capital-gains classification due to account liquidity behavior.
+- IBA top-down derivation from NAV and Cash Report is integration-specific.
+
+## No override areas
+
+- Global reconciliation policy ownership remains in accounting-logic.md and reconciliation-engine.md.
+- Global tolerance policy values remain in reconciliation-engine.md.
+
 ## Accounts in scope
 
 | account | id        | type                  | currency | sub-accounts       |

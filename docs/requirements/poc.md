@@ -9,7 +9,10 @@
 **Scope**: 
 
 - Start from the current local-only workflow, one operator, zero cloud cost, and session-based updates.
-- Add local sqlite as the working persistence layer while retaining Google Sheets assets and JSON config files.
-- Keep interaction centered on CLI scripts, HomeBudget, and Google Sheets, including a new worksheet flow for financial statement reconcile.
+- Retain HomeBudget as the primary real-time accounting UI and data source
 - Retain manual bank statement download and CSV-based IBKR import, with explicit manual review checkpoints.
-- Keep forecasting and cash input in their existing Google Sheets and form-driven flows.
+- Retain forecasting and cash input in their existing Google Sheets and form-driven flows.
+- Use Google Sheets as the primary session UI.
+- Add local sqlite as the working persistence layer
+- Add CLI as a parallel interface for scripting and automation.
+- Add new worksheet flow for financial statement reconcile.

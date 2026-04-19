@@ -1,5 +1,23 @@
 # Bill Payment and Shared Costs Reconciliation
 
+## Primary scope
+
+- Bill lifecycle and bill-payment execution requirements
+- Bill data model and active bill scope rules
+- Bill-level and period-level reconciliation checks
+- Bill-payment session completion rule
+
+## Out of scope
+
+- Shared-cost allocation and settlement policy details
+- Shared-cost field contracts and consumption contracts
+
+## Reference documents
+
+- [bill payment shared costs](bill-payment-shared-costs.md)
+- [workflow orchestration](workflow-orchestration.md)
+- [reconciliation engine](reconciliation-engine.md)
+
 ## Overview
 
 The bill payment and shared costs reconciliation procedure is a monthly process that involves downloading billing statements, parsing transaction data, allocating shared expenses, and updating HomeBudget with payment and allocation transactions. This process currently requires 72 minutes per session (1.2 hours), with an estimated 36 minutes (0.6 hours) of automation potential, representing $1.8k annual improvement value.
@@ -208,6 +226,68 @@ Based on [Monthly closing documentation](../../reference/notion/Optimize monthly
 - **Parsing statements** for automated bills to record transactions in HomeBudget
 - **Manual bill payments** (e.g., UOB CC) that still require manual processing
 - **Shared cost allocations** which are entirely manual currently
+
+## Bill lifecycle and reconciliation requirements
+
+### Active bill scope
+
+- A bill is either active or inactive.
+- Reconciliation checks apply only to active bills in the current period.
+- Inactive bills are excluded from count and resolution checks.
+
+### Bill data model
+
+| id | field           | type | req | rule                                        |
+| -- | --------------- | ---- | --- | ------------------------------------------- |
+| 01 | name            | text | y   | unique bill identifier                      |
+| 02 | payee           | text | y   | counterparty receiving payment              |
+| 03 | amount_type     | enum | y   | fixed or variable                           |
+| 04 | expected_amount | dec  | n   | required when amount_type is fixed, SGD     |
+| 05 | billing_cycle   | enum | y   | monthly, quarterly, or annual               |
+| 06 | active          | bool | y   | true means included in period checks        |
+
+### Bill lifecycle state model
+
+| id | state     | meaning                                            | next states     |
+| -- | --------- | -------------------------------------------------- | --------------- |
+| 01 | pending   | bill identified but not yet paid                   | paid, scheduled |
+| 02 | scheduled | payment planned for a future date within period    | paid            |
+| 03 | paid      | payment confirmed with statement transaction link   |                 |
+
+### Close criteria for bill lifecycle
+
+- A bill may close only in paid or scheduled state.
+- A bill in pending state at session close blocks period closure.
+- A paid bill requires bank-statement transaction linkage.
+
+### Bill-payment and shared-cost relationship boundary
+
+- Bill payment and shared-cost settlement are separate process tracks.
+- A bill can be paid or unpaid independent of shared-cost settlement status.
+- Shared-cost records can be settled or unsettled independent of bill status.
+- The only dependency is that bill amount must be defined before shared-cost settlement can occur.
+- Ownership of lifecycle-link specification belongs to docs/requirements/bill-payment-shared-costs.md.
+
+### Bill-level reconciliation checks
+
+| id | check                      | source fields                        | pass condition                                                 |
+| -- | -------------------------- | ------------------------------------ | -------------------------------------------------------------- |
+| 01 | amount match               | bill amount vs statement line item   | amounts equal within SGD 0.00 tolerance                       |
+| 02 | payee match                | bill payee vs statement payee        | payee maps to same approved counterparty                      |
+| 03 | payment date within period | bill payment_date vs close period    | date falls within 2 months before or after period end         |
+| 04 | paid status complete       | bill paid flag                       | flag is true and linkage reference is present                 |
+
+### Period-level reconciliation checks
+
+| id | check                    | source fields                      | pass condition                                       |
+| -- | ------------------------ | ---------------------------------- | ---------------------------------------------------- |
+| 01 | bills count matches      | bills_count vs active bill rows    | count equals number of active bills for the period   |
+| 02 | bills paid count matches | bills_paid vs active bill rows     | paid count equals active bills in paid state         |
+| 03 | all bills resolved       | bill state distribution            | no active bill remains in pending state              |
+
+### Bill-payment session completion rule
+
+- Each active bill must be either paid with statement linkage or scheduled.
 
 ## Next Steps
 

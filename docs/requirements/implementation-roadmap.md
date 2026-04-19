@@ -11,8 +11,8 @@ This document defines the incremental development of the application in releases
 | 05 | deployment         |  --           | local         | local         | ***           | full cloud   | mobile app + cloud |
 | 06 | database           |  sqlite + gs  | local sqlite  | local sqlite  | ***           | cloud db     | client + mobile db |
 | 07 | ai agent           |  no           | no            | no            | ***           | yes          | yes                |
-| 08 | ui                 |  hb,gs        | cli,hb,gs     | browser,gs, hb| ***           | web app, hb  | mobile app         |
-| 09 | session ui         | gsheet        | new gsheet    | browser       | ***           | web app      | mobile app         |
+| 08 | ui                 |  hb,gs        | gs primary + cli | browser,gs, hb| ***        | web app, hb  | mobile app         |
+| 09 | session ui         | gsheet        | gsheet primary | browser       | ***           | web app      | mobile app         |
 | 10 | forecasting models | gsheet        | exist gsheet  | exist gsheet  | ***           | ui page      | ui page            |
 | 11 | ibkr import        | csv           | csv           | api           | api           | api          | api                |
 | 12 | cash input         | form + gsheet | form + gsheet | form + gsheet | ***           | web form     | mobile app         |
@@ -23,8 +23,8 @@ This document defines the incremental development of the application in releases
 | 17 | fin stm gsheet     | maintain      | minimal       | ui page       | ui page       | ui page      | ui page            |
 | 18 | fin stm reconcile  | gsheet        | new gsheet    | ui page       | ui page       | ui page      | ui page            |
 | 19 | bank reconcile     | gsheet        | exist gsheet  | ui page       | ui page       | ui page      | ui page            |
-| 20 | category mapping   | hb + fin gs   | json          | ui page       | ui page       | ui page      | ui page            |
-| 21 | account            | hb + fin gs   | json          | ui page       | ****          | ui page      | ui page            |
+| 20 | category mapping   | hb + fin gs   | gs ui + crud  | ui page       | ui page       | ui page      | ui page            |
+| 21 | account            | hb + fin gs   | gs ui + crud  | ui page       | ****          | ui page      | ui page            |
 | 22 | bank txn rel       | no            | yes           | yes           | yes           | yes          | yes                |
 | 23 | exp-xfr rel        | no            | no            | yes           | yes           | yes          | yes                |
 | 24 | shared exp         | gsheet        | ui page       | ui page       | ui page       | ui page      | ui page            |
@@ -44,16 +44,19 @@ This document defines the incremental development of the application in releases
 **Scope**: 
 
 - Start from the current local-only workflow, one operator, zero cloud cost, and session-based updates.
-- Add local sqlite as the working persistence layer while retaining Google Sheets assets and JSON config files.
-- Keep interaction centered on CLI scripts, HomeBudget, and Google Sheets, including a new worksheet flow for financial statement reconcile.
+- Retain Google Sheets as the primary session UI for operational workflows and data entry.
 - Retain manual bank statement download and CSV-based IBKR import, with explicit manual review checkpoints.
-- Keep forecasting and cash input in their existing Google Sheets and form-driven flows.
+- Retain forecasting and cash input in their existing Google Sheets and form-driven flows.
+- Add local sqlite as the working persistence layer.
+- Add CLI as a parallel interface for scripting and automation.
+- Add a modularized backend API. Clean separation of concerns between backend services and frontend interfaces enables future UI expansion and potential cloud deployment without major rework.
+- Add new custom Google sheets UI including new worksheets for session management, financial statement reconcile, bank statements reconcile, bill payment and potentially others.
 
 ### Features
 
 - Financial statements in Google Sheets remain minimal but are sufficient for monthly close output.
 - Financial statement reconcile moves from current worksheet logic to a new worksheet workflow, while bank reconcile remains in the existing workbook flow.
-- Category and account mapping move from sheet-driven logic to JSON-driven configuration.
+- Category and account mapping move to a category data model managed through a custom Google Sheets UI with backend CRUD operations.
 - Bank transaction relation handling is enabled, while expense-to-transfer relation remains out of scope for this release.
 - HomeBudget and bank statement Google Sheet maintenance continues for compatibility.
 - HomeBudget recurring behavior remains user-managed in HomeBudget.

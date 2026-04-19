@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Purpose and scope](#purpose-and-scope)
+- [Reference documents](#reference-documents)
 - [Source system catalog](#source-system-catalog)
 - [Data flow overview](#data-flow-overview)
 - [Source precedence and authority](#source-precedence-and-authority)
@@ -10,11 +11,16 @@
 - [Balance lineage requirements](#balance-lineage-requirements)
 - [Cross-path reconciliation points](#cross-path-reconciliation-points)
 - [Audit and traceability requirements](#audit-and-traceability-requirements)
-- [Acceptance criteria](#acceptance-criteria)
 
 ## Purpose and scope
 
 This document defines the source systems, data flow paths, and traceability requirements that underpin the monthly financial close workflow.
+
+## Reference documents
+
+- [accounting logic and mapping](accounting-logic.md)
+- [reconciliation engine](reconciliation-engine.md)
+- [transaction category mapping](transaction-category-mapping.md)
 
 **Primary scope:**
 - Identify and catalog all data sources that feed into the financial statements.
@@ -27,22 +33,6 @@ This document defines the source systems, data flow paths, and traceability requ
 - Technical schema design or database architecture.
 - Integration-specific error handling, retries, or failure workflows. See integration-specific requirement pages for those.
 
-**See also:**
- - [Accounting logic and mapping](accounting-logic.md) — defines how source data is classified and transformed into GL postings. Planned for accounting-logic.md.
- - **Reconciliation engine** — defines tolerance and variance closure requirements using source data. Planned for reconciliation-engine.md.
- - **Transaction category mapping** — defines mapping stages from HomeBudget categories to GL accounts. Planned for transaction-category-mapping.md.
-
-## Acceptance criteria
-
-This requirements area is complete when:
-
-- [ ] Every account in the chart of accounts is assigned to exactly one reconciliation path
-- [ ] Source system precedence is explicit and unambiguous for all accounts
-- [ ] Transaction lineage requirements are defined and include minimum metadata fields
-- [ ] Balance lineage requirements are defined for each path
-- [ ] Cross-path reconciliation points are identified and documented
-- [ ] Design specification can be produced from this requirement without additional clarification
-- [ ] User can verify that their source systems and audit expectations are captured accurately
 
 ## Source system catalog
 

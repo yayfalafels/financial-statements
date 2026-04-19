@@ -20,6 +20,20 @@ Detailed requirements for the CPF integration.
 - [Source systems and lineage](source-systems-lineage.md)
 - [Transaction category mapping](transaction-category-mapping.md)
 
+## Inherits from accounting policy
+
+- This page inherits global accounting policy from accounting-logic.md.
+
+## Integration-specific overrides
+
+- CPF input source is manual JSON for current POC.
+- CPF annual interest handling is integration-specific.
+
+## No override areas
+
+- Global reconciliation policy ownership remains in accounting-logic.md and reconciliation-engine.md.
+- Global tolerance policy values remain in reconciliation-engine.md.
+
 ## Accounts in scope
 
 | sub-account | abbreviation | description                                      |

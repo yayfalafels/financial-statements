@@ -116,7 +116,7 @@ Variance is the residual difference after comparing computed closing balance to 
 
 ## Tolerance
 
-Tolerance is the allowed absolute variance before intervention is required. Current policy is exact match at account precision for statement digital twin and HomeBudget reconciliation, and an alert threshold of plus or minus SGD 20 for cash adjustment review.
+Tolerance is the allowed absolute variance before intervention is required.
 
 ## Mark to market
 

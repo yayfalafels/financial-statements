@@ -1,5 +1,12 @@
 # Accounting logic
 
+## Accounting policy ownership hierarchy
+
+- This page is the primary owner for global accounting policy.
+- Integration pages are constrained extensions and must inherit this policy.
+- Integration-specific behavior is allowed only where explicitly documented in integration owner pages.
+- No integration page may override global accounting policy unless an explicit approved override is published with rationale and boundary.
+
 - [Related documents](#related-documents)
 - [Personal expenses](#personal-expenses)
 - [Personal Income](#personal-income)

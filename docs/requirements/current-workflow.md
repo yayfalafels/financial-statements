@@ -14,6 +14,13 @@
 
 This document describes the financial statements workflow, beginning with the sequential steps with time estimates, then the account update flowchart, and finally the report generation flowchart.
 
+This page is a context page and does not own normative requirement policy.
+Normative ownership is split across the following pages:
+
+- docs/requirements/workflow-orchestration.md
+- docs/requirements/interaction-approvals.md
+- docs/requirements/statements-lifecycle.md
+
 ## Sequential steps and time estimates
 
 | id | workflow       | account    | duration min  | description                                 |
@@ -35,6 +42,11 @@ This document describes the financial statements workflow, beginning with the se
 - [Report update](#report-update)
 
 ### Pre-flight checks
+
+Context note:
+
+- pre-flight checks are part of workflow context in this page
+- normative pre-flight entry and exit requirements are owned by docs/requirements/workflow-orchestration.md
 
 ### Forex
 
@@ -65,3 +77,8 @@ The final report generation flow starts after reconcile and splits into income s
 - upload to S3
 
 ### Workspace close-out and refresh
+
+Context note:
+
+- close-out and refresh remain contextual in this page
+- normative close and publish lifecycle requirements are owned by docs/requirements/statements-lifecycle.md

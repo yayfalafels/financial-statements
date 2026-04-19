@@ -37,12 +37,16 @@ The scope of the active requirements workflow is the current release POC version
 
 Requirements work in this prompt should prioritize defining what is required for POC success and should not expand into MVP or later-release capabilities unless explicitly approved as scope changes.
 
+Data migration design and implementation are excluded from this requirements workflow and are deferred to a later-phase data migration milestone.
+
+Exception and error handling requirements are in scope for this requirements milestone, but they must be authored in a dedicated requirement owner document and tracked as a separate task area, not defined inside the 02.01 conflicts and gaps analysis step.
+
 ## Required Skills
 
 Use these skills during requirements definition and evidence gathering.
 
 - `task-definition` for status updates in `docs/develop/010/project-management/02-requirements.md`
-- `markddown-tables` when creating or updating markdown tables in *.md markdown documents
+- `markdown-tables` when creating or updating markdown tables in *.md markdown documents
 - `documentation` for drafting and refining requirement artifacts
 - `homebudget` for HomeBudget data-access and schema-inspection patterns
 - `gsheet-inspect` for helper-workbook schema inspection and validation
@@ -51,9 +55,11 @@ Use these skills during requirements definition and evidence gathering.
 
 ## Artifact Boundaries
 
-- Requirements content destination: `docs/requirements.md` and sub-docs in `docs/requirements/`
+- Requirements content destination: `docs/requirements.md` as the one-page POC overview and entry page, plus sub-docs in `docs/requirements/`
+- Exception and error handling destination: `docs/requirements/exception-error-handling.md`
 - Roadmap intent destination: `docs/requirements/implementation-roadmap.md`
 - Dynamic task status destination: `docs/develop/010/project-management/02-requirements.md`
+- Closure and status-tracking metadata destination: tracker documents only, for example `docs/develop/010/project-management/*`; do not place closure-method steps, closure checklists, status traces, or completion notes in requirement content docs.
 - Design destination after requirements closure: `docs/develop/010/design/*`
 - Chat responses are temporary coordination only and are not completion artifacts.
 
@@ -94,6 +100,9 @@ Use these skills during requirements definition and evidence gathering.
 - **Table of Contents (TOC)** include a table of contents at the top of every markdown document. Use anchor links unless the document is a prompt `*.prompt.md` or a skill `SKILL.md` as anchor links are not supported in these special markdown file sub-types.
 - **markdown tables** follow the `markdown-tables` skill guidelines fo readability. limit row length to max < 115 char and use fixed width columns.
 - **Task ID** references such as `02.01` and `02.01.01` must only appear in the tracking document `docs/develop/010/project-management/02-requirements.md`. Primary requirement docs, subtopic docs, design artifacts, and guides must not contain task ID references — use descriptive section headings and document names instead.
+- **closure metadata boundary** status and closure tracking metadata belong in tracker documents under `docs/develop/*/project-management/*`, not in requirement, design, or guide content documents.
+- **landing-page role** `docs/requirements.md` should read as a natural one-page POC requirements overview, then scope, then links to topic-owner pages for detail.
+- **redundant overview sync** when overview and scope summaries are intentionally repeated across `docs/requirements.md`, `docs/requirements/poc.md`, `docs/requirements/implementation-roadmap.md`, and `docs/about.md`, keep them synchronized in the workflow, but do not state that synchronization rule inside the requirement documents.
 
 ## Account and Data Lineage Overview
 
@@ -173,18 +182,19 @@ Mirror this table from `docs/develop/010/project-management/02-requirements.md` 
 | --- | ----- | ------- | ---------------------------------- |
 | 01  | 02.10 | closed  | requirements workflow prompt       |
 | 02  | 02.11 | closed  | implementation roadmap             |
-| 03  | 02.14 | open    | inspection guide                   |
+| 03  | 02.14 | closed  | inspection guide                   |
 | 04  | 02.01 | open    | structure and scope boundary       |
 | 05  | 02.02 | pending | workflow orchestration             |
 | 06  | 02.03 | pending | interaction and approvals          |
-| 07  | 02.04 | pending | source systems and lineage         |
-| 08  | 02.05 | pending | accounting model and mapping       |
-| 09  | 02.06 | pending | reconciliation engine              |
-| 10  | 02.07 | pending | statements lifecycle               |
-| 11  | 02.08 | pending | homebudget integration             |
-| 12  | 02.09 | pending | ibkr integration                   |
-| 13  | 02.12 | pending | cpf integration                    |
-| 14  | 02.13 | pending | bill payment and shared costs      |
+| 07  | 02.15 | pending | exception and error handling       |
+| 08  | 02.04 | pending | source systems and lineage         |
+| 09  | 02.05 | pending | accounting model and mapping       |
+| 10  | 02.06 | pending | reconciliation engine              |
+| 11  | 02.07 | pending | statements lifecycle               |
+| 12  | 02.08 | pending | homebudget integration             |
+| 13  | 02.09 | pending | ibkr integration                   |
+| 14  | 02.12 | pending | cpf integration                    |
+| 15  | 02.13 | pending | bill payment and shared costs      |
 
 ## High-Level Task Guidance
 
@@ -202,6 +212,9 @@ Mirror this table from `docs/develop/010/project-management/02-requirements.md` 
 - Validate scope boundaries against the POC section in `docs/requirements/implementation-roadmap.md`.
 - Align terminology with `docs/requirements/glossary.md`.
 - Confirm what is explicitly out of scope for this milestone, including MVP-and-beyond capabilities unless explicitly approved.
+- Confirm data migration design and implementation are out of scope for this requirements workflow and deferred to the dedicated migration milestone.
+- Keep 02.01 scoped to ownership conflicts, documentation gaps, and boundary definitions only.
+- Do not define exception or error behavior in 02.01 analysis artifacts; route those requirement statements to the dedicated exception and error handling owner document.
 
 ### 02.02 Workflow Orchestration
 
@@ -262,6 +275,12 @@ Mirror this table from `docs/develop/010/project-management/02-requirements.md` 
 - Define required billing statement parsing and payment capture requirements.
 - Define shared-cost allocation and settlement requirements from user perspective.
 - Define payment and settlement audit requirements, including status and traceability.
+
+### 02.15 Exception and Error Handling
+
+- Define the requirement-level policy for validation errors, missing mappings, and unresolved exceptions.
+- Define user-visible handling behavior, including stop conditions, escalation path, and required user resolution points.
+- Define required auditability for exception states, remediation decisions, and close-blocking errors.
 
 ## Inspection and Helper Script Guidelines
 
@@ -383,7 +402,7 @@ A requirement area is complete when:
 Requirements milestone is closed when:
 
 1. Pre-requisite methodology step `02.14` (inspection guide) is complete and user-validated.
-2. All main requirement areas 02.01 through 02.09, plus 02.12 and 02.13, are complete and user-validated.
+2. All main requirement areas 02.01 through 02.09, plus 02.12, 02.13, and 02.15, are complete and user-validated.
 3. `docs/requirements.md` is coherent and design-ready.
 4. Requirements are explicitly aligned to POC intent in `docs/requirements/implementation-roadmap.md`.
 5. `docs/develop/010/project-management/02-requirements.md` reflects accurate final status.
