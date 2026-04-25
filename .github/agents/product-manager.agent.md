@@ -102,6 +102,24 @@ hooks:
 - Ensure task states are updated as work progresses and remain consistent with actual delivery status.
 - Highlight blocked tasks early, capture unblock actions, and escalate unresolved blockers.
 
+### Task tracking format and semantics
+
+**Understanding `seq` vs `id` in task tables:**
+
+- **`seq` column**: Ordinal sequence number (1, 2, 3, ...) showing the current position in the table. `seq` does **not** renumber when tasks close, open, or change status. It is positional metadata only.
+- **`id` column**: Hierarchical, stable task identifier (e.g., `02.05`, `02.15.03`) that **never changes** across the lifetime of the task. `id` provides the durable cross-reference for linking between tables, sections, and documents over time.
+
+**When to update task tables:**
+
+- Update the **`status`** column when task state changes (e.g., from `pending` to `open` to `closed`).
+- **Do not renumber `seq`** when tasks change status. Readers use `seq` to see current table position; `id` is what persists across all states.
+- Use **`id` for all cross-references** in documents, links, and traceability traces. Never reference a task by `seq` outside of the current table.
+- Example: When task `02.02` moves from `open` to `closed`, only the `status` column changes; `seq` 05 remains at `seq` 05 even if other tasks are inserted, deleted, or reordered.
+
+**Rationale:**
+
+This design allows task status to be updated deterministically without cascading changes. Readers can see the current ordering at a glance via `seq` numbers, while the stable `id` ensures all inbound cross-references remain valid even after table updates. Maintenance and traceability are cleaner when `seq` is positional metadata and `id` is the semantic identifier.
+
 ### Documentation ownership
 
 - Own creation and maintenance of release project-management artifacts in `docs/develop/<version>/project-management/*`.
@@ -112,6 +130,10 @@ hooks:
 - Treat `docs/requirements.md` as a one-page POC requirements overview and entry point, not just an ownership index.
 - When overview and scope summaries are intentionally repeated across `docs/requirements.md`, `docs/requirements/poc.md`, `docs/requirements/implementation-roadmap.md`, and `docs/about.md`, keep them synchronized as part of the agent workflow.
 - Keep that synchronization responsibility in agent and prompt guidance rather than stating it inside requirement documents.
+- Write document content in reader-facing language only. Do not embed authoring rationale, organizational commentary, or meta-guidance inside document content.
+- Keep organizational heuristics — DRY strategy, top-to-bottom specificity ordering, and method-class layering rationale — in skills, prompts, and agent instructions, not inside requirement or project-management document content.
+- Do not write secrets or cloud resource unique identifiers in documentation. Reference the key and config file path where the value is stored instead.
+- Treat Google Sheets workbook IDs as cloud resource unique identifiers. If a secret or config file does not exist yet, allow temporary placeholders only when explicitly labeled and tracked for closure as soon as the config or secret store is created.
 
 ## Core Responsibilities
 

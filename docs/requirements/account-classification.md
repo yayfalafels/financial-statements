@@ -1,3 +1,10 @@
+---
+title: Account Classification
+doc_type: requirements
+topic_type: owner
+owner: account-classification
+scope: poc
+---
 # Account classification
 
 - [Overview](#overview)
@@ -29,10 +36,11 @@ The general aim of the account classification system is to accurately reflect cu
 
 The mapping logic and classification will be defined in the app-owned category and account data model in sqlite. 
 Mapping maintenance is managed through a custom Google Sheets UI and backend CRUD operations. 
+Canonical schema and object names are defined in [data-model.md](data-model.md).
 
 **Current workflow**
 
-The mapping definitions in the current workflow span the HomeBudget database and legacy financial statements workbook .
+The mapping definitions in the current workflow span HomeBudget accounts and the legacy financial statements workbook.
 
 For investments which have combinations of mixes of asset types such as cash accounts for cash inflows and outflows, and illiquid assets which can appreciate or depreciate in value, the different components of the investment are tracked in separate accounts, such as a cash account for the cash balance and a position account for the value of the investment. 
 
@@ -51,7 +59,7 @@ The financial statements google sheets workbook currently contains the definitiv
 
 ## HomeBudget Account types
 
-The HomeBudget account type is a property on the Account table in the HB Database.
+The HomeBudget account type is stored in the app-managed hb account dimension, refreshed from the HomeBudget wrapper during data sync.
 
 | id | HB account type      | example           | description                                         |
 | -- | -------------------- | ----------------- | --------------------------------------------------- |

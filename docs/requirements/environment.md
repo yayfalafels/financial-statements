@@ -1,3 +1,10 @@
+---
+title: Local Development Environment
+doc_type: requirements
+topic_type: reference
+owner: environment
+scope: poc
+---
 # Local Development Environment
 
 The following details outline the local development environment setup for this project. It is crucial to ensure that your development environment matches these specifications to maintain compatibility and consistency across the project.

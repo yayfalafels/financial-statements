@@ -101,6 +101,9 @@ user-invokable: true
 - Storage and workflow decisions align with user choices.
 - Design docs are implementation-ready, not code-heavy.
 - Document structure uses clear headings and bullet lists.
+- Document content is written in reader-facing language only. Organizational heuristics such as DRY strategy, top-to-bottom specificity ordering, and method-class layering rationale are kept in skills, prompts, and agent instructions — not stated inside design document content.
+- Design docs do not include secrets or cloud resource unique identifiers. Reference config key and file path instead. Treat Google Sheets workbook IDs as cloud resource unique identifiers.
+- Temporary exceptions are allowed only when the secret or config file does not yet exist, and must be explicitly labeled, tracked, and closed as soon as the config or secret store is created.
 
 ## Completion Criteria
 

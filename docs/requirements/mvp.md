@@ -1,3 +1,10 @@
+---
+title: MVP Scope
+doc_type: requirements
+topic_type: reference
+owner: mvp
+scope: poc
+---
 # MVP scope
 
 ## Table of contents
@@ -15,7 +22,7 @@
 
 ## Overview
 
-This document defines the scope of the MVP, the first phase of the implementation roadmap. The MVP runs locally, targets a single operator, and produces PDF statements with S3 upload. It automates the workflow steps described in [current-workflow.md](current-workflow.md) following the design in [docs/develop/010/design/app-workflows.md](../develop/010/design/app-workflows.md) and supports the project goals in [docs/about.md](../about.md).
+This document defines the scope of the MVP release, version `1.0.0`. The MVP builds on the POC close cycle and adds a local browser UI as the primary session surface, replacing the Google Sheets-first operational workflow. Deployment remains local, one-user, and zero-cloud-cost. It automates the workflow requirements defined in [workflow-orchestration.md](workflow-orchestration.md), [interaction-approvals.md](interaction-approvals.md), and [statements-lifecycle.md](statements-lifecycle.md), following the design in [docs/develop/010/design/app-workflows.md](../develop/010/design/app-workflows.md) and supporting the project goals in [docs/about.md](../about.md).
 
 ## Goals
 
@@ -26,13 +33,13 @@ This document defines the scope of the MVP, the first phase of the implementatio
 
 ## Non goals
 
-- Web application user experience or hosted services.
-- Multi user coordination and permissions.
+- Hosted or cloud-deployed services.
+- Multi-user coordination and permissions.
 - Full automation of report review or statement download.
 
 ## Assumptions
 
-- The operator can access all websites needed for statement download and authentication.
+- The user can access all websites needed for statement download and authentication.
 - Google Sheets access is configured using the paths in [google-sheets.md](google-sheets.md).
 - HomeBudget data is available locally as described in [homebudget.md](homebudget.md).
 - S3 credentials are available in the local environment.
@@ -45,8 +52,9 @@ Automated steps
 - Session close out steps that consolidate logs and artifacts.
 - Forex rate fetch and sheet update.
 - Calculations for IBKR and CPF using app-native adapters (legacy helper workbooks used only for migration parity).
+- Data-sync refresh of `hb_gl_txn`, `hb_account_dim`, and `hb_category_dim` from the HomeBudget wrapper.
 - CRUD updates to the balances sheet.
-- CRUD updates to the HomeBudget database for income, expenses, and transfers.
+- CRUD updates to HomeBudget through the Python wrapper interface for income, expenses, and transfers.
 - PDF statement upload to S3.
 
 Manual steps
@@ -58,7 +66,7 @@ Manual steps
 
 External systems
 
-- HomeBudget local database for transaction updates.
+- HomeBudget Python wrapper interface for transaction updates.
 - AWS S3 for statement storage.
 - Yahoo Finance for USD to SGD forex rates.
 - Google Sheets retained for cash-expense raw capture (Google Forms-linked), plus optional summary output publication for user review
@@ -78,11 +86,12 @@ Inputs
 - Legacy Google Sheets workbook and helper worksheets (non-cash-expense) for parity and backfill only.
 - local JSON files for configuration and unstructured memory such as novel reconciliation use cases.
 - Bespoke SQLite database for app data model and financial statements.
-- HomeBudget local database.
+- HomeBudget data exposed through the Python wrapper interface.
 
 Outputs
 
 - Updated SQLite database for app data model and financial statements.
+- Refreshed `hb_gl_txn`, `hb_account_dim`, and `hb_category_dim` datasets, including `hb_txn_uid` on synced HomeBudget transactions.
 - Updated worksheet tabs for forex rates, balances, and supporting calculations.
 - Updated HomeBudget transactions for income, expenses, and transfers.
 - PDF statements stored locally and uploaded to S3.
@@ -134,7 +143,7 @@ Error handling and recovery
 
 ## Backlog updates
 
-- Add a design milestone that captures this MVP scope and workflow boundary.
+- Keep MVP backlog execution gated until POC validation, UAT completion, and migration readiness are confirmed.
 - Split automation tasks by workflow step and account type.
 - Add explicit tasks for logging, rollback snapshots, and run summaries.
 - Add a task for S3 naming conventions and retention policy.

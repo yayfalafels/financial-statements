@@ -1,4 +1,11 @@
-# Bill Payment Shared Costs
+---
+title: Shared Costs
+doc_type: requirements
+topic_type: owner
+owner: shared-costs
+scope: poc
+---
+# Shared Costs
 
 ## Table of contents
 
@@ -16,14 +23,16 @@
 
 ## Purpose and boundary
 
-This page is the normative owner for shared-cost allocation and settlement requirements.
+This document defines the requirements for shared-cost allocation, settlement, and consumption tracking.
 
-## Primary scope
+## Scope
 
-- Shared-cost record contracts and validation baseline
+- Shared-cost schema specifications - record contracts and validation baseline
 - Shared-cost parameter constraints and settlement requirements
 - Shared-cost lifecycle-link dependency on bill amount
 - Consumption baseline and constraints
+- Share-cost and consumption records are stored in the app `bills` schema. 
+- Google Sheets is used as a minimal UI for operator input and review, to be phased out in later phase with browser UI.
 
 ## Out of scope
 
@@ -39,7 +48,7 @@ This page is the normative owner for shared-cost allocation and settlement requi
 ## Lifecycle-link ownership rule
 
 - Bill payment and shared-cost settlement are separate process tracks.
-- Bill records may be paid or unpaid independent of settlement status.
+- Bill records may be paid or unpaid independent of shared costs status.
 - Shared-cost records may be settled or unsettled independent of bill status.
 - The only lifecycle dependency is that bill amount must be defined before shared-cost settlement can occur.
 
@@ -47,15 +56,15 @@ This page is the normative owner for shared-cost allocation and settlement requi
 
 Field-level contract means each in-scope field has explicit type, requiredness, allowed values, derivation rule, and failure action.
 
-Validation baseline for shared-cost records, gsheet/shared-expenses.json range records A to H:
+Validation baseline for shared-cost records in the app `bills` schema, with bridge UI mapping from `gsheet/shared-expenses.json` range records A to H during POC:
 
 | id | field             | type    | req | rule                    | validation baseline            |
 | -- | ----------------- | ------- | --- | ----------------------- | ------------------------------ |
 | 01 | record_date       | date    | y   | posting date            | valid date and within close mo |
 | 02 | description       | text    | y   | short narrative         | 1 to 200 chars                 |
 | 03 | total_amount_sgd  | decimal | y   | gross shared amount     | signed decimal and scale 2     |
-| 04 | user_share_pct    | decimal | n   | percent split input     | more than 0 and up to 1.0      |
-| 05 | user_share_amount | decimal | n   | derived pct times total | abs value up to abs total      |
+| 04 | participant_count | int     | y   | equal-share divisor N   | integer 2 or greater           |
+| 05 | user_share_amount | decimal | y   | derived total over N    | abs value up to abs total      |
 | 06 | category          | text    | y   | allocation class        | in allowed shared-cost set     |
 | 07 | payee             | text    | y   | settlement counterparty | non-empty and mapped party     |
 | 08 | status            | enum    | y   | HB record state         | created or recorded            |
@@ -64,17 +73,19 @@ Validation baseline for shared-cost records, gsheet/shared-expenses.json range r
 
 | id | parameter              | type    | req | rule                  | validation baseline         |
 | -- | ---------------------- | ------- | --- | --------------------- | --------------------------- |
-| 01 | split_basis            | const   | y   | percentage split only | pct                         |
+| 01 | split_basis            | const   | y   | equal-share only      | 1_over_n                    |
 | 02 | rounding_mode          | enum    | y   | monetary rounding     | half-up to 2 dp             |
 | 03 | settlement_account     | text    | y   | HB settlement account | must equal 30 CC Hashemis   |
 | 04 | settlement_currency    | enum    | y   | posting currency      | SGD only                    |
-| 05 | variance_tolerance_sgd | decimal | y   | max allowed variance  | fixed 0.00                  |
+| 05 | variance_tolerance_sgd | decimal | y   | max allowed variance  | fixed 0.00 at 0.01 precision |
 
 ## Session completion rule
 
 - If any shared-cost record remains incomplete for HomeBudget recording, the shared-cost session is incomplete.
 
 ## Consumption baseline
+
+Consumption records in this scope are stored in the app `bills` schema and linked to bill and shared-cost lifecycle context.
 
 | id | field                | type    | req | rule                  | validation baseline            |
 | -- | -------------------- | ------- | --- | --------------------- | ------------------------------ |

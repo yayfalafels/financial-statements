@@ -1,3 +1,10 @@
+---
+title: IBKR Integration
+doc_type: requirements
+topic_type: owner
+owner: ibkr-integration
+scope: poc
+---
 # IBKR Integration
 
 Detailed requirements for the IBKR integration.
@@ -10,7 +17,7 @@ Detailed requirements for the IBKR integration.
 - [IBA account requirements](#iba-account-requirements)
 - [IRA account requirements](#ira-account-requirements)
 - [Classification rules](#classification-rules)
-- [Reconciliation requirements](#reconciliation-requirements)
+- [Validation and close-gate requirements](#validation-and-close-gate-requirements)
 - [Lineage requirements](#lineage-requirements)
 
 ## Related documents
@@ -28,10 +35,11 @@ Detailed requirements for the IBKR integration.
 
 - IRA income treatment is constrained to capital-gains classification due to account liquidity behavior.
 - IBA top-down derivation from NAV and Cash Report is integration-specific.
+- IBKR accounting model ownership is on this page, including IBA and IRA derivation and close-gate validation rules.
 
 ## No override areas
 
-- Global reconciliation policy ownership remains in accounting-logic.md and reconciliation-engine.md.
+- Global reconciliation workflow policy remains in reconciliation-engine.md.
 - Global tolerance policy values remain in reconciliation-engine.md.
 
 ## Accounts in scope
@@ -41,13 +49,13 @@ Detailed requirements for the IBKR integration.
 | IBA     | U1109040  | individual margin     | USD      | cash + positions   |
 | IRA     | U9311815  | rollover IRA          | USD      | position only      |
 
-Both accounts are in POC scope. IBA and IRA have different income classification and reconciliation requirements and must be handled by separate processing paths.
+Both accounts are in POC scope. IBA and IRA have different income classification and accounting-model derivation requirements and must be handled by separate processing paths.
 
 Although the IBKR Activity Statement for IRA technically reports separate cash and position values, the IRA is treated as a single position account in this system due to its illiquid nature. Dividends and any other cash income earned on assets within the portfolio are classified as capital gains, not as liquid cash income, because the account does not permit free withdrawal. The cash balance is treated as another security and not truly cash.
 
 ## Source format
 
-IBKR statements are downloaded manually by the operator as CSV Activity Statements. The file naming convention follows the pattern `{account_id}_Activity_{YYYYMM}.csv`.
+IBKR statements are downloaded manually by the user as CSV Activity Statements. The file naming convention follows the pattern `{account_id}_Activity_{YYYYMM}.csv`.
 
 The CSV format is section-based, not a flat row format. Each row begins with a section name and a row type discriminator (`Header`, `Data`, or `Total`), followed by section-specific columns. The same file contains multiple named sections.
 
@@ -111,13 +119,14 @@ All period income — dividends, interest, commissions net — is captured in `c
 | IRA     | capital gains/loss    | capital gains     |
 | IRA     | deposits/withdrawals  | transfer          |
 
-## Reconciliation requirements
+## Validation and close-gate requirements
 
-- ending cash balance for IBA shall match the `Net Asset Value` cash total.
-- ending position value for IBA shall match the `Net Asset Value` stock and bond total.
-- combined cash and position total for IRA shall match the `Net Asset Value` total; no separate sub-account reconciliation is performed for IRA.
-- Reconciliation shall be performed before any transactions are posted to HomeBudget.
-- If the balance equation does not close within a tolerance of USD 0.01, the system shall halt and present the variance for user review.
+- Generated ending cash balance for IBA shall match the `Net Asset Value` cash total.
+- Generated ending position value for IBA shall match the `Net Asset Value` stock and bond total.
+- Generated combined total for IRA shall match the `Net Asset Value` total, with no separate cash sub-account treatment.
+- Validation shall run before any generated transactions are posted to HomeBudget.
+- If any balance equation fails to close within tolerance USD 0.00 at precision USD 0.01, the system shall halt posting and present the variance for investigation.
+- IBKR flow is generation-driven. The system shall not create reconciliation adjustments for IBKR accounts.
 
 ## Lineage requirements
 

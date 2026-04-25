@@ -1,3 +1,10 @@
+---
+title: Interaction and Approvals
+doc_type: requirements
+topic_type: owner
+owner: interaction-approvals
+scope: poc
+---
 # Interaction and Approvals
 
 ## Table of contents
@@ -10,13 +17,13 @@
 - [Checkpoint criteria by workflow stage](#checkpoint-criteria-by-workflow-stage)
 - [Required user confirmations before commit](#required-user-confirmations-before-commit)
 - [Approval authority](#approval-authority)
-- [Escalation and rework boundary](#escalation-and-rework-boundary)
+- [Escalation boundary](#escalation-boundary)
 - [Decision logging and readability requirements](#decision-logging-and-readability-requirements)
-- [Rejection and rework behavior](#rejection-and-rework-behavior)
+- [Rejection behavior](#rejection-behavior)
 
 ## Purpose and boundary
 
-This page is the normative owner for user interaction and approval behavior.
+This document defines requirements for user interaction and approval behavior during the monthly close workflow.
 
 ## Reference documents
 
@@ -29,7 +36,7 @@ This page is the normative owner for user interaction and approval behavior.
 - User review checkpoints
 - User confirmations before commit actions
 - Approval authority and escalation paths
-- Rejection and rework behavior
+- Rejection behavior
 - Decision logging requirements
 
 ## Out of scope
@@ -44,14 +51,15 @@ This page is the normative owner for user interaction and approval behavior.
 | -- | ------------ | -------------------------------------------- |
 | 01 | pre-flight   | source readiness and period selection        |
 | 02 | forex        | exchange-rate source and period checks       |
-| 03 | data sync    | statement ingestion and mapping sanity       |
-| 04 | reconcile    | variance review and close-blocking outcomes  |
-| 05 | statements   | statement totals and classification review   |
-| 06 | publish      | final artifact confirmation                  |
+| 03 | data ingest  | source files received and GS UI entries confirmed |
+| 04 | data sync    | mapping sanity and `hb_gl_txn` plus dimension refresh status |
+| 05 | reconcile    | variance review and close-blocking outcomes  |
+| 06 | statements   | statement totals and classification review   |
+| 07 | publish      | final artifact confirmation                  |
 
 ## Checkpoint criteria by workflow stage
 
-- Each checkpoint must present required evidence for operator review.
+- Each checkpoint must present required evidence for user review.
 - Each checkpoint must clearly show pass or fail conditions.
 - A failed checkpoint blocks downstream commit actions.
 
@@ -59,25 +67,25 @@ This page is the normative owner for user interaction and approval behavior.
 
 - Confirmation is required before posting to persistent stores.
 - Confirmation is required before publish and period close.
-- Confirmation records operator identity and timestamp.
+- Confirmation records user identity and timestamp.
 
 ## Approval authority
 
-- The monthly-close operator is the approver for period-level commits.
+- The monthly-close user is the approver for period-level commits.
 - Delegated approvals require explicit delegation record.
 
-## Escalation and rework boundary
+## Escalation boundary
 
 - Blocking variance or unresolved mapping triggers escalation.
-- Escalation route and rework outcome are logged before resume.
+- Escalation route and outcome are logged before resume.
 
 ## Decision logging and readability requirements
 
 - Novel decisions require concise rationale log entries.
 - Review outputs must be human-readable and traceable to source evidence.
 
-## Rejection and rework behavior
+## Rejection behavior
 
-- Rejecting a checkpoint keeps the current stage open.
-- Rework actions must be applied before re-review.
+- Rejecting a checkpoint keeps the session in the current stage.
+- Corrections must be applied before re-review.
 

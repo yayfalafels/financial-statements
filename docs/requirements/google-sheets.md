@@ -1,3 +1,10 @@
+---
+title: Google Sheets
+doc_type: requirements
+topic_type: owner
+owner: google-sheets
+scope: poc
+---
 # Google Sheets
 
 This page defines requirement-level boundaries for Google Sheets usage in the project.

@@ -62,6 +62,13 @@ The app brings together 5+ independent systems (HomeBudget, Google Sheets, bank 
 - Exception: cash expenses remain operationally captured in Google Sheets through the linked Google Form (`gsheet/cash-expenses.json`) as the retained raw source.
 - Production monthly closing must be workbook-free except for the retained cash-expense raw source and optional summary publication.
 
+### Sensitive values and cloud resource identifiers
+
+- Do not write secrets or cloud resource unique identifiers in documentation.
+- Reference the config key and config file path where the value is stored.
+- Google Sheets workbook IDs are cloud resource unique identifiers and must not be written literally.
+- Temporary exception is allowed only when the secret or config file does not exist yet. Mark it as temporary, track it explicitly, and close it as soon as the config or secret store is created.
+
 ---
 
 ## Environment Setup and Development Discipline

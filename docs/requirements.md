@@ -26,6 +26,7 @@ The POC requirements focus on the following outcomes:
 - Add local sqlite persistence for app-owned workflow state and outputs.
 - Add a parallel CLI surface for scripting and automation.
 - Add app-owned backend services, including CRUD support for mappings managed through a category data model and custom Google Sheets UI.
+- Define schema ownership for statement staging, HomeBudget sync, mapping, and final statement-ready aggregation state.
 - Define complete requirement coverage for workflow, interaction, source lineage, accounting, reconciliation, statements lifecycle, and integrations.
 
 ## POC scope
@@ -78,13 +79,13 @@ The topic pages for detailed requirement are included below.
 | 07 | transaction-category-mapping.md | owner     |
 | 08 | reconciliation-engine.md        | owner     |
 | 09 | bill-payment.md                 | owner     |
-| 10 | bill-payment-shared-costs.md    | owner     |
+| 10 | shared-costs.md                 | owner     |
 | 11 | homebudget.md                   | owner     |
 | 12 | google-sheets.md                | owner     |
 | 13 | ibkr-integration.md             | owner     |
 | 14 | cpf-integration.md              | owner     |
-| 15 | cash-reconcile.md               | reference |
-| 16 | current-workflow.md             | reference |
+| 15 | data-model.md                   | owner     |
+| 16 | cash-reconcile.md               | reference |
 | 17 | glossary.md                     | reference |
 | 18 | implementation-roadmap.md       | reference |
 | 19 | poc.md                          | reference |
@@ -95,7 +96,8 @@ The topic pages for detailed requirement are included below.
 ## Cross-page ownership rules
 
 - Integration pages inherit global accounting policy from docs/requirements/accounting-logic.md.
-- Shared-cost settlement is derived from bill-payment data and the lifecycle linkage rule is owned by docs/requirements/bill-payment-shared-costs.md.
+- Shared-cost settlement is derived from bill-payment data and the lifecycle linkage rule is owned by docs/requirements/shared-costs.md.
 - Tolerance policy values are owned by docs/requirements/reconciliation-engine.md.
 - Canonical account naming is owned by the financial statements gsheet accounts region and mapped from source-system names.
+- Data-model schema ownership and canonical schema naming are owned by docs/requirements/data-model.md.
 

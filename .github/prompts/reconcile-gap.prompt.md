@@ -25,6 +25,13 @@ The core comparison is between two ways of deriving change:
 1. ending balance minus beginning balance
 2. transaction-derived change by component, such as income, expense, transfers, capital gain or loss, and FX
 
+## Sensitive values and cloud resource identifiers
+
+- Do not write secrets or cloud resource unique identifiers in documentation.
+- Reference the config key and config file path where the value is stored.
+- Google Sheets workbook IDs are cloud resource unique identifiers and must not be written literally.
+- Temporary exception is allowed only when the secret or config file does not exist yet. Mark it as temporary, track it explicitly, and close it as soon as the config or secret store is created.
+
 ## Environment
 
 - Re-use the existing `env` virtual environment.

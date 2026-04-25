@@ -64,6 +64,13 @@ Complete test-driven development implementation plan for the consolidated monthl
 
 **Metaphor:** `.dev/` is scaffolding and cranes during construction. `env/` is the finished building's electrical and plumbing systems.
 
+## Sensitive values and cloud resource identifiers
+
+- Do not write secrets or cloud resource unique identifiers in documentation.
+- Reference the config key and config file path where the value is stored.
+- Google Sheets workbook IDs are cloud resource unique identifiers and must not be written literally.
+- Temporary exception is allowed only when the secret or config file does not exist yet. Mark it as temporary, track it explicitly, and close it as soon as the config or secret store is created.
+
 ## Implementation Overview
 
 **Phases**: 7 major phases discrete features

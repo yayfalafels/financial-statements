@@ -219,7 +219,7 @@ __marimo__/
 
 # local development sandbox
 .dev
-docs/develop
+# docs/develop
 
 # user data
 data

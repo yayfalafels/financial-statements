@@ -60,6 +60,8 @@ Use these skills during requirements definition and evidence gathering.
 - Roadmap intent destination: `docs/requirements/implementation-roadmap.md`
 - Dynamic task status destination: `docs/develop/010/project-management/02-requirements.md`
 - Closure and status-tracking metadata destination: tracker documents only, for example `docs/develop/010/project-management/*`; do not place closure-method steps, closure checklists, status traces, or completion notes in requirement content docs.
+- Requirement decision and open-question tracker destination: `docs/develop/010/design/requirements-decisions.md`
+- Requirement content docs under `docs/requirements/*` remain static and do not link to the decision tracker. The decision tracker links to requirement source docs.
 - Design destination after requirements closure: `docs/develop/010/design/*`
 - Chat responses are temporary coordination only and are not completion artifacts.
 
@@ -101,8 +103,14 @@ Use these skills during requirements definition and evidence gathering.
 - **markdown tables** follow the `markdown-tables` skill guidelines fo readability. limit row length to max < 115 char and use fixed width columns.
 - **Task ID** references such as `02.01` and `02.01.01` must only appear in the tracking document `docs/develop/010/project-management/02-requirements.md`. Primary requirement docs, subtopic docs, design artifacts, and guides must not contain task ID references — use descriptive section headings and document names instead.
 - **closure metadata boundary** status and closure tracking metadata belong in tracker documents under `docs/develop/*/project-management/*`, not in requirement, design, or guide content documents.
+- **requirement decision boundary** decisions and open requirement questions must be tracked in `docs/develop/010/design/requirements-decisions.md`, not in `docs/requirements/*` content docs.
+- **static requirement docs** do not add links from `docs/requirements/*` to the decision tracker. The decision tracker must reference requirement source docs instead.
 - **landing-page role** `docs/requirements.md` should read as a natural one-page POC requirements overview, then scope, then links to topic-owner pages for detail.
 - **redundant overview sync** when overview and scope summaries are intentionally repeated across `docs/requirements.md`, `docs/requirements/poc.md`, `docs/requirements/implementation-roadmap.md`, and `docs/about.md`, keep them synchronized in the workflow, but do not state that synchronization rule inside the requirement documents.
+- **natural language in content** write document content in reader-facing language only. Do not embed authoring rationale or organizational commentary inside document content.
+- **document organization heuristics** keep organizational heuristics — DRY strategy, top-to-bottom specificity ordering, and method-class layering rationale — in skills, prompts, and agent instructions. Do not state these principles inside requirement document content.
+- **secret and cloud UID handling** do not write secrets or cloud resource unique identifiers in documentation. Reference the config key and config file path where the value is stored instead. Google Sheets workbook IDs are cloud resource unique identifiers and must not be written literally.
+- **temporary exception handling** if a secret or config file does not exist yet, a temporary placeholder is allowed only when explicitly labeled temporary with tracked follow-up, and must be closed as soon as the config or secret store is created.
 
 ## Account and Data Lineage Overview
 

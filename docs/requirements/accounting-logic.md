@@ -1,8 +1,15 @@
+---
+title: Accounting Logic
+doc_type: requirements
+topic_type: owner
+owner: accounting-logic
+scope: poc
+---
 # Accounting logic
 
 ## Accounting policy ownership hierarchy
 
-- This page is the primary owner for global accounting policy.
+- Global accounting policy is defined in this document and applies to all integration contexts.
 - Integration pages are constrained extensions and must inherit this policy.
 - Integration-specific behavior is allowed only where explicitly documented in integration owner pages.
 - No integration page may override global accounting policy unless an explicit approved override is published with rationale and boundary.
@@ -15,6 +22,7 @@
 - [Forex](#forex)
 	- [M2M forex on balances](#m2m-forex-on-balances)
 	- [Forex on transactions](#forex-on-transactions)
+- [Bills accrual and settlement](#bills-accrual-and-settlement)
 - [Unique transaction and de-duplication logic](#unique-transaction-and-de-duplication-logic)
 - [Reconciliation](#reconciliation)
 	- [Reconciliation date](#reconciliation-date)
@@ -112,6 +120,35 @@ An additional forex expense is booked to account for the delayed effect of credi
 2. Create the transfer from the real wallet to the cost center using the actual posted statement charge in SGD.
 3. Create a reconciliation entry to mark the difference between the actual statement charge and the booked charge using spot exchange rate, with the payee following the Payee as the expense and category "Professional Services:Currency Conversion". This way you can easily track all forex expenses by looking at the transactions in TWH - Personal with category "Professional Services:Currency Conversion".
 
+## Bills accrual and settlement
+
+In this project, a bill is the personal-finance equivalent of an invoice. Bill expense recognition follows accrual accounting.
+
+- The billed amount for the billing period is the expense for that billing period.
+- The bill statement is authoritative for bill amount, payee, and expense breakdown.
+- The bank statement is authoritative for settlement amount and settlement date.
+- When bill amount and settlement amount match in the same period, no special conflict handling is required.
+
+When bill amount and bank settlement do not align, use the following policy.
+
+### Time inconsistency across periods
+
+- If the bill date and bank posting date are within plus or minus 3 days of period end, and period end is more than 3 days away from the reconciliation close date, the booked HomeBudget, `hb_gl`, and `close_book` transaction date may be shifted to the billing period. Statement-to-book end-of-month timing variance is then handled by the bank reconciliation workflow.
+- Otherwise, book the full expense in the billing period and book a matching transfer into one shared billing pseudo credit account on the billing date. When the bank payment posts, book the matching transfer out of that same pseudo credit account on the actual payment date.
+
+### Partial payment
+
+- Book the full expense in the billing period for the full billed amount.
+- Book a matching transfer into the shared billing pseudo credit account for the full billed amount.
+- Book one or more transfers out of the shared billing pseudo credit account for each actual bank statement payment amount.
+- The bill is fully settled only when transfers into and out of the shared billing pseudo credit account net to zero.
+
+### Shared billing pseudo credit account
+
+- Use one shared billing pseudo credit account for all bill payees.
+- This account is a temporary settlement bridge for accrual timing and partial-payment differences.
+- The account does not carry period expense. It carries only the temporary unpaid or timing difference until settlement nets to zero.
+
 ## Unique transaction and de-duplication logic
 
 Transaction uniqueness is determined by a combination of the following attributes:
@@ -120,7 +157,7 @@ unique combination: account, transaction date, amount, description
 
 This definition is sufficient to address any potential duplicates in the system, as it is highly unlikely for two distinct transactions to share the same account, date, amount, and description. 
 
-In the rare exception when two transactions share the same account, date, amount, and description from the statement source, then when importing these into the system, either to the statement digital twin, or in the HomeBudget database, simply append a sequential id `-01, -02, etc..` in the description field.
+In the rare exception when two transactions share the same account, date, amount, and description from the statement source, then when importing these into the system, either to the statement digital twin, or into HomeBudget through the wrapper interface, simply append a sequential id `-01, -02, etc..` in the description field.
 
 ## Accounting periods
 

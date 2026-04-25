@@ -1,3 +1,10 @@
+---
+title: Glossary
+doc_type: requirements
+topic_type: reference
+owner: glossary
+scope: poc
+---
 # Glossary
 
 ## Table of contents
@@ -14,6 +21,10 @@
 - [Financial statement](#financial-statement)
 - [Financial statements workbook](#financial-statements-workbook)
 - [Ledger](#ledger)
+- [`hb_gl_txn`](#hb_gl_txn)
+- [`hb_account_dim`](#hb_account_dim)
+- [`hb_category_dim`](#hb_category_dim)
+- [`hb_txn_uid`](#hb_txn_uid)
 - [Transaction](#transaction)
 - [Transaction uniqueness key](#transaction-uniqueness-key)
 - [Reconciliation](#reconciliation)
@@ -26,6 +37,7 @@
 - [Checkpoint](#checkpoint)
 - [Session state](#session-state)
 - [Workflow step](#workflow-step)
+- [Bill](#bill)
 - [Shared cost](#shared-cost)
 - [Novel decision](#novel-decision)
 - [Period snapshot](#period-snapshot)
@@ -34,9 +46,10 @@
 
 - [Account classification](account-classification.md), account types, mapping rules, and reporting classifications
 - [Accounting logic](accounting-logic.md), booking rules, reconciliation rules, and transaction uniqueness
-- [Current Workflow](current-workflow.md), existing manual monthly closing sequence
+- [Current workflow reference](../reference/current-workflow.md), existing manual monthly closing sequence
 - [App Workflows Design](../develop/010/design/app-workflows.md), intended automated workflow design
 - [Bill payment](bill-payment.md), shared cost allocation and bill processing context
+- [Data model](data-model.md), schema ownership and canonical schema object naming
 
 ## Period
 
@@ -92,7 +105,23 @@ Financial statements workbook is the legacy Google Sheets workbook used to prepa
 
 ## Ledger
 
-Ledger is the HomeBudget transaction record for an account and period after filtering to transaction rows that affect balance.
+Ledger is the app-managed HomeBudget ledger view derived from `hb_gl_txn` for an account and period after filtering to transaction rows that affect balance.
+
+## `hb_gl_txn`
+
+`hb_gl_txn` is the canonical app-managed HomeBudget general-ledger transaction table. Full definition is owned by [data-model.md](data-model.md).
+
+## `hb_account_dim`
+
+`hb_account_dim` is the app-managed HomeBudget account dimension. Full definition is owned by [data-model.md](data-model.md).
+
+## `hb_category_dim`
+
+`hb_category_dim` is the app-managed HomeBudget category dimension. Full definition is owned by [data-model.md](data-model.md).
+
+## `hb_txn_uid`
+
+`hb_txn_uid` is the deterministic hashed transaction identifier on `hb_gl_txn`. Full definition is owned by [data-model.md](data-model.md).
 
 ## Transaction
 
@@ -141,6 +170,10 @@ Session state is the persisted progress record for a period close run, including
 ## Workflow step
 
 Workflow step is an executable unit of the monthly close process with defined inputs, outputs, and validation criteria.
+
+## Bill
+
+Bill is the personal-finance term used in this project for the accounting concept of an invoice. For accrual treatment, the billed amount is the expense for the billing period even when settlement on the bank statement occurs in a different period or in multiple payments.
 
 ## Shared cost
 
