@@ -40,7 +40,7 @@ Current-state operational workflow, manual timings, and baseline process evidenc
 
 ## App requirements
 
-The app will provide an internal bill data model that preserves the same operational function, period-bill association, payee mapping, paid state, and payment-date tracking. The canonical raw source for bill-payment records is the app `bills` schema. During POC, Google Sheets is used only as a bridge UI for operator input and review until browser UI replaces it in MVP. Treat Notion as legacy reference only, not as an active source in app workflow.
+The app will provide an internal bill data model that preserves the same operational function, period-bill association, payee mapping, paid state, and payment-date tracking. The canonical raw source for bill-payment records is the app `bills` schema. During POC, Google Sheets is used only as a bridge UI for user input and review until browser UI replaces it in MVP. Treat Notion as legacy reference only, not as an active source in app workflow.
 
 Additionaly, the app will: 
 
@@ -99,27 +99,48 @@ To automate bill-payment reconciliation, the system must:
 
 Based on [Monthly closing documentation](../../reference/notion/Optimize monthly closing/Monthly closing 20bc378f707580f99849e024db8f12fb.md):
 
-| id | account            | type     | ccy | bank            | description                                    |
-| -- | ------------------ | -------- | --- | --------------- | ---------------------------------------------- |
-| 01 | TWH DBS Multi SGD  | checking | SGD | DBS             | main banking settlement hub for bill payment   |
-| 02 | TWH UOB One SGD    | credit   | SGD | UOB             | main credit card for variable expenses          |
-| 03 | TWH Visa USD       | credit   | USD | Bank of America | USD credit card for limited purchases          |
-| 04 | TWH CITI           | checking | USD | Citibank USA    | USD bank account with ACH capabilities         |
+| id          |                   |          |     |                 |
+| ----------- | ----------------- | -------- | --- | --------------- |
+| account     |                   |          |     |                 |
+| type        |                   |          |     |                 |
+| ccy         |                   |          |     |                 |
+| bank        |                   |          |     |                 |
+| description |                   |          |     |                 |
+| 01          | TWH DBS Multi SGD | checking | SGD | DBS             |
+| 02          | TWH UOB One SGD   | credit   | SGD | UOB             |
+| 03          | TWH Visa USD      | credit   | USD | Bank of America |
+| 04          | TWH CITI          | checking | USD | Citibank USA    |
+
+| id          |                   |                                              |
+| ----------- | ----------------- | -------------------------------------------- |
+| account     |                   |                                              |
+| type        |                   |                                              |
+| ccy         |                   |                                              |
+| bank        |                   |                                              |
+| description |                   |                                              |
+| 01          | TWH DBS Multi SGD | main banking settlement hub for bill payment |
+| 02          | TWH UOB One SGD   | main credit card for variable expenses       |
+| 03          | TWH Visa USD      | USD credit card for limited purchases        |
+| 04          | TWH CITI          | USD bank account with ACH capabilities       |
 
 **Bills in scope:**
 
-| id | payee       | account            | method                | status                |
-| -- | ----------- | ------------------ | --------------------- | --------------------- |
-| 01 | Singtel     | TWH UOB One SGD    | automatic payment     | automated (via payee) |
-| 02 | SP Services | TWH DBS Multi SGD  | GIRO                  | automated (via GIRO)  |
-| 03 | Rent        | TWH DBS Multi SGD  | standing instructions | automated (via bank)  |
-| 04 | WPL Spotify | TWH DBS Multi SGD  | standing instructions | automated (via bank)  |
-| 05 | UOB CC      | TWH DBS Multi SGD  | manual                | requires automation   |
-| 06 | BOA CC      | TWH CITI           | ACH auto pay          | automated (via payee) |
+| id      |             |                   |                       |                       |
+| ------- | ----------- | ----------------- | --------------------- | --------------------- |
+| payee   |             |                   |                       |                       |
+| account |             |                   |                       |                       |
+| method  |             |                   |                       |                       |
+| status  |             |                   |                       |                       |
+| 01      | Singtel     | TWH UOB One SGD   | automatic payment     | automated (via payee) |
+| 02      | SP Services | TWH DBS Multi SGD | GIRO                  | automated (via GIRO)  |
+| 03      | Rent        | TWH DBS Multi SGD | standing instructions | automated (via bank)  |
+| 04      | WPL Spotify | TWH DBS Multi SGD | standing instructions | automated (via bank)  |
+| 05      | UOB CC      | TWH DBS Multi SGD | manual                | requires automation   |
+| 06      | BOA CC      | TWH CITI          | ACH auto pay          | automated (via payee) |
 
 - Parse bill statements and create normalized bill-payment records for all in-scope payees.
 - Support payment capture for auto-pay and manual-pay methods, with explicit payment-state tracking.
-- Use Google Sheets only as bridge UI for POC operator interaction; keep canonical bill state in the app `bills` schema.
+- Use Google Sheets only as bridge UI for POC user interaction; keep canonical bill state in the app `bills` schema.
 
 ## Bill lifecycle and reconciliation requirements
 
@@ -131,22 +152,29 @@ Based on [Monthly closing documentation](../../reference/notion/Optimize monthly
 
 ### Bill data model
 
-| id | field           | type | req | rule                                        |
-| -- | --------------- | ---- | --- | ------------------------------------------- |
-| 01 | name            | text | y   | unique bill identifier                      |
-| 02 | payee           | text | y   | counterparty receiving payment              |
-| 03 | amount_type     | enum | y   | fixed or variable                           |
-| 04 | expected_amount | dec  | n   | required when amount_type is fixed, SGD     |
-| 05 | billing_cycle   | enum | y   | monthly, quarterly, or annual               |
-| 06 | active          | bool | y   | true means included in period checks        |
+| id    |                 |      |     |                                         |
+| ----- | --------------- | ---- | --- | --------------------------------------- |
+| field |                 |      |     |                                         |
+| type  |                 |      |     |                                         |
+| req   |                 |      |     |                                         |
+| rule  |                 |      |     |                                         |
+| 01    | name            | text | y   | unique bill identifier                  |
+| 02    | payee           | text | y   | counterparty receiving payment          |
+| 03    | amount_type     | enum | y   | fixed or variable                       |
+| 04    | expected_amount | dec  | n   | required when amount_type is fixed, SGD |
+| 05    | billing_cycle   | enum | y   | monthly, quarterly, or annual           |
+| 06    | active          | bool | y   | true means included in period checks    |
 
 ### Bill lifecycle state model
 
-| id | state     | meaning                                            | next states     |
-| -- | --------- | -------------------------------------------------- | --------------- |
-| 01 | pending   | bill identified but not yet paid                   | paid, scheduled |
-| 02 | scheduled | payment planned for a future date within period    | paid            |
-| 03 | paid      | payment confirmed with statement transaction link   |                 |
+| id          |           |                                                   |                 |
+| ----------- | --------- | ------------------------------------------------- | --------------- |
+| state       |           |                                                   |                 |
+| meaning     |           |                                                   |                 |
+| next states |           |                                                   |                 |
+| 01          | pending   | bill identified but not yet paid                  | paid, scheduled |
+| 02          | scheduled | payment planned for a future date within period   | paid            |
+| 03          | paid      | payment confirmed with statement transaction link |                 |
 
 ### Close criteria for bill lifecycle
 
@@ -161,20 +189,45 @@ Based on [Monthly closing documentation](../../reference/notion/Optimize monthly
 
 ### Bill-level reconciliation checks
 
-| id | check                      | source fields                      | pass condition                                    |
-| -- | -------------------------- | ---------------------------------- | ------------------------------------------------- |
-| 01 | amount match               | bill amount vs statement line item | amounts equal within SGD 0.00 tolerance           |
-| 02 | payee match                | bill payee vs statement payee      | payee maps to same approved counterparty          |
-| 03 | payment date within period | bill payment_date vs close period  | date within 2 months before or after period end   |
-| 04 | paid status complete       | bill paid flag                     | flag is true and linkage reference is present     |
+| id             |                            |                                    |
+| -------------- | -------------------------- | ---------------------------------- |
+| check          |                            |                                    |
+| source fields  |                            |                                    |
+| pass condition |                            |                                    |
+| 01             | amount match               | bill amount vs statement line item |
+| 02             | payee match                | bill payee vs statement payee      |
+| 03             | payment date within period | bill payment_date vs close period  |
+| 04             | paid status complete       | bill paid flag                     |
+
+| id             |                            |                                                 |
+| -------------- | -------------------------- | ----------------------------------------------- |
+| check          |                            |                                                 |
+| source fields  |                            |                                                 |
+| pass condition |                            |                                                 |
+| 01             | amount match               | amounts equal within SGD 0.00 tolerance         |
+| 02             | payee match                | payee maps to same approved counterparty        |
+| 03             | payment date within period | date within 2 months before or after period end |
+| 04             | paid status complete       | flag is true and linkage reference is present   |
 
 ### Period-level reconciliation checks
 
-| id | check                    | source fields                   | pass condition                                     |
-| -- | ------------------------ | ------------------------------- | -------------------------------------------------- |
-| 01 | bills count matches      | bills_count vs active bill rows | count equals number of active bills for the period |
-| 02 | bills paid count matches | bills_paid vs active bill rows  | paid count equals active bills in paid state       |
-| 03 | all bills resolved       | bill state distribution         | no active bill remains in pending state            |
+| id             |                          |                                 |
+| -------------- | ------------------------ | ------------------------------- |
+| check          |                          |                                 |
+| source fields  |                          |                                 |
+| pass condition |                          |                                 |
+| 01             | bills count matches      | bills_count vs active bill rows |
+| 02             | bills paid count matches | bills_paid vs active bill rows  |
+| 03             | all bills resolved       | bill state distribution         |
+
+| id             |                          |                                                    |
+| -------------- | ------------------------ | -------------------------------------------------- |
+| check          |                          |                                                    |
+| source fields  |                          |                                                    |
+| pass condition |                          |                                                    |
+| 01             | bills count matches      | count equals number of active bills for the period |
+| 02             | bills paid count matches | paid count equals active bills in paid state       |
+| 03             | all bills resolved       | no active bill remains in pending state            |
 
 ### Bill-payment session completion rule
 

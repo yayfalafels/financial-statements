@@ -132,9 +132,8 @@ Reconciliation proceeds on a per-account basis. Each account follows the same sh
 
 ## Tolerance rules and variance escalation
 
-- Cash adjustment alert threshold uses plus or minus SGD 20 with precision 0.01.
-- Non-cash account groups use tolerance 0.00 with precision 0.01 unless owner policy on this page is updated.
-- Bank statement-process accounts reconcile `statements` schema against `hb_gl_txn` using tolerance 0.00 and precision 0.01 at account precision unless owner policy on this page is updated.
+- Cash adjustment alert threshold uses plus or minus SGD 20.
+- Bank statement-process accounts reconcile `statements` schema against `hb_gl_txn` using exact match to currency rounding 0.01 decimal place precision at account precision unless owner policy on this page is updated.
 - Variance outside policy threshold triggers escalation and blocks close.
 
 ### Variance interpretation and adjustment behavior
@@ -290,7 +289,7 @@ Account-specific heuristics:
 | id | parameter             | usage                          | example values              |
 | -- | --------------------- | ------------------------------ | --------------------------- |
 | 01 | `date_tolerance_days` | ± days for date matching       | 3 default, 5 for slow banks |
-| 02 | `amount_tolerance`    | ± currency for amount variance | 0.00 default                |
+| 02 | `amount_tolerance`    | ± currency for amount variance | 0.01 default                |
 
 ## Balance-level method class
 
@@ -323,7 +322,7 @@ Account-group procedures reuse shared workflow phases and method-class rules. Th
 - **Accounts in scope:** TWH DBS Multi SGD, TWH CITI USD, TWH UOB One SGD, TWH Visa USD
 - **Method class:** Transaction-level method class
 - **Comparison basis:** `statements` schema parsed transaction ledger, `stm_gl`, versus `hb_gl_txn` records
-- **Tolerance:** 0.00 with precision 0.01, exact match required for residual unmatched amounts
+- **Tolerance:** Exact match required, zero tolerance for residual unmatched amounts
 
 **Reconciliation parameters:**
 
@@ -349,7 +348,7 @@ Account-group procedures reuse shared workflow phases and method-class rules. Th
 - **Accounts in scope:** HomeBudget-native accounts with no external statement source, for example 30 Hashemis CC
 - **Method class:** Balance-level method class
 - **Comparison basis:** `hb_gl_txn` ledger state versus user review and confirmation
-- **Tolerance:** 0.00 with precision 0.01, user confirmation remains the comparison basis
+- **Tolerance:** User confirmation, user review is the comparison basis
 
 **Account-specific method extensions:**
 
@@ -408,7 +407,7 @@ Residual Gap = HB Current Balance - Actual Physical Cash - Σ Staged Wallet Expe
 - **Accounts in scope:** CPF OA, CPF SA, CPF MA
 - **Method class:** Balance-level method class
 - **Comparison basis:** user-provided monthly input records versus roll-forward and contribution consistency
-- **Tolerance:** 0.00 with precision 0.01
+- **Tolerance:** Rounding tolerance for interest and contribution roll-forward
 
 **Account-specific equation:**
 
@@ -422,7 +421,7 @@ Residual Gap = Expected Closing Balance - User-Entered Closing Balance
 - Compute expected closing balance using roll-forward formula: Opening Balance + Contributions + Interest
 - Compare computed expected balance to user-entered closing balance
 - Compute residual gap as `Expected Closing Balance - User-Entered Closing Balance`
-- If difference is zero at precision 0.01: reconciliation passes
+- If difference is zero or within rounding tolerance: reconciliation passes
 - If difference exceeds tolerance: flag inconsistency and present to user with explanation
 
 **Adjustment criteria:**
@@ -434,14 +433,14 @@ Residual Gap = Expected Closing Balance - User-Entered Closing Balance
 - **Accounts in scope:** Wallets and balance-only accounts, for example Amazon wallet
 - **Method class:** Balance-level method class
 - **Comparison basis:** user-observed current balance input versus pre-adjustment `hb_gl_txn` ledger state
-- **Tolerance:** 0.00 with precision 0.01, exact match required
+- **Tolerance:** Zero tolerance for balance-only accounts, exact match required
 
 **Account-specific method extensions:**
 
 - Fetch user-entered current balance from closing-session GS UI for the account
 - Compute pre-adjustment balance as sum of `hb_gl_txn.amount` for the account and period
 - Compute required adjustment delta as `User Balance - Pre-Adjustment Balance`
-- Evaluate delta against tolerance 0.00 at precision 0.01
+- Evaluate delta against zero tolerance
 
 **Adjustment criteria:**
 - If delta is zero: no adjustment needed, reconciliation passes

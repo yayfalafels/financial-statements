@@ -24,6 +24,9 @@ Google Sheets is used as a helper and reference source for:
 - Category and mapping artifacts required during requirements and parity workflows.
 - Supporting workbook-based validation in non-production modes.
 - Controlled extraction of legacy mappings for documentation and migration.
+- Consolidated UI workbook resolution using environment key `GS_UI_WKB_ID` from `.env`.
+
+Workbook identifiers must be referenced by config key and file path, never by literal workbook ID in requirement docs.
 
 This page intentionally avoids duplicating script-level or API-level execution steps. Those steps belong in the skill guides.
 

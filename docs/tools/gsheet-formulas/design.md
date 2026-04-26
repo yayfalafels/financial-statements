@@ -56,16 +56,19 @@
 
 The design decisions in this section are derived from current Google documentation and Python client docs.
 
-| id | area        | decision        | detail key        |
-| -- | ----------- | --------------- | ----------------- |
-| 01 | read        | values.get      | render formula    |
-| 02 | write       | values.update   | user_entered      |
-| 03 | payload     | value_range     | rows default      |
-| 04 | clear       | values.clear    | keep formatting   |
-| 05 | range       | A1 notation     | quoted sheets     |
-| 06 | retries     | exp backoff     | 429 and 5xx       |
-| 07 | auth        | service account | sheets scope      |
-| 08 | client      | discovery build | creds and retries |
+| id         |         |                 |                   |
+| ---------- | ------- | --------------- | ----------------- |
+| area       |         |                 |                   |
+| decision   |         |                 |                   |
+| detail key |         |                 |                   |
+| 01         | read    | values.get      | render formula    |
+| 02         | write   | values.update   | user_entered      |
+| 03         | payload | value_range     | rows default      |
+| 04         | clear   | values.clear    | keep formatting   |
+| 05         | range   | A1 notation     | quoted sheets     |
+| 06         | retries | exp backoff     | 429 and 5xx       |
+| 07         | auth    | service account | sheets scope      |
+| 08         | client  | discovery build | creds and retries |
 
 Decision notes:
 
@@ -80,13 +83,15 @@ Decision notes:
 
 ## Architecture
 
-| id | layer      | responsibility          |
-| -- | ---------- | ----------------------- |
-| 01 | cli        | parse args and dispatch |
-| 02 | validation | validate local inputs   |
-| 03 | auth       | load creds and client   |
-| 04 | operations | run Sheets CRUD calls   |
-| 05 | output     | format text and JSON    |
+| id             |            |                         |
+| -------------- | ---------- | ----------------------- |
+| layer          |            |                         |
+| responsibility |            |                         |
+| 01             | cli        | parse args and dispatch |
+| 02             | validation | validate local inputs   |
+| 03             | auth       | load creds and client   |
+| 04             | operations | run Sheets CRUD calls   |
+| 05             | output     | format text and JSON    |
 
 Layer notes:
 
@@ -100,16 +105,18 @@ Layer notes:
 
 Proposed source layout under src/gsheet-formulas:
 
-| id | module           | role               |
-| -- | ---------------- | ------------------ |
-| 01 | cli.py           | parse and dispatch |
-| 02 | models.py        | request models     |
-| 03 | validation.py    | input checks       |
-| 04 | auth.py          | creds and client   |
-| 05 | sheets_client.py | api wrappers       |
-| 06 | service.py       | CRUD orchestration |
-| 07 | output.py        | text and JSON emit |
-| 08 | errors.py        | error mapping      |
+| id     |                  |                    |
+| ------ | ---------------- | ------------------ |
+| module |                  |                    |
+| role   |                  |                    |
+| 01     | cli.py           | parse and dispatch |
+| 02     | models.py        | request models     |
+| 03     | validation.py    | input checks       |
+| 04     | auth.py          | creds and client   |
+| 05     | sheets_client.py | api wrappers       |
+| 06     | service.py       | CRUD orchestration |
+| 07     | output.py        | text and JSON emit |
+| 08     | errors.py        | error mapping      |
 
 Module notes:
 
@@ -180,12 +187,15 @@ Boundary rules:
 
 Validation sequence executes before any network call:
 
-| id | input              | rule            | error cat  |
-| -- | ------------------ | --------------- | ---------- |
-| 01 | client_secret_path | file and JSON   | validation |
-| 02 | workbook_id        | non-empty text  | validation |
-| 03 | range_a1           | single-cell A1  | validation |
-| 04 | formula_text       | starts with `=` | validation |
+| id        |                    |                 |            |
+| --------- | ------------------ | --------------- | ---------- |
+| input     |                    |                 |            |
+| rule      |                    |                 |            |
+| error cat |                    |                 |            |
+| 01        | client_secret_path | file and JSON   | validation |
+| 02        | workbook_id        | non-empty text  | validation |
+| 03        | range_a1           | single-cell A1  | validation |
+| 04        | formula_text       | starts with `=` | validation |
 
 Validation notes:
 
@@ -204,13 +214,16 @@ A1 policy:
 
 Retry policy applies only to transient failures.
 
-| id | condition        | class        | retry |
-| -- | ---------------- | ------------ | ----- |
-| 01 | invalid input    | user_fixable | no    |
-| 02 | auth or perm     | user_fixable | no    |
-| 03 | missing resource | user_fixable | no    |
-| 04 | quota 429        | transient    | yes   |
-| 05 | backend 5xx      | transient    | yes   |
+| id        |                  |              |     |
+| --------- | ---------------- | ------------ | --- |
+| condition |                  |              |     |
+| class     |                  |              |     |
+| retry     |                  |              |     |
+| 01        | invalid input    | user_fixable | no  |
+| 02        | auth or perm     | user_fixable | no  |
+| 03        | missing resource | user_fixable | no  |
+| 04        | quota 429        | transient    | yes |
+| 05        | backend 5xx      | transient    | yes |
 
 Retry notes:
 
@@ -230,12 +243,14 @@ Backoff strategy:
 
 Command surface:
 
-| id | command        | required args                  |
-| -- | -------------- | ------------------------------ |
-| 01 | formula read   | secret, workbook, range        |
-| 02 | formula create | secret, workbook, range, value |
-| 03 | formula update | secret, workbook, range, value |
-| 04 | formula clear  | secret, workbook, range        |
+| id            |                |                                |
+| ------------- | -------------- | ------------------------------ |
+| command       |                |                                |
+| required args |                |                                |
+| 01            | formula read   | secret, workbook, range        |
+| 02            | formula create | secret, workbook, range, value |
+| 03            | formula update | secret, workbook, range, value |
+| 04            | formula clear  | secret, workbook, range        |
 
 Argument notes:
 
@@ -258,12 +273,14 @@ Console output must remain concise:
 
 Exit codes:
 
-| id | code | meaning            |
-| -- | ---- | ------------------ |
-| 01 | 0    | success            |
-| 02 | 2    | validation failure |
-| 03 | 3    | api failure        |
-| 04 | 4    | internal failure   |
+| id      |     |                    |
+| ------- | --- | ------------------ |
+| code    |     |                    |
+| meaning |     |                    |
+| 01      | 0   | success            |
+| 02      | 2   | validation failure |
+| 03      | 3   | api failure        |
+| 04      | 4   | internal failure   |
 
 ## Batch Crud Design 02141809
 
@@ -271,12 +288,14 @@ Native Google Sheets values batch endpoints are used for batch enhancement behav
 
 Batch endpoint mapping:
 
-| id | operation     | endpoint                     |
-| -- | ------------- | ---------------------------- |
-| 01 | batch read    | spreadsheets.values.batchGet |
-| 02 | batch create  | spreadsheets.values.batchUpdate |
-| 03 | batch update  | spreadsheets.values.batchUpdate |
-| 04 | batch clear   | spreadsheets.values.batchClear |
+| id        |              |                                 |
+| --------- | ------------ | ------------------------------- |
+| operation |              |                                 |
+| endpoint  |              |                                 |
+| 01        | batch read   | spreadsheets.values.batchGet    |
+| 02        | batch create | spreadsheets.values.batchUpdate |
+| 03        | batch update | spreadsheets.values.batchUpdate |
+| 04        | batch clear  | spreadsheets.values.batchClear  |
 
 Batch input model:
 
@@ -302,17 +321,19 @@ Batch output model:
 
 Mutation commands create, update, and clear emit one JSON record per operation.
 
-| id | field             | type             |
-| -- | ----------------- | ---------------- |
-| 01 | event_at          | string utc       |
-| 02 | operation         | string           |
-| 03 | workbook_id       | string           |
-| 04 | range_a1          | string           |
-| 05 | status            | string           |
-| 06 | error_category    | string or null   |
-| 07 | error_message     | string or null   |
-| 08 | requested_formula | string or null   |
-| 09 | resulting_formula | string or null   |
+| id    |                   |                |
+| ----- | ----------------- | -------------- |
+| field |                   |                |
+| type  |                   |                |
+| 01    | event_at          | string utc     |
+| 02    | operation         | string         |
+| 03    | workbook_id       | string         |
+| 04    | range_a1          | string         |
+| 05    | status            | string         |
+| 06    | error_category    | string or null |
+| 07    | error_message     | string or null |
+| 08    | requested_formula | string or null |
+| 09    | resulting_formula | string or null |
 
 Audit notes:
 
@@ -322,16 +343,18 @@ Audit notes:
 
 ## Requirement Traceability
 
-| id | req ids           | design area      |
-| -- | ----------------- | ---------------- |
-| 01 | FR-01, FR-02      | read contract    |
-| 02 | FR-03, FR-04      | create contract  |
-| 03 | FR-05, FR-06      | update contract  |
-| 04 | FR-07, FR-08      | clear contract   |
-| 05 | FR-09, FR-10      | validation rules |
-| 06 | FR-11, FR-13      | output and audit |
-| 07 | NFR-01, NFR-03    | validation flow  |
-| 08 | NFR-02, ER-01-05  | error model      |
+| id          |                  |                  |
+| ----------- | ---------------- | ---------------- |
+| req ids     |                  |                  |
+| design area |                  |                  |
+| 01          | FR-01, FR-02     | read contract    |
+| 02          | FR-03, FR-04     | create contract  |
+| 03          | FR-05, FR-06     | update contract  |
+| 04          | FR-07, FR-08     | clear contract   |
+| 05          | FR-09, FR-10     | validation rules |
+| 06          | FR-11, FR-13     | output and audit |
+| 07          | NFR-01, NFR-03   | validation flow  |
+| 08          | NFR-02, ER-01-05 | error model      |
 
 Traceability notes:
 
@@ -344,12 +367,15 @@ Traceability notes:
 
 This section records the user decisions collected before implementation and SIT execution.
 
-| id | area      | resolved decision      | status   |
-| -- | --------- | ---------------------- | -------- |
-| 01 | auth      | service account JSON   | resolved |
-| 02 | SIT scope | workbook and cell set  | resolved |
-| 03 | safety    | overwrite by default   | resolved |
-| 04 | evidence  | docs tools path        | resolved |
+| id                |           |                       |          |
+| ----------------- | --------- | --------------------- | -------- |
+| area              |           |                       |          |
+| resolved decision |           |                       |          |
+| status            |           |                       |          |
+| 01                | auth      | service account JSON  | resolved |
+| 02                | SIT scope | workbook and cell set | resolved |
+| 03                | safety    | overwrite by default  | resolved |
+| 04                | evidence  | docs tools path       | resolved |
 
 Resolved notes:
 

@@ -20,11 +20,13 @@ Inspection artifact: `.dev/.artifacts/non_tool_sources_inspection.json`
 
 ## Source Scope
 
-| id | artifact_path          | role                           |
-| -- | ---------------------- | ------------------------------ |
-| 01 | reference/hb-finances/ | legacy financial logic context |
-| 02 | reference/hb-reconcile/| legacy reconcile logic context |
-| 03 | reference/notion-bills/| legacy bill-tracking context   |
+| id            |                         |                                |
+| ------------- | ----------------------- | ------------------------------ |
+| artifact_path |                         |                                |
+| role          |                         |                                |
+| 01            | reference/hb-finances/  | legacy financial logic context |
+| 02            | reference/hb-reconcile/ | legacy reconcile logic context |
+| 03            | reference/notion-bills/ | legacy bill-tracking context   |
 
 ## Repository Interpretation
 
@@ -34,18 +36,35 @@ Inspection artifact: `.dev/.artifacts/non_tool_sources_inspection.json`
 
 ## Monthly Closing Relevance
 
-| id | artifact_path                                       | use in monthly close analysis                  |
-| -- | --------------------------------------------------- | ---------------------------------------------- |
-| 01 | reference/hb-finances/statement_config.json         | account to source-path and db-table mapping    |
-| 02 | reference/hb-finances/statements.py                 | ingestion flow from statement files to GL      |
-| 03 | reference/hb-finances/statements.db                 | statement digital twin persistence model       |
-| 04 | reference/hb-reconcile/docs/reconcile.md            | reconciliation algorithm and gap equation      |
-| 05 | reference/hb-reconcile/src/reconcile/reconcile.py   | forward and backward transaction matching      |
-| 06 | reference/hb-reconcile/account_settings/txn_heuristics.json | account tolerance and heuristic controls |
-| 07 | reference/notion-bills/Bills 15ac378f707580ee8fe2e596ca250260.md | exported index linking bill datasets |
-| 08 | reference/notion-bills/bills 16ec378f707580fabf99f572568f5f60.csv | bill-level status, amount, payee, and due flow |
-| 09 | reference/notion-bills/billing_period 16ec378f707580d7b472d37487ec8127.csv | monthly bill coverage and paid-count rollup |
-| 10 | reference/notion-bills/bill_payee 16ec378f707580e2ae93e4173891d72c.csv | recurring payee grouping and continuity checks |
+| id                            |                                                                            |
+| ----------------------------- | -------------------------------------------------------------------------- |
+| artifact_path                 |                                                                            |
+| use in monthly close analysis |                                                                            |
+| 01                            | reference/hb-finances/statement_config.json                                |
+| 02                            | reference/hb-finances/statements.py                                        |
+| 03                            | reference/hb-finances/statements.db                                        |
+| 04                            | reference/hb-reconcile/docs/reconcile.md                                   |
+| 05                            | reference/hb-reconcile/src/reconcile/reconcile.py                          |
+| 06                            | reference/hb-reconcile/account_settings/txn_heuristics.json                |
+| 07                            | reference/notion-bills/Bills 15ac378f707580ee8fe2e596ca250260.md           |
+| 08                            | reference/notion-bills/bills 16ec378f707580fabf99f572568f5f60.csv          |
+| 09                            | reference/notion-bills/billing_period 16ec378f707580d7b472d37487ec8127.csv |
+| 10                            | reference/notion-bills/bill_payee 16ec378f707580e2ae93e4173891d72c.csv     |
+
+| id                            |                                                |
+| ----------------------------- | ---------------------------------------------- |
+| artifact_path                 |                                                |
+| use in monthly close analysis |                                                |
+| 01                            | account to source-path and db-table mapping    |
+| 02                            | ingestion flow from statement files to GL      |
+| 03                            | statement digital twin persistence model       |
+| 04                            | reconciliation algorithm and gap equation      |
+| 05                            | forward and backward transaction matching      |
+| 06                            | account tolerance and heuristic controls       |
+| 07                            | exported index linking bill datasets           |
+| 08                            | bill-level status, amount, payee, and due flow |
+| 09                            | monthly bill coverage and paid-count rollup    |
+| 10                            | recurring payee grouping and continuity checks |
 
 ## Extractable Business Logic
 

@@ -79,11 +79,11 @@ Parser pattern uses registry plus adapter classes.
 
 ```text
 ParserRegistry
-→ BankParser interface
-  → DbsParser
-  → UobParser
-  → CitiParser
-  → BoaParser
+â†’ BankParser interface
+  â†’ DbsParser
+  â†’ UobParser
+  â†’ CitiParser
+  â†’ BoaParser
 ```
 
 Required parser output fields:
@@ -111,8 +111,8 @@ Validation rules:
 
 Generalized formula:
 
-- personal share = total amount × personal weight
-- settlement share = total amount − personal share
+- personal share = total amount Ã— personal weight
+- settlement share = total amount âˆ’ personal share
 
 ## Consumption tracking design
 

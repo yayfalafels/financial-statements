@@ -1,4 +1,4 @@
-﻿# Workflow Architecture Design
+# Workflow Architecture Design
 
 ## Table of contents
 

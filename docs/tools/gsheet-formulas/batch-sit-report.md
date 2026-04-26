@@ -12,15 +12,17 @@
 
 ## Scenario Results
 
-| id | scenario            | outcome |
-| -- | ------------------- | ------- |
-| 01 | batch read baseline | pass    |
-| 02 | batch create small  | pass    |
-| 03 | batch update small  | pass    |
-| 04 | batch clear small   | pass    |
-| 05 | batch create large  | pass    |
-| 06 | bad workbook input  | pass    |
-| 07 | invalid workbook id | pass    |
+| id       |                     |      |
+| -------- | ------------------- | ---- |
+| scenario |                     |      |
+| outcome  |                     |      |
+| 01       | batch read baseline | pass |
+| 02       | batch create small  | pass |
+| 03       | batch update small  | pass |
+| 04       | batch clear small   | pass |
+| 05       | batch create large  | pass |
+| 06       | bad workbook input  | pass |
+| 07       | invalid workbook id | pass |
 
 ## Command Evidence
 

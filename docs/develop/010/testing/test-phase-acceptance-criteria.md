@@ -1,4 +1,4 @@
-﻿# Phase-Based Testing Acceptance Criteria
+# Phase-Based Testing Acceptance Criteria
 
 **Document Type**: Phase Acceptance Criteria  
 **Status**: Active  
@@ -59,14 +59,17 @@ Testing follows the 9-phase implementation plan defined in [TDD Implementation P
 
 **Test Strategy**:
 
-| Module | SIT Coverage Target | UAT | Rationale |
-|--------|---------------------|-----|-----------|
-| types.py | 95% | None | Pure logic, no external deps |
-| gsheet.py | 70% | Basic read | Mock for SIT, UAT verifies API contract |
-| homebudget.py | 70% | CRUD ops | Mock for SIT, UAT verifies wrapper correctness |
-| s3.py | 70% | Upload test | Mock for SIT, UAT verifies S3 upload/delete |
-| validation.py | 90% | None | Shared validators must be bulletproof |
-| logging.py | 60% | None | Mostly pass-through to standard library |
+| Module              |     |             |                                                |
+| ------------------- | --- | ----------- | ---------------------------------------------- |
+| SIT Coverage Target |     |             |                                                |
+| UAT                 |     |             |                                                |
+| Rationale           |     |             |                                                |
+| types.py            | 95% | None        | Pure logic, no external deps                   |
+| gsheet.py           | 70% | Basic read  | Mock for SIT, UAT verifies API contract        |
+| homebudget.py       | 70% | CRUD ops    | Mock for SIT, UAT verifies wrapper correctness |
+| s3.py               | 70% | Upload test | Mock for SIT, UAT verifies S3 upload/delete    |
+| validation.py       | 90% | None        | Shared validators must be bulletproof          |
+| logging.py          | 60% | None        | Mostly pass-through to standard library        |
 
 **SIT Test Focus**:
 
@@ -105,10 +108,13 @@ Testing follows the 9-phase implementation plan defined in [TDD Implementation P
 
 **Test Strategy**:
 
-| Feature | SIT Coverage Target | UAT | Rationale |
-|---------|---------------------|-----|-----------|
-| Forex fetch | 80% | API call + cache | Mock API responses for SIT, UAT verifies real API |
-| Wallet balances | 85% | Read real HB | Mock HomeBudget for SIT, UAT queries live DB |
+| Feature             |     |                  |                                                   |
+| ------------------- | --- | ---------------- | ------------------------------------------------- |
+| SIT Coverage Target |     |                  |                                                   |
+| UAT                 |     |                  |                                                   |
+| Rationale           |     |                  |                                                   |
+| Forex fetch         | 80% | API call + cache | Mock API responses for SIT, UAT verifies real API |
+| Wallet balances     | 85% | Read real HB     | Mock HomeBudget for SIT, UAT queries live DB      |
 
 **SIT Test Focus**:
 
@@ -138,11 +144,14 @@ Testing follows the 9-phase implementation plan defined in [TDD Implementation P
 
 **Test Strategy**:
 
-| Component | SIT Coverage Target | UAT | Rationale |
-|-----------|---------------------|-----|-----------|
-| Cash gap calculation | 95% | E2E flow | Core business logic, high risk |
-| Adjustment generation | 90% | Transaction commit | Critical for data integrity |
-| Tolerance alerting | 85% | User workflow | User checkpoint must be correct |
+| Component             |     |                    |                                 |
+| --------------------- | --- | ------------------ | ------------------------------- |
+| SIT Coverage Target   |     |                    |                                 |
+| UAT                   |     |                    |                                 |
+| Rationale             |     |                    |                                 |
+| Cash gap calculation  | 95% | E2E flow           | Core business logic, high risk  |
+| Adjustment generation | 90% | Transaction commit | Critical for data integrity     |
+| Tolerance alerting    | 85% | User workflow      | User checkpoint must be correct |
 
 **SIT Test Focus**:
 
@@ -184,11 +193,14 @@ Testing follows the 9-phase implementation plan defined in [TDD Implementation P
 
 **Test Strategy**:
 
-| Component | SIT Coverage Target | UAT | Rationale |
-|-----------|---------------------|-----|-----------|
-| Statement parsers | 75% | Sample files | SIT with fixtures, UAT with real PDFs/CSVs |
-| Allocation logic | 90% | Manual review | Core business logic, must be exact |
-| Transaction generation | 85% | HB commit | Critical for double-entry correctness |
+| Component              |     |               |                                            |
+| ---------------------- | --- | ------------- | ------------------------------------------ |
+| SIT Coverage Target    |     |               |                                            |
+| UAT                    |     |               |                                            |
+| Rationale              |     |               |                                            |
+| Statement parsers      | 75% | Sample files  | SIT with fixtures, UAT with real PDFs/CSVs |
+| Allocation logic       | 90% | Manual review | Core business logic, must be exact         |
+| Transaction generation | 85% | HB commit     | Critical for double-entry correctness      |
 
 **SIT Test Focus**:
 
@@ -228,10 +240,13 @@ Testing follows the 9-phase implementation plan defined in [TDD Implementation P
 
 **Test Strategy**:
 
-| Component | SIT Coverage Target | UAT | Rationale |
-|-----------|---------------------|-----|-----------|
-| Bank parsers | 75% | Sample files | SIT with fixtures, UAT with real CSVs/PDFs |
-| Reconciliation algorithm | 90% | E2E flow | Complex matching logic, high risk |
+| Component                |     |              |                                            |
+| ------------------------ | --- | ------------ | ------------------------------------------ |
+| SIT Coverage Target      |     |              |                                            |
+| UAT                      |     |              |                                            |
+| Rationale                |     |              |                                            |
+| Bank parsers             | 75% | Sample files | SIT with fixtures, UAT with real CSVs/PDFs |
+| Reconciliation algorithm | 90% | E2E flow     | Complex matching logic, high risk          |
 
 **SIT Test Focus**:
 
@@ -281,10 +296,21 @@ Testing follows the 9-phase implementation plan defined in [TDD Implementation P
 
 **Test Strategy**:
 
-| Component | SIT Coverage Target | UAT | Rationale |
-|-----------|---------------------|-----|-----------|  
-| IBKR parser | 70% | Sample statement | SIT with fixture, UAT with real Activity Statement |
-| Balance reconciliation | 85% | E2E flow | Simpler than transaction matching, focus on variance detection |
+| Component              |     |                  |
+| ---------------------- | --- | ---------------- |
+| SIT Coverage Target    |     |                  |
+| UAT                    |     |                  |
+| Rationale              |     |                  |
+| IBKR parser            | 70% | Sample statement |
+| Balance reconciliation | 85% | E2E flow         |
+
+| Component              |     |                                                                |
+| ---------------------- | --- | -------------------------------------------------------------- |
+| SIT Coverage Target    |     |                                                                |
+| UAT                    |     |                                                                |
+| Rationale              |     |                                                                |
+| IBKR parser            | 70% | SIT with fixture, UAT with real Activity Statement             |
+| Balance reconciliation | 85% | Simpler than transaction matching, focus on variance detection |
 
 **SIT Test Focus**:
 
@@ -322,10 +348,13 @@ Testing follows the 9-phase implementation plan defined in [TDD Implementation P
 
 **Test Strategy**:
 
-| Component | SIT Coverage Target | UAT | Rationale |
-|-----------|---------------------|-----|-----------|
-| CPF parser | 70% | Sample statement | SIT with fixture, UAT with real contribution statement |
-| Balance reconciliation | 85% | E2E flow | Simple placeholder matching, focus on splits and interest |
+| Component              |     |                  |                                                           |
+| ---------------------- | --- | ---------------- | --------------------------------------------------------- |
+| SIT Coverage Target    |     |                  |                                                           |
+| UAT                    |     |                  |                                                           |
+| Rationale              |     |                  |                                                           |
+| CPF parser             | 70% | Sample statement | SIT with fixture, UAT with real contribution statement    |
+| Balance reconciliation | 85% | E2E flow         | Simple placeholder matching, focus on splits and interest |
 
 **SIT Test Focus**:
 
@@ -363,13 +392,16 @@ Testing follows the 9-phase implementation plan defined in [TDD Implementation P
 
 **Test Strategy**:
 
-| Component | SIT Coverage Target | UAT | Rationale |
-|-----------|---------------------|-----|-----------|
-| Trial balance | 85% | Manual review | Core accounting logic |
-| Income statement | 85% | PDF review | User-facing output, must be correct |
-| Balance sheet | 85% | PDF review | User-facing output, must be correct |
-| Forex adjustments | 90% | Manual calc | Complex calculations, high risk |
-| Persistence | 70% | None | Mostly DB CRUD, lower risk |
+| Component           |     |               |                                     |
+| ------------------- | --- | ------------- | ----------------------------------- |
+| SIT Coverage Target |     |               |                                     |
+| UAT                 |     |               |                                     |
+| Rationale           |     |               |                                     |
+| Trial balance       | 85% | Manual review | Core accounting logic               |
+| Income statement    | 85% | PDF review    | User-facing output, must be correct |
+| Balance sheet       | 85% | PDF review    | User-facing output, must be correct |
+| Forex adjustments   | 90% | Manual calc   | Complex calculations, high risk     |
+| Persistence         | 70% | None          | Mostly DB CRUD, lower risk          |
 
 **SIT Test Focus**:
 
@@ -406,11 +438,14 @@ Testing follows the 9-phase implementation plan defined in [TDD Implementation P
 
 **Test Strategy**:
 
-| Component | SIT Coverage Target | UAT | Rationale |
-|-----------|---------------------|-----|-----------|
-| CLI commands | 55% | E2E workflow | Many code paths (help, args), focus on critical flows |
-| Workflow runner | 65% | E2E workflow | Orchestration logic with checkpoints |
-| Session manager | 70% | Resume test | State persistence must be reliable |
+| Component           |     |              |                                                       |
+| ------------------- | --- | ------------ | ----------------------------------------------------- |
+| SIT Coverage Target |     |              |                                                       |
+| UAT                 |     |              |                                                       |
+| Rationale           |     |              |                                                       |
+| CLI commands        | 55% | E2E workflow | Many code paths (help, args), focus on critical flows |
+| Workflow runner     | 65% | E2E workflow | Orchestration logic with checkpoints                  |
+| Session manager     | 70% | Resume test  | State persistence must be reliable                    |
 
 **SIT Test Focus**:
 

@@ -33,12 +33,15 @@
 
 ## Test Levels
 
-| id | level       | purpose               | execution mode |
-| -- | ----------- | --------------------- | -------------- |
-| 01 | unit        | pure validation rules | local automated |
-| 02 | integration | api wrappers and flow | local automated |
-| 03 | SIT         | live workbook checks  | controlled live |
-| 04 | UAT         | operator acceptance   | human guided   |
+| id             |             |                       |                 |
+| -------------- | ----------- | --------------------- | --------------- |
+| level          |             |                       |                 |
+| purpose        |             |                       |                 |
+| execution mode |             |                       |                 |
+| 01             | unit        | pure validation rules | local automated |
+| 02             | integration | api wrappers and flow | local automated |
+| 03             | SIT         | live workbook checks  | controlled live |
+| 04             | UAT         | user acceptance       | human guided    |
 
 Level notes:
 
@@ -49,23 +52,28 @@ Level notes:
 
 ## Scenario Matrix
 
-| id | requirement set | scenario          | level path       |
-| -- | --------------- | ----------------- | ---------------- |
-| 01 | AC-01, AC-02    | formula read      | unit, SIT, UAT   |
-| 02 | AC-03, AC-04    | create and update | integration, SIT |
-| 03 | AC-05           | clear             | integration, SIT |
-| 04 | AC-06 to AC-08  | bad input         | unit, integration |
-| 05 | AC-09, AC-10    | audit and failures | integration, SIT |
+| id              |                |                    |                   |
+| --------------- | -------------- | ------------------ | ----------------- |
+| requirement set |                |                    |                   |
+| scenario        |                |                    |                   |
+| level path      |                |                    |                   |
+| 01              | AC-01, AC-02   | formula read       | unit, SIT, UAT    |
+| 02              | AC-03, AC-04   | create and update  | integration, SIT  |
+| 03              | AC-05          | clear              | integration, SIT  |
+| 04              | AC-06 to AC-08 | bad input          | unit, integration |
+| 05              | AC-09, AC-10   | audit and failures | integration, SIT  |
 
 ## Data and Environment
 
-| id | item         | value                                  |
-| -- | ------------ | -------------------------------------- |
-| 01 | runtime venv | gs-formula-env at repository root      |
-| 02 | dependencies | install from requirements.txt          |
-| 03 | credential   | .credentials/client_secret.json        |
-| 04 | workbook     | 1SNtnlNufcZp-44f5U1YbECUwHbkICih5cdywiu04wpI |
-| 05 | SIT range    | A3                                     |
+| id    |              |                                              |
+| ----- | ------------ | -------------------------------------------- |
+| item  |              |                                              |
+| value |              |                                              |
+| 01    | runtime venv | gs-formula-env at repository root            |
+| 02    | dependencies | install from requirements.txt                |
+| 03    | credential   | .credentials/client_secret.json              |
+| 04    | workbook     | 1SNtnlNufcZp-44f5U1YbECUwHbkICih5cdywiu04wpI |
+| 05    | SIT range    | A3                                           |
 
 Environment notes:
 
@@ -81,7 +89,7 @@ Each SIT run entry should capture:
 - command executed
 - observed output and result in workbook
 - pass or fail outcome
-- timestamp and operator or agent executor
+- timestamp and user or agent executor
 
 Suggested evidence destination:
 
@@ -89,11 +97,14 @@ Suggested evidence destination:
 
 ## Defect Triage Rules
 
-| id | severity | rule                    | release impact |
-| -- | -------- | ----------------------- | -------------- |
-| 01 | high     | blocks core CRUD path   | release block  |
-| 02 | medium   | workaround exists        | fix or defer   |
-| 03 | low      | cosmetic or minor output | may defer      |
+| id             |        |                          |               |
+| -------------- | ------ | ------------------------ | ------------- |
+| severity       |        |                          |               |
+| rule           |        |                          |               |
+| release impact |        |                          |               |
+| 01             | high   | blocks core CRUD path    | release block |
+| 02             | medium | workaround exists        | fix or defer  |
+| 03             | low    | cosmetic or minor output | may defer     |
 
 ## Exit Criteria Through SIT
 

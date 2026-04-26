@@ -26,7 +26,7 @@ scope: poc
 
 ## Overview
 
-The account classification system defines the different types of accounts in the HomeBudget system, such as cash, credit, and cost center accounts. It also defines how these accounts are interpreted on financial statements and the rules for transaction categorization and balance management for each account type.
+The account classification system defines the different types of accounts in the HomeBudget system, such as cash, credit, and cost center accounts. It defines account asset types and the rules for asset type classification and balance management for each account type, which determines how account balances aggregate onto the balance sheet.
 
 ## Aims
 
@@ -51,22 +51,39 @@ For investments which have combinations of mixes of asset types such as cash acc
 The financial statements google sheets workbook currently contains the definitive list of accounts used for financial statements reporting and net worth tracking, which includes both HomeBudget accounts, plus a few additional off-HB accounts only tracked in the financial statements workbook for reporting purposes. 
 
 
-| cat | HomeBudget | financial statements wkb (legacy) | included | description                                                                            |
-| --- | ---------- | --------------------------------- | -------- | -------------------------------------------------------------------------------------- |
-| 01  | X          | X                                 | yes      | active tracked accounts                                                                 |
-| 02  | X          |                                   | no       | legacy accounts no longer in use, such as `TWH - Common`                               |
-| 03  |            | X                                 | yes      | off-HB accounts only tracked in legacy financial statements workbook, migrating to app storage |
+| cat         |     |     |     |
+| ----------- | --- | --- | --- |
+| HomeBudget  |     |     |     |
+| fin stm wkb |     |     |     |
+| included    |     |     |     |
+| description |     |     |     |
+| 01          | X   | X   | yes |
+| 02          | X   |     | no  |
+| 03          |     | X   | yes |
+
+| cat         |     |                                                                                                |
+| ----------- | --- | ---------------------------------------------------------------------------------------------- |
+| HomeBudget  |     |                                                                                                |
+| fin stm wkb |     |                                                                                                |
+| included    |     |                                                                                                |
+| description |     |                                                                                                |
+| 01          | X   | active tracked accounts                                                                        |
+| 02          | X   | legacy accounts no longer in use, such as `TWH - Common`                                       |
+| 03          |     | off-HB accounts only tracked in legacy financial statements workbook, migrating to app storage |
 
 ## HomeBudget Account types
 
 The HomeBudget account type is stored in the app-managed hb account dimension, refreshed from the HomeBudget wrapper during data sync.
 
-| id | HB account type      | example           | description                                         |
-| -- | -------------------- | ----------------- | --------------------------------------------------- |
-| 01 | Budget               | TWH - Personal    | cost center                                         |
-| 02 | Cash                 | TWH DBS Multi SGD | real wallet or bank account                         |
-| 03 | Credit               | TWH UOB One SGD   | credit card, loan or personal line of credit        |
-| 04 | External             | IB POSITION USD   | anything which is not related to personal savings*  |
+| id              |          |                   |                                                    |
+| --------------- | -------- | ----------------- | -------------------------------------------------- |
+| HB account type |          |                   |                                                    |
+| example         |          |                   |                                                    |
+| description     |          |                   |                                                    |
+| 01              | Budget   | TWH - Personal    | cost center                                        |
+| 02              | Cash     | TWH DBS Multi SGD | real wallet or bank account                        |
+| 03              | Credit   | TWH UOB One SGD   | credit card, loan or personal line of credit       |
+| 04              | External | IB POSITION USD   | anything which is not related to personal savings* |
 
 **Personal savings** = Personal income - personal expenses. This is tracked separately from investment related income and expenses.
 
@@ -95,31 +112,37 @@ All other accounts are classified as external, such as investment position accou
 
 ## Financial statement asset types
 
-| id | asset subcategory | balance sheet asset type |
-| -- | ----------------- | ------------------------ |
-| 01 | wallet cash       | cash and bank accounts   |
-| 02 | bank account      | cash and bank accounts   |
-| 03 | savings account   | cash and bank accounts   |
-| 04 | credit card       | credit                   |
-| 05 | other credit      | credit                   |
-| 06 | investment        | liquid investments       |
-| 07 | retirement        | illiquid and retirement  |
+| id                       |                 |                         |
+| ------------------------ | --------------- | ----------------------- |
+| asset subcategory        |                 |                         |
+| balance sheet asset type |                 |                         |
+| 01                       | wallet cash     | cash and bank accounts  |
+| 02                       | bank account    | cash and bank accounts  |
+| 03                       | savings account | cash and bank accounts  |
+| 04                       | credit card     | credit                  |
+| 05                       | other credit    | credit                  |
+| 06                       | investment      | liquid investments      |
+| 07                       | retirement      | illiquid and retirement |
 
 ### Asset type mapping
 
+The account asset type classification determines balance sheet placement. Each account is assigned an asset subcategory through the account registry, and the aggregation of account balances onto balance sheet line items follows from that classification without a separate mapping table.
+
 **Current workflow**
 
-Currently, the account asset type mapping can be found in the legacy financial statements google sheets workbook `gsheet/financial-statements.json` range `accounts`, which is being migrated to app-owned sqlite storage with mapping maintenance through the category and account data model, custom Google Sheets UI, and backend CRUD operations.
+Currently, the account asset type mapping can be found in the legacy financial statements google sheets workbook `gsheet/financial-statements.json` range `accounts`, which is being migrated to app-owned sqlite storage with mapping maintenance through the account registry page and backend CRUD operations.
 
-| field         | example value     | notes                                             |
-| --------------|-------------------|---------------------------------------------------|
+| field         |                   |                                                   |
+| ------------- | ----------------- | ------------------------------------------------- |
+| example value |                   |                                                   |
+| notes         |                   |                                                   |
 | id            | TWH DBS MULTI SGD | name used in legacy financial statements workbook |
 | type          | bank account      | asset subcategory                                 |
-| owner         | TWH               | not used, only TWH owner accounts in scope |
-| name          | DBS MULTI         | account tag                                |
-| currency      | SGD               | currency                                   |
-| HB account    | TWH DBS Multi SGD | HomeBudget account name                    |
-| stm account   | TWH DBS Multi SGD | account name in statement digital twin     |
+| owner         | TWH               | not used, only TWH owner accounts in scope        |
+| name          | DBS MULTI         | account tag                                       |
+| currency      | SGD               | currency                                          |
+| HB account    | TWH DBS Multi SGD | HomeBudget account name                           |
+| stm account   | TWH DBS Multi SGD | account name in statement digital twin            |
 
 ### Common to all accounts
 

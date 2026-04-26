@@ -49,20 +49,22 @@ Additional schemas and objects, for example session-state domains, are expected 
 
 - [workflow orchestration](workflow-orchestration.md)
 - [source systems and lineage](source-systems-lineage.md)
-- [transaction category mapping](transaction-category-mapping.md)
+- [transaction categories](transaction-categories.md)
 - [account classification](account-classification.md)
 - [statements lifecycle](statements-lifecycle.md)
 
 ## Active schema set for POC
 
-| id | schema      | role                               |
-| -- | ----------- | ---------------------------------- |
-| 01 | close_book    | reconciled statement-ready source        |
-| 02 | statements    | bank statement transaction staging       |
-| 03 | hb            | HomeBudget wrapper sync state            |
-| 04 | mapping       | mapping state and mapping versions       |
-| 05 | cash_staging  | wallet cash GS form aggregate staging    |
-| 06 | bills         | bills, shared-costs, and consumption domain |
+| id     |              |                                             |
+| ------ | ------------ | ------------------------------------------- |
+| schema |              |                                             |
+| role   |              |                                             |
+| 01     | close_book   | reconciled statement-ready source           |
+| 02     | statements   | bank statement transaction staging          |
+| 03     | hb           | HomeBudget wrapper sync state               |
+| 04     | mapping      | mapping state and mapping versions          |
+| 05     | cash_staging | wallet cash GS form aggregate staging       |
+| 06     | bills        | bills, shared-costs, and consumption domain |
 
 ## Schema definitions
 
@@ -103,7 +105,7 @@ Additional schemas and objects, for example session-state domains, are expected 
 
 - App-owned canonical schema for bill-payment, shared-cost, settlement, and consumption records.
 - Parsed bill records are stored in this schema as raw domain inputs for allocation and reconciliation logic.
-- During POC, Google Sheets may be used as bridge UI for operator input and review, but canonical state remains in this schema.
+- During POC, Google Sheets may be used as bridge UI for user input and review, but canonical state remains in this schema.
 - Provides bill domain lineage anchors consumed by `close_book` and bill-workstream checks.
 
 ## Lineage and statement aggregation boundary

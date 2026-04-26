@@ -1,4 +1,4 @@
-﻿# Test-Driven Development Strategy
+# Test-Driven Development Strategy
 
 **Document Type**: Testing Strategy  
 **Status**: Active  
@@ -196,14 +196,29 @@ def test_uat_cash_reconcile_february_2026():
 
 ### Test Type Selection Matrix
 
-| Component | SIT | UAT | Rationale |
-|-----------|-----|-----|-----------|
-| **Core domain (accounting, reconciliation)** | âœ“âœ“âœ“ | âœ“ | SIT primary, UAT for integration confidence |
-| **Adapters (HomeBudget, GSheet, parsers)** | âœ“âœ“ | âœ“âœ“ | SIT for parsing logic, UAT for API contracts |
-| **Orchestration (workflow runner, CLI)** | âœ“ | âœ“âœ“ | SIT for happy path, UAT for user interaction |
-| **Validation and error handling** | âœ“âœ“âœ“ | âœ“ | SIT for all error paths, UAT for user messaging |
-| **Report generation** | âœ“âœ“ | âœ“ | SIT for calculations, UAT for PDF/export formats |
-| **Data migration** | âœ“ | âœ“âœ“âœ“ | UAT critical for one-time backfill operations |
+| Component                                    |           |           |
+| -------------------------------------------- | --------- | --------- |
+| SIT                                          |           |           |
+| UAT                                          |           |           |
+| Rationale                                    |           |           |
+| **Core domain (accounting, reconciliation)** | âœ“âœ“âœ“ | âœ“       |
+| **Adapters (HomeBudget, GSheet, parsers)**   | âœ“âœ“    | âœ“âœ“    |
+| **Orchestration (workflow runner, CLI)**     | âœ“       | âœ“âœ“    |
+| **Validation and error handling**            | âœ“âœ“âœ“ | âœ“       |
+| **Report generation**                        | âœ“âœ“    | âœ“       |
+| **Data migration**                           | âœ“       | âœ“âœ“âœ“ |
+
+| Component                                    |                                                  |
+| -------------------------------------------- | ------------------------------------------------ |
+| SIT                                          |                                                  |
+| UAT                                          |                                                  |
+| Rationale                                    |                                                  |
+| **Core domain (accounting, reconciliation)** | SIT primary, UAT for integration confidence      |
+| **Adapters (HomeBudget, GSheet, parsers)**   | SIT for parsing logic, UAT for API contracts     |
+| **Orchestration (workflow runner, CLI)**     | SIT for happy path, UAT for user interaction     |
+| **Validation and error handling**            | SIT for all error paths, UAT for user messaging  |
+| **Report generation**                        | SIT for calculations, UAT for PDF/export formats |
+| **Data migration**                           | UAT critical for one-time backfill operations    |
 
 ---
 
@@ -213,12 +228,15 @@ def test_uat_cash_reconcile_february_2026():
 
 Different standards apply to different layers based on business risk and complexity:
 
-| Layer | Minimum Coverage | Target Coverage | Rationale |
-|-------|------------------|-----------------|-----------|
-| **Domain Logic** | 85% | 90%+ | Core accounting rules and reconciliation algorithm are high-risk |
-| **Adapters** | 65% | 70%+ | Data access logic has external dependencies, harder to cover exhaustively |
-| **Orchestration** | 50% | 60%+ | Workflow coordination has many UI/CLI paths, focus on critical flows |
-| **Utilities** | 80% | 85%+ | Shared utilities should be bulletproof since many modules depend on them |
+| Layer             |     |      |                                                                           |
+| ----------------- | --- | ---- | ------------------------------------------------------------------------- |
+| Minimum Coverage  |     |      |                                                                           |
+| Target Coverage   |     |      |                                                                           |
+| Rationale         |     |      |                                                                           |
+| **Domain Logic**  | 85% | 90%+ | Core accounting rules and reconciliation algorithm are high-risk          |
+| **Adapters**      | 65% | 70%+ | Data access logic has external dependencies, harder to cover exhaustively |
+| **Orchestration** | 50% | 60%+ | Workflow coordination has many UI/CLI paths, focus on critical flows      |
+| **Utilities**     | 80% | 85%+ | Shared utilities should be bulletproof since many modules depend on them  |
 
 ### Phase Gate Quality Criteria
 

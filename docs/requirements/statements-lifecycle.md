@@ -63,12 +63,15 @@ This document defines statement lifecycle policy by close period.
 
 ## Lifecycle state model by period
 
-| id | state      | meaning                                   | next states |
-| -- | ---------- | ----------------------------------------- | ----------- |
-| 01 | draft      | statement outputs generated for review    | reviewed    |
-| 02 | reviewed   | checkpoint review complete                | finalized   |
-| 03 | finalized  | period statement locked for publication   | reopened    |
-| 04 | reopened   | controlled revision state after final     | finalized   |
+| id          |           |                                         |           |
+| ----------- | --------- | --------------------------------------- | --------- |
+| state       |           |                                         |           |
+| meaning     |           |                                         |           |
+| next states |           |                                         |           |
+| 01          | draft     | statement outputs generated for review  | reviewed  |
+| 02          | reviewed  | checkpoint review complete              | finalized |
+| 03          | finalized | period statement locked for publication | reopened  |
+| 04          | reopened  | controlled revision state after final   | finalized |
 
 ## Finalization criteria
 

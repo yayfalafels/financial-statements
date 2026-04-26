@@ -1,4 +1,4 @@
-﻿# Application Architecture Design
+# Application Architecture Design
 
 ## Table of contents
 

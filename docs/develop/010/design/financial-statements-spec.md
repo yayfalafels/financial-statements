@@ -1,4 +1,4 @@
-﻿# Financial Statements Specification
+# Financial Statements Specification
 
 **Document Version:** 0.1.0  
 **Last Updated:** February 23, 2026  
@@ -21,7 +21,7 @@
 
 ## Overview
 
-The Financial Statements application processes personal financial data from the HomeBudget database and produces financial statements in PDF format. The primary user is a single operator managing multiple accounts and currencies, with a workflow spanning monthly closing, reconciliation, and reporting.
+The Financial Statements application processes personal financial data from the HomeBudget database and produces financial statements in PDF format. The primary user is a single user managing multiple accounts and currencies, with a workflow spanning monthly closing, reconciliation, and reporting.
 
 ### Scope
 
@@ -130,13 +130,16 @@ TOTAL LIABILITIES + EQUITY         $XXX,XXX.XX
 
 ### Account Types
 
-| Account Type | Purpose | Currency | Balance Source |
-|---|---|---|---|
-| Wallet | Cash holding | Primary (SGD) | Manual entry + expenses |
-| Bank Account | Checking/savings | USD, SGD | Manual entry + transfers |
-| Brokerage (IBKR) | Securities | USD | Manual entry + P&L |
-| CPF (Singapore) | Retirement fund | SGD | Manual entry from statements |
-| Credit Card | Liability | USD, SGD | Manual entry + expenses |
+| Account Type     |                  |               |                              |
+| ---------------- | ---------------- | ------------- | ---------------------------- |
+| Purpose          |                  |               |                              |
+| Currency         |                  |               |                              |
+| Balance Source   |                  |               |                              |
+| Wallet           | Cash holding     | Primary (SGD) | Manual entry + expenses      |
+| Bank Account     | Checking/savings | USD, SGD      | Manual entry + transfers     |
+| Brokerage (IBKR) | Securities       | USD           | Manual entry + P&L           |
+| CPF (Singapore)  | Retirement fund  | SGD           | Manual entry from statements |
+| Credit Card      | Liability        | USD, SGD      | Manual entry + expenses      |
 
 ### Account Hierarchy
 
@@ -533,25 +536,49 @@ EXPENSES
 
 ## Glossary of Financial Terms
 
-| Term | Definition | Example |
-|---|---|---|
-| **Accrual** | Income or expense recognized when earned/incurred, not when paid | Dividend booked on ex-date, not payment date |
-| **Asset** | Resource owned with future economic value | Cash, stocks, real estate |
-| **Balance Sheet** | Statement of assets, liabilities, and equity at a point in time | "As of Dec 31, 2024" |
-| **Category** | Classification of income/expense; determines statement line item | "Groceries", "Salary", "Brokerage Fees" |
-| **Cash Basis** | Revenue and expenses recorded when cash moves | Opposite of accrual |
-| **Consolidated** | Combined view across multiple accounts/entities | "Total Assets across all wallets" |
-| **Equity** | Ownership interest; Assets - Liabilities = Equity | Net worth |
-| **Expense** | Cost incurred in operations; reduces equity | Groceries, utilities, fees |
-| **FX Gain/Loss** | Profit/loss from currency fluctuation | USD dropped; SGD value of USD account fell |
-| **Income** | Revenue earned; increases equity | Salary, dividends, interest |
-| **Liability** | Obligation to pay or deliver goods/services | Credit card debt, loans |
-| **Mark-to-Market** | Fair value based on current market price | Stock portfolio valued at today's closing price |
-| **P&L (Income Statement)** | Statement of revenue and expenses over a period | "Jan 2024 profit/loss" |
-| **Realized Gain** | Profit on a completed transaction | Sold stock for $200, bought for $150 = $50 realized gain |
-| **Reporting Currency** | Currency in which statements are prepared | SGD |
-| **Subcategory** | Second level of classification under a category | "Salary" is subcategory of "Employment" income |
-| **Unrealized Gain** | Profit on open position not yet sold | Stock worth $200, cost $150 = $50 unrealized gain |
+| Term                       |                                                                  |
+| -------------------------- | ---------------------------------------------------------------- |
+| Definition                 |                                                                  |
+| Example                    |                                                                  |
+| **Accrual**                | Income or expense recognized when earned/incurred, not when paid |
+| **Asset**                  | Resource owned with future economic value                        |
+| **Balance Sheet**          | Statement of assets, liabilities, and equity at a point in time  |
+| **Category**               | Classification of income/expense; determines statement line item |
+| **Cash Basis**             | Revenue and expenses recorded when cash moves                    |
+| **Consolidated**           | Combined view across multiple accounts/entities                  |
+| **Equity**                 | Ownership interest; Assets - Liabilities = Equity                |
+| **Expense**                | Cost incurred in operations; reduces equity                      |
+| **FX Gain/Loss**           | Profit/loss from currency fluctuation                            |
+| **Income**                 | Revenue earned; increases equity                                 |
+| **Liability**              | Obligation to pay or deliver goods/services                      |
+| **Mark-to-Market**         | Fair value based on current market price                         |
+| **P&L (Income Statement)** | Statement of revenue and expenses over a period                  |
+| **Realized Gain**          | Profit on a completed transaction                                |
+| **Reporting Currency**     | Currency in which statements are prepared                        |
+| **Subcategory**            | Second level of classification under a category                  |
+| **Unrealized Gain**        | Profit on open position not yet sold                             |
+
+| Term                       |                                                          |
+| -------------------------- | -------------------------------------------------------- |
+| Definition                 |                                                          |
+| Example                    |                                                          |
+| **Accrual**                | Dividend booked on ex-date, not payment date             |
+| **Asset**                  | Cash, stocks, real estate                                |
+| **Balance Sheet**          | "As of Dec 31, 2024"                                     |
+| **Category**               | "Groceries", "Salary", "Brokerage Fees"                  |
+| **Cash Basis**             | Opposite of accrual                                      |
+| **Consolidated**           | "Total Assets across all wallets"                        |
+| **Equity**                 | Net worth                                                |
+| **Expense**                | Groceries, utilities, fees                               |
+| **FX Gain/Loss**           | USD dropped; SGD value of USD account fell               |
+| **Income**                 | Salary, dividends, interest                              |
+| **Liability**              | Credit card debt, loans                                  |
+| **Mark-to-Market**         | Stock portfolio valued at today's closing price          |
+| **P&L (Income Statement)** | "Jan 2024 profit/loss"                                   |
+| **Realized Gain**          | Sold stock for $200, bought for $150 = $50 realized gain |
+| **Reporting Currency**     | SGD                                                      |
+| **Subcategory**            | "Salary" is subcategory of "Employment" income           |
+| **Unrealized Gain**        | Stock worth $200, cost $150 = $50 unrealized gain        |
 
 ---
 

@@ -23,15 +23,18 @@ The table below maps source configs to the currently documented helper script pa
 
 Helper script prefix: `.dev/scripts/python/`
 
-| id | source config                  | helper                      | notes                    |
-| -- | ------------------------------ | --------------------------- | ------------------------ |
-| 01 | `gsheet/ibkr-iba.json`         | `inspect_helper_schemas.py` | primary multi-workbook   |
-| 02 | `gsheet/cpf.json`              | `inspect_helper_schemas.py` | primary multi-workbook   |
-| 03 | `gsheet/homebudget-workbook.json` | `inspect_helper_schemas.py` | primary multi-workbook |
-| 04 | `gsheet/financial-statements.json` | `inspect_helper_schemas.py` | included in helper      |
-| 05 | `gsheet/cash-expenses.json`    | `inspect_helper_schemas.py` | included in helper      |
-| 06 | `gsheet/shared-expenses.json`  | `inspect_helper_schemas.py` | included in helper      |
-| 07 | `gsheet/closing-session.json`  | `inspect_helper_schemas.py` | included in helper      |
+| id            |                                    |                             |                        |
+| ------------- | ---------------------------------- | --------------------------- | ---------------------- |
+| source config |                                    |                             |                        |
+| helper        |                                    |                             |                        |
+| notes         |                                    |                             |                        |
+| 01            | `gsheet/ibkr-iba.json`             | `inspect_helper_schemas.py` | primary multi-workbook |
+| 02            | `gsheet/cpf.json`                  | `inspect_helper_schemas.py` | primary multi-workbook |
+| 03            | `gsheet/homebudget-workbook.json`  | `inspect_helper_schemas.py` | primary multi-workbook |
+| 04            | `gsheet/financial-statements.json` | `inspect_helper_schemas.py` | included in helper     |
+| 05            | `gsheet/cash-expenses.json`        | `inspect_helper_schemas.py` | included in helper     |
+| 06            | `gsheet/shared-expenses.json`      | `inspect_helper_schemas.py` | included in helper     |
+| 07            | `gsheet/closing-session.json`      | `inspect_helper_schemas.py` | included in helper     |
 
 For execution procedure, command patterns, and troubleshooting, use skill `gsheet-inspect`.
 

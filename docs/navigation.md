@@ -84,7 +84,8 @@ Current examples include:
 - `statements-lifecycle.md`
 - `source-systems-lineage.md`
 - `reconciliation-engine.md`
-- `transaction-category-mapping.md`
+- `transaction-categories.md`
+- `financial-statements.md`
 - `homebudget.md`
 - `google-sheets.md`
 
@@ -130,22 +131,28 @@ Current examples include:
 
 Use topic types to distinguish pages that define requirements from pages that support interpretation or current-state context. The topic type does not replace body text, but it makes the page role explicit at the metadata level.
 
-| id | topic_type         | purpose            | use                          |
-| -- | ------------------ | ------------------ | ---------------------------- |
-| 01 | `owner`            | requirement owner  | defines POC requirement      |
-| 02 | `reference`        | supporting reference | supports interpretation    |
+| id         |             |                      |                         |
+| ---------- | ----------- | -------------------- | ----------------------- |
+| topic_type |             |                      |                         |
+| purpose    |             |                      |                         |
+| use        |             |                      |                         |
+| 01         | `owner`     | requirement owner    | defines POC requirement |
+| 02         | `reference` | supporting reference | supports interpretation |
 
 ## Frontmatter fields
 
 Use the following fields as the baseline metadata contract for requirement documents.
 
-| id | field        | required | purpose                          |
-| -- | ------------ | -------- | -------------------------------- |
-| 01 | `title`      | yes      | canonical document title         |
-| 02 | `doc_type`   | yes      | document class                   |
-| 03 | `topic_type` | yes      | `owner` or `reference`           |
-| 04 | `owner`      | yes      | primary topic owner id           |
-| 05 | `scope`      | yes      | active scope boundary            |
+| id       |              |     |                          |
+| -------- | ------------ | --- | ------------------------ |
+| field    |              |     |                          |
+| required |              |     |                          |
+| purpose  |              |     |                          |
+| 01       | `title`      | yes | canonical document title |
+| 02       | `doc_type`   | yes | document class           |
+| 03       | `topic_type` | yes | `owner` or `reference`   |
+| 04       | `owner`      | yes | primary topic owner id   |
+| 05       | `scope`      | yes | active scope boundary    |
 
 ## Relationship rules
 

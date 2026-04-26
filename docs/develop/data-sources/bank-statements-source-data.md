@@ -30,22 +30,26 @@ Inspection artifact: `.dev/.artifacts/statements_db_inspection.json`
 
 Four accounts are within the statement digital twin scope for the POC:
 
-| id | account_name        | s3_account_id               | db_table           | currency |
-| -- | ------------------- | --------------------------- | ------------------ | -------- |
-| 01 | TWH DBS Multi SGD   | 02_dbs_savings_sgd          | TWH_DBS_MULTI_SGD  | SGD      |
-| 02 | TWH CITI            | 04_citibank_personal        | TWH_CITI_USD       | USD      |
-| 03 | TWH UOB One SGD     | 03_uob_one_visa             | TWH_UOB_ONE_SGD    | SGD      |
-| 04 | TWH Visa USD        | 06_bank_of_america_visa_usd | TWH_BOA_TRAVEL_USD | USD      |
+| id            |                   |                             |                    |     |
+| ------------- | ----------------- | --------------------------- | ------------------ | --- |
+| account_name  |                   |                             |                    |     |
+| s3_account_id |                   |                             |                    |     |
+| db_table      |                   |                             |                    |     |
+| currency      |                   |                             |                    |     |
+| 01            | TWH DBS Multi SGD | 02_dbs_savings_sgd          | TWH_DBS_MULTI_SGD  | SGD |
+| 02            | TWH CITI          | 04_citibank_personal        | TWH_CITI_USD       | USD |
+| 03            | TWH UOB One SGD   | 03_uob_one_visa             | TWH_UOB_ONE_SGD    | SGD |
+| 04            | TWH Visa USD      | 06_bank_of_america_visa_usd | TWH_BOA_TRAVEL_USD | USD |
 
-The `s3_account_id` value identifies the account's local statement file path under the operator filesystem. The `db_table` value is the SQLite table name inside `statements.db`. The canonical account name list is maintained in `data/monthly-closing/accounts.json`.
+The `s3_account_id` value identifies the account's local statement file path under the user filesystem. The `db_table` value is the SQLite table name inside `statements.db`. The canonical account name list is maintained in `data/monthly-closing/accounts.json`.
 
 ### Excluded Accounts
 
 The following account types are outside the statement digital twin path and must not be treated as `stm_txns` sources:
 
-- IBKR accounts — derived from CSV Activity Statements via top-down NAV methodology, not ingested into `statements.db`
-- CPF accounts — manual JSON inputs with no statement download
-- Balance-only accounts — observed balance only, no transaction-level statement
+- IBKR accounts â€” derived from CSV Activity Statements via top-down NAV methodology, not ingested into `statements.db`
+- CPF accounts â€” manual JSON inputs with no statement download
+- Balance-only accounts â€” observed balance only, no transaction-level statement
 
 ## Statements.db Schema
 
@@ -53,16 +57,19 @@ The following account types are outside the statement digital twin path and must
 
 The reference statements database is a SQLite file at `reference/hb-finances/statements.db` with eight tables:
 
-| id | table_name         | row_count | description                            |
-| -- | ------------------ | --------- | -------------------------------------- |
-| 01 | TWH_DBS_MULTI_SGD  | 1200      | DBS savings — 8 cols with DBS ext      |
-| 02 | TWH_CITI_USD       | 161       | Citibank personal — 3 cols             |
-| 03 | TWH_UOB_ONE_SGD    | 2004      | UOB One visa — 3 cols                  |
-| 04 | TWH_BOA_TRAVEL_USD | 288       | Bank of America travel visa — 3 cols   |
-| 05 | GL                 | 4967      | merged ledger — all accounts combined  |
-| 06 | balances           | 328       | month-end balances by account          |
-| 07 | COMMON_UOB_SGD     | 241       | legacy — outside current POC scope     |
-| 08 | TWH_DBS_Visa_SGD   | 1074      | legacy — outside current POC scope     |
+| id          |                    |      |                                         |
+| ----------- | ------------------ | ---- | --------------------------------------- |
+| table_name  |                    |      |                                         |
+| row_count   |                    |      |                                         |
+| description |                    |      |                                         |
+| 01          | TWH_DBS_MULTI_SGD  | 1200 | DBS savings â€” 8 cols with DBS ext     |
+| 02          | TWH_CITI_USD       | 161  | Citibank personal â€” 3 cols            |
+| 03          | TWH_UOB_ONE_SGD    | 2004 | UOB One visa â€” 3 cols                 |
+| 04          | TWH_BOA_TRAVEL_USD | 288  | Bank of America travel visa â€” 3 cols  |
+| 05          | GL                 | 4967 | merged ledger â€” all accounts combined |
+| 06          | balances           | 328  | month-end balances by account           |
+| 07          | COMMON_UOB_SGD     | 241  | legacy â€” outside current POC scope    |
+| 08          | TWH_DBS_Visa_SGD   | 1074 | legacy â€” outside current POC scope    |
 
 The `GL` table is the primary merged ledger. It combines all account transactions with an account discriminator field and is the source from which `stm_txns` period aggregates are derived.
 
@@ -70,10 +77,10 @@ The `GL` table is the primary merged ledger. It combines all account transaction
 
 Account-to-table mapping and local file paths are defined in `reference/hb-finances/statement_config.json`:
 
-- `db_path` — SQLite connection string, default `sqlite:///statements.db`
-- `accounts[name].db_table` — SQLite table name for the account
-- `accounts[name].statements_path` — local filesystem path to raw statement files
-- `accounts[name].statement_filetype` — file format: `csv`, `xls`, or empty
+- `db_path` â€” SQLite connection string, default `sqlite:///statements.db`
+- `accounts[name].db_table` â€” SQLite table name for the account
+- `accounts[name].statements_path` â€” local filesystem path to raw statement files
+- `accounts[name].statement_filetype` â€” file format: `csv`, `xls`, or empty
 
 ## Transaction Field Schema
 
@@ -81,23 +88,29 @@ Account-to-table mapping and local file paths are defined in `reference/hb-finan
 
 All POC account tables in `statements.db` share these minimum fields:
 
-| id | field       | type  | description                           |
-| -- | ----------- | ----- | ------------------------------------- |
-| 01 | date        | date  | transaction date in ISO format        |
-| 02 | description | str   | raw description string from statement |
-| 03 | amount      | float | signed amount — negative is debit     |
+| id          |             |       |                                       |
+| ----------- | ----------- | ----- | ------------------------------------- |
+| field       |             |       |                                       |
+| type        |             |       |                                       |
+| description |             |       |                                       |
+| 01          | date        | date  | transaction date in ISO format        |
+| 02          | description | str   | raw description string from statement |
+| 03          | amount      | float | signed amount â€” negative is debit   |
 
 ### DBS Extended Fields
 
 `TWH_DBS_MULTI_SGD` includes additional structured fields parsed from the DBS statement format:
 
-| id | field                | type | description                          |
-| -- | -------------------- | ---- | ------------------------------------ |
-| 04 | Statement Code       | str  | DBS transaction type code            |
-| 05 | Reference            | str  | DBS reference field                  |
-| 06 | Client Reference     | str  | originator or counterparty reference |
-| 07 | Additional Reference | str  | supplementary description            |
-| 08 |  Misc Reference      | str  | additional miscellaneous reference   |
+| id          |                      |     |                                      |
+| ----------- | -------------------- | --- | ------------------------------------ |
+| field       |                      |     |                                      |
+| type        |                      |     |                                      |
+| description |                      |     |                                      |
+| 04          | Statement Code       | str | DBS transaction type code            |
+| 05          | Reference            | str | DBS reference field                  |
+| 06          | Client Reference     | str | originator or counterparty reference |
+| 07          | Additional Reference | str | supplementary description            |
+| 08          | Misc Reference       | str | additional miscellaneous reference   |
 
 The leading space in ` Misc Reference` is present in the actual column name as stored in `statements.db`. This is a known ingestion artifact from the reference implementation.
 
@@ -105,32 +118,38 @@ The leading space in ` Misc Reference` is present in the actual column name as s
 
 The `GL` table is the canonical merged ledger across all accounts. It has four fields:
 
-| id | field       | type  | description                       |
-| -- | ----------- | ----- | --------------------------------- |
-| 01 | date        | date  | transaction date                  |
-| 02 | description | str   | raw description string            |
-| 03 | amount      | float | signed transaction amount         |
-| 04 | account     | str   | account name as discriminator key |
+| id          |             |       |                                   |
+| ----------- | ----------- | ----- | --------------------------------- |
+| field       |             |       |                                   |
+| type        |             |       |                                   |
+| description |             |       |                                   |
+| 01          | date        | date  | transaction date                  |
+| 02          | description | str   | raw description string            |
+| 03          | amount      | float | signed transaction amount         |
+| 04          | account     | str   | account name as discriminator key |
 
-The `account` field uses the HB account name — for example, `TWH CITI` — which corresponds to the `HB account` column in the `accounts` gsheet region. Row count in the reference database: 4967 rows covering transactions from 2019 onward.
+The `account` field uses the HB account name â€” for example, `TWH CITI` â€” which corresponds to the `HB account` column in the `accounts` gsheet region. Row count in the reference database: 4967 rows covering transactions from 2019 onward.
 
 ## Balances Table
 
 The `balances` table stores month-end balance snapshots:
 
-| id | field   | type  | description                         |
-| -- | ------- | ----- | ----------------------------------- |
-| 01 | date    | date  | statement close date for that month |
-| 02 | year    | int   | year of the closing period          |
-| 03 | month   | int   | month of the closing period         |
-| 04 | account | str   | account name matching GL convention |
-| 05 | balance | float | month-end closing balance           |
+| id          |         |       |                                     |
+| ----------- | ------- | ----- | ----------------------------------- |
+| field       |         |       |                                     |
+| type        |         |       |                                     |
+| description |         |       |                                     |
+| 01          | date    | date  | statement close date for that month |
+| 02          | year    | int   | year of the closing period          |
+| 03          | month   | int   | month of the closing period         |
+| 04          | account | str   | account name matching GL convention |
+| 05          | balance | float | month-end closing balance           |
 
 Row count in the reference database: 328 rows.
 
 ## stm_txns Linkage
 
-The `stm_txns` region in the financial statements workbook is a period-level aggregate derived from the statement digital twin. It shares the same conceptual grain as `hb_exp`, `hb_inc`, and `hb_xfr` — period and account level — with these conceptual fields: `year`, `month`, `account`, `amount`, `account_id`.
+The `stm_txns` region in the financial statements workbook is a period-level aggregate derived from the statement digital twin. It shares the same conceptual grain as `hb_exp`, `hb_inc`, and `hb_xfr` â€” period and account level â€” with these conceptual fields: `year`, `month`, `account`, `amount`, `account_id`.
 
 The link from the `accounts` gsheet region to the statement digital twin is the `stm account` field. This field maps each account row to its corresponding table in `statements.db`, allowing per-account reconciliation against HomeBudget period totals.
 
@@ -165,9 +184,9 @@ Artifact path: `.dev/.artifacts/statements_db_inspection.json`
 
 Expected content per table:
 
-- `columns` — list of column names in insertion order
-- `row_count` — total row count
-- `samples` — list of up to three sample rows as key-value dicts
+- `columns` â€” list of column names in insertion order
+- `row_count` â€” total row count
+- `samples` â€” list of up to three sample rows as key-value dicts
 
 ## Minimum Checks
 
@@ -183,8 +202,8 @@ After running the inspection script, verify:
 
 ## Common Anomalies
 
-- DBS extra columns — `TWH_DBS_MULTI_SGD` has eight columns; all other POC accounts have three. This is expected. The extra columns are DBS-specific structured reference fields parsed from the statement format.
-- Leading space in ` Misc Reference` — the column name has a leading space in the stored schema. This is a known ingestion artifact from the reference implementation and must be handled explicitly in any schema comparison.
-- Legacy tables — `COMMON_UOB_SGD` and `TWH_DBS_Visa_SGD` are present in the reference database but outside current POC account scope. Do not treat them as active statement sources.
-- `TWH_CITI_USD` uses a `_USD` suffix in the table name. The account currency is USD per `accounts.json`, so the suffix is consistent — it is not an anomaly.
+- DBS extra columns â€” `TWH_DBS_MULTI_SGD` has eight columns; all other POC accounts have three. This is expected. The extra columns are DBS-specific structured reference fields parsed from the statement format.
+- Leading space in ` Misc Reference` â€” the column name has a leading space in the stored schema. This is a known ingestion artifact from the reference implementation and must be handled explicitly in any schema comparison.
+- Legacy tables â€” `COMMON_UOB_SGD` and `TWH_DBS_Visa_SGD` are present in the reference database but outside current POC account scope. Do not treat them as active statement sources.
+- `TWH_CITI_USD` uses a `_USD` suffix in the table name. The account currency is USD per `accounts.json`, so the suffix is consistent â€” it is not an anomaly.
 - Row counts are from the reference implementation data. The live operational database will have different counts across periods.

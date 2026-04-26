@@ -60,7 +60,7 @@ Both accounts hold investments in securities (stocks, ETFs, bonds, etc.) and cas
 
 - Long-term retirement savings with tax benefits
 - Contribution limits (e.g., $7,000/year in 2024, $8,000 if age 50+)
-- Withdrawal restrictions before age 59½ (penalties apply unless exceptions met)
+- Withdrawal restrictions before age 59Â½ (penalties apply unless exceptions met)
 
 **Tax Treatment (Traditional IRA):**
 
@@ -83,7 +83,7 @@ Both accounts hold investments in securities (stocks, ETFs, bonds, etc.) and cas
 
 **Restrictions:**
 
-- Early withdrawal penalties (10% + income tax) if withdrawn before 59½
+- Early withdrawal penalties (10% + income tax) if withdrawn before 59Â½
 - Required Minimum Distributions (RMDs) starting at age 73 (for Traditional IRA)
 
 ## Account Structure
@@ -110,18 +110,18 @@ Both accounts consist of:
 
 ```
 IBKR Member
-│
-├─ Individual Brokerage Account (IBA)
-│  │
-│  ├─ Cash (USD, SGD, etc.)
-│  ├─ Securities (Stocks, ETFs, Bonds)
-│  └─ NAV (Total Account Value)
-│
-└─ Individual Retirement Account (IRA)
-   │
-   ├─ Cash (USD)
-   ├─ Securities (Stocks, ETFs, Bonds)
-   └─ NAV (Total Account Value)
+â”‚
+â”œâ”€ Individual Brokerage Account (IBA)
+â”‚  â”‚
+â”‚  â”œâ”€ Cash (USD, SGD, etc.)
+â”‚  â”œâ”€ Securities (Stocks, ETFs, Bonds)
+â”‚  â””â”€ NAV (Total Account Value)
+â”‚
+â””â”€ Individual Retirement Account (IRA)
+   â”‚
+   â”œâ”€ Cash (USD)
+   â”œâ”€ Securities (Stocks, ETFs, Bonds)
+   â””â”€ NAV (Total Account Value)
 ```
 
 ## Asset Components
@@ -192,12 +192,14 @@ NAV = Cash + Market Value of Securities + Other Assets - Margin Loans - Other Li
 
 `gsheet/ibkr-iba.json` defines four sections tracking IBA metrics:
 
-| Workbook Section | Account ID (Implicit) | Purpose |
-|-----------------|----------------------|---------|
-| `ib_net_liquidity` | IBKR-IBA | Net Liquidation Value (NAV) and returns |
-| `ib_cash` | IBKR-IBA | Cash balances by currency |
-| `ib_securities` | IBKR-IBA | Securities market value and breakdown |
-| `ib_summary` | IBKR-IBA | Summary metrics and P&L |
+| Workbook Section      |          |                                         |
+| --------------------- | -------- | --------------------------------------- |
+| Account ID (Implicit) |          |                                         |
+| Purpose               |          |                                         |
+| `ib_net_liquidity`    | IBKR-IBA | Net Liquidation Value (NAV) and returns |
+| `ib_cash`             | IBKR-IBA | Cash balances by currency               |
+| `ib_securities`       | IBKR-IBA | Securities market value and breakdown   |
+| `ib_summary`          | IBKR-IBA | Summary metrics and P&L                 |
 
 **Note:** Workbook currently tracks only IBA, not IRA (IRA may be in separate workbook or not tracked).
 
@@ -205,11 +207,16 @@ NAV = Cash + Market Value of Securities + Other Assets - Margin Loans - Other Li
 
 From the canonical account registry used by the app:
 
-| Canonical Account ID | Type | Owner | Name | Currency | HB Account |
-|---------------------|------|-------|------|----------|------------|
-| TWH IB POSITION USD | investment | TWH | IB POSITION | USD | IB POSITION USD |
-| TWH IB CASH USD | savings account | TWH | IB CASH | USD | TWH IB USD |
-| TWH IB IRA USD | retirement | TWH | IB IRA | USD | IB IRA USD |
+| Canonical Account ID |                 |     |             |     |                 |
+| -------------------- | --------------- | --- | ----------- | --- | --------------- |
+| Type                 |                 |     |             |     |                 |
+| Owner                |                 |     |             |     |                 |
+| Name                 |                 |     |             |     |                 |
+| Currency             |                 |     |             |     |                 |
+| HB Account           |                 |     |             |     |                 |
+| TWH IB POSITION USD  | investment      | TWH | IB POSITION | USD | IB POSITION USD |
+| TWH IB CASH USD      | savings account | TWH | IB CASH     | USD | TWH IB USD      |
+| TWH IB IRA USD       | retirement      | TWH | IB IRA      | USD | IB IRA USD      |
 
 ### Account Mapping Rules
 
@@ -244,14 +251,16 @@ IBKR_ACCOUNT_MAP = {
 
 **Mapping Strategy:**
 
-| Metric in Workbook | Canonical Account | Notes |
-|--------------------|-------------------|-------|
-| NAV USD | TWH IB POSITION USD | Total account value |
-| NAV SGD | TWH IB POSITION USD | Converted to SGD |
-| Cash USD (from ib_cash section) | TWH IB CASH USD | Cash balance |
+| Metric in Workbook              |                                           |                         |
+| ------------------------------- | ----------------------------------------- | ----------------------- |
+| Canonical Account               |                                           |                         |
+| Notes                           |                                           |                         |
+| NAV USD                         | TWH IB POSITION USD                       | Total account value     |
+| NAV SGD                         | TWH IB POSITION USD                       | Converted to SGD        |
+| Cash USD (from ib_cash section) | TWH IB CASH USD                           | Cash balance            |
 | Cash SGD (from ib_cash section) | (Separate or included in TWH IB CASH USD) | Multi-currency handling |
-| Securities Market Value | TWH IB POSITION USD | Stocks + ETFs + Bonds |
-| P&L, Returns | TWH IB POSITION USD | Performance metrics |
+| Securities Market Value         | TWH IB POSITION USD                       | Stocks + ETFs + Bonds   |
+| P&L, Returns                    | TWH IB POSITION USD                       | Performance metrics     |
 
 **Reconciliation:**
 ```
@@ -267,7 +276,7 @@ TWH IB POSITION USD (NAV) = TWH IB CASH USD (Cash) + Market Value of Securities
 
 - Store NAV as balance for TWH IB POSITION USD
 - Store Cash as balance for TWH IB CASH USD
-- Validate: NAV ≈ Cash + Securities
+- Validate: NAV â‰ˆ Cash + Securities
 
 **Option 2: Store NAV Only, Derive Components**
 
@@ -280,18 +289,21 @@ TWH IB POSITION USD (NAV) = TWH IB CASH USD (Cash) + Market Value of Securities
 
 The IBKR domain tracks numerous metrics:
 
-| Metric Name | Description | Storage Priority | Account |
-|-------------|-------------|-----------------|---------|
-| BEG BAL | Opening NAV | Derive from prior END BAL | Position |
-| END BAL | Closing NAV | **Store** | Position |
-| INCOME | Dividends + Interest | **Store** | Position |
-| RETURN | % Return for period | Store or compute | Position |
-| RETURN YTD | Year-to-date % return | Store or compute | Position |
-| Cash USD | Cash balance in USD | **Store** | Cash |
-| Cash SGD | Cash balance in SGD | Store if held | Cash |
-| Securities Market Value | Total securities value | Store | Position |
-| Realized P&L | Closed position gains/losses | Store | Position |
-| Unrealized P&L | Open position gains/losses | Store | Position |
+| Metric Name             |                              |                           |          |
+| ----------------------- | ---------------------------- | ------------------------- | -------- |
+| Description             |                              |                           |          |
+| Storage Priority        |                              |                           |          |
+| Account                 |                              |                           |          |
+| BEG BAL                 | Opening NAV                  | Derive from prior END BAL | Position |
+| END BAL                 | Closing NAV                  | **Store**                 | Position |
+| INCOME                  | Dividends + Interest         | **Store**                 | Position |
+| RETURN                  | % Return for period          | Store or compute          | Position |
+| RETURN YTD              | Year-to-date % return        | Store or compute          | Position |
+| Cash USD                | Cash balance in USD          | **Store**                 | Cash     |
+| Cash SGD                | Cash balance in SGD          | Store if held             | Cash     |
+| Securities Market Value | Total securities value       | Store                     | Position |
+| Realized P&L            | Closed position gains/losses | Store                     | Position |
+| Unrealized P&L          | Open position gains/losses   | Store                     | Position |
 
 ### Table Structure
 
@@ -393,7 +405,7 @@ period_id='2026-02', account_id='TWH IB POSITION USD', metric='END BAL', amount=
 
 **Lineage:**
 ```
-IBKR CSV → Manual Review or Parser → App Adapter → Database
+IBKR CSV â†’ Manual Review or Parser â†’ App Adapter â†’ Database
 ```
 
 ### Automation Opportunity
@@ -407,11 +419,11 @@ IBKR CSV → Manual Review or Parser → App Adapter → Database
 ## Reconciliation Requirements
 
 1. **NAV Composition:**
-   - NAV ≈ Cash + Securities (allow small variance for accrued interest, pending trades)
+   - NAV â‰ˆ Cash + Securities (allow small variance for accrued interest, pending trades)
 2. **Balance Continuity:**
    - Current Month Opening = Prior Month Closing (adjusted for deposits/withdrawals)
 3. **Currency Crosscheck:**
-   - NAV USD * FX Rate ≈ NAV SGD (validate against `exchange_rates` table)
+   - NAV USD * FX Rate â‰ˆ NAV SGD (validate against `exchange_rates` table)
 4. **P&L Reconciliation:**
    - Closing NAV = Opening NAV + Income + Realized P&L + Unrealized P&L - Withdrawals + Deposits
 

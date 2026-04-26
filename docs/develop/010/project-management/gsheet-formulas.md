@@ -14,30 +14,37 @@ This document tracks delivery for `02.14.18` from requirements through SIT and U
 
 ## Milestone workflow
 
-| seq | id          | status | phase        | task                 |
-| --- | ----------- | ------ | ------------ | -------------------- |
-| 01  | 02.14.18.08 | closed | dev docs     | tracker and workflow |
-| 02  | 02.14.18.01 | closed | requirements | finalize criteria    |
-| 03  | 02.14.18.04 | closed | design       | design spec complete |
-| 04  | 02.14.18.02 | closed | test strategy | verify plan and map  |
-| 05  | 02.14.18.03 | closed | output files | baseline artifacts   |
-| 06  | 02.14.18.05 | closed | development  | cli formula crud     |
-| 07  | 02.14.18.06 | closed | sit          | live integration run |
-| 08  | 02.14.18.07 | closed | uat          | operator validation  |
-| 09  | 02.14.18.09 | open   | enhancement  | batch formula crud   |
+| seq    |             |        |               |                      |
+| ------ | ----------- | ------ | ------------- | -------------------- |
+| id     |             |        |               |                      |
+| status |             |        |               |                      |
+| phase  |             |        |               |                      |
+| task   |             |        |               |                      |
+| 01     | 02.14.18.08 | closed | dev docs      | tracker and workflow |
+| 02     | 02.14.18.01 | closed | requirements  | finalize criteria    |
+| 03     | 02.14.18.04 | closed | design        | design spec complete |
+| 04     | 02.14.18.02 | closed | test strategy | verify plan and map  |
+| 05     | 02.14.18.03 | closed | output files  | baseline artifacts   |
+| 06     | 02.14.18.05 | closed | development   | cli formula crud     |
+| 07     | 02.14.18.06 | closed | sit           | live integration run |
+| 08     | 02.14.18.07 | closed | uat           | user validation      |
+| 09     | 02.14.18.09 | open   | enhancement   | batch formula crud   |
 
 ## Initial target output files
 
-| id | output             | status  | file                                                 |
-| -- | ------------------ | ------- | ---------------------------------------------------- |
-| 01 | requirements doc   | closed  | docs/tools/gsheet-formulas/requirements.md           |
-| 02 | user guide         | closed  | docs/tools/gsheet-formulas/user-guide.md             |
-| 03 | design doc         | closed  | docs/tools/gsheet-formulas/design.md                 |
-| 04 | task tracker       | closed  | docs/develop/010/project-management/gsheet-formulas.md |
-| 05 | dev workflow       | closed  | .github/prompts/gsheet-formulas.prompt.md            |
-| 06 | source code        | closed  | src/gsheet-formulas/*                                |
-| 07 | test strategy doc  | closed  | docs/tools/gsheet-formulas/test-strategy.md          |
-| 08 | dependency files   | closed  | requirements.txt and gsheet-formulas-requirements.txt |
+| id     |                   |        |                                                        |
+| ------ | ----------------- | ------ | ------------------------------------------------------ |
+| output |                   |        |                                                        |
+| status |                   |        |                                                        |
+| file   |                   |        |                                                        |
+| 01     | requirements doc  | closed | docs/tools/gsheet-formulas/requirements.md             |
+| 02     | user guide        | closed | docs/tools/gsheet-formulas/user-guide.md               |
+| 03     | design doc        | closed | docs/tools/gsheet-formulas/design.md                   |
+| 04     | task tracker      | closed | docs/develop/010/project-management/gsheet-formulas.md |
+| 05     | dev workflow      | closed | .github/prompts/gsheet-formulas.prompt.md              |
+| 06     | source code       | closed | src/gsheet-formulas/*                                  |
+| 07     | test strategy doc | closed | docs/tools/gsheet-formulas/test-strategy.md            |
+| 08     | dependency files  | closed | requirements.txt and gsheet-formulas-requirements.txt  |
 
 ## Task details
 
@@ -67,28 +74,33 @@ _02.14.18.02 (closed) test strategy_
 
 Strategy coverage:
 
-| id | level       | focus                | evidence         |
-| -- | ----------- | -------------------- | ---------------- |
-| 01 | unit        | validation and model | local test pass  |
-| 02 | integration | api client behavior  | mocked responses |
-| 03 | SIT         | live workbook CRUD   | run report       |
-| 04 | UAT         | operator workflow    | sign-off record  |
+| id       |             |                      |                  |
+| -------- | ----------- | -------------------- | ---------------- |
+| level    |             |                      |                  |
+| focus    |             |                      |                  |
+| evidence |             |                      |                  |
+| 01       | unit        | validation and model | local test pass  |
+| 02       | integration | api client behavior  | mocked responses |
+| 03       | SIT         | live workbook CRUD   | run report       |
+| 04       | UAT         | user workflow        | sign-off record  |
 
 Requirement verification map:
 
-| id | req set         | verification path |
-| -- | --------------- | ----------------- |
-| 01 | AC-01, AC-02    | unit, SIT, UAT    |
-| 02 | AC-03, AC-04    | integration, SIT  |
-| 03 | AC-05           | integration, SIT  |
-| 04 | AC-06 to AC-08  | unit, integration |
-| 05 | AC-09, AC-10    | integration, SIT  |
+| id                |                |                   |
+| ----------------- | -------------- | ----------------- |
+| req set           |                |                   |
+| verification path |                |                   |
+| 01                | AC-01, AC-02   | unit, SIT, UAT    |
+| 02                | AC-03, AC-04   | integration, SIT  |
+| 03                | AC-05          | integration, SIT  |
+| 04                | AC-06 to AC-08 | unit, integration |
+| 05                | AC-09, AC-10   | integration, SIT  |
 
 Evidence rules:
 
 - Unit and integration evidence may be captured from local automated test output.
 - SIT evidence must include workbook ID, target range, command used, observed result, and pass or fail status.
-- UAT evidence must include operator scenario outcome and sign-off decision.
+- UAT evidence must include user scenario outcome and sign-off decision.
 - Defects must record severity, reproduction path, and retest result.
 
 Closure criteria:
@@ -100,18 +112,21 @@ Closure evidence:
 
 - Added test level scope, requirement verification map, and evidence rules to this tracker section.
 - Created `docs/tools/gsheet-formulas/test-strategy.md`.
-- Created `docs/tools/gsheet-formulas/user-guide.md` with detailed operator workflow and SIT runbook.
+- Created `docs/tools/gsheet-formulas/user-guide.md` with detailed user workflow and SIT runbook.
 
 _02.14.18.03 (closed) initial target output files_
 
 Subtasks:
 
-| seq | id             | status | task                    |
-| --- | -------------- | ------ | ----------------------- |
-| 01  | 02.14.18.03.01 | closed | docs baseline create    |
-| 02  | 02.14.18.03.02 | closed | strategy doc create     |
-| 03  | 02.14.18.03.03 | closed | source path scaffold    |
-| 04  | 02.14.18.03.04 | closed | dependency file create  |
+| seq    |                |        |                        |
+| ------ | -------------- | ------ | ---------------------- |
+| id     |                |        |                        |
+| status |                |        |                        |
+| task   |                |        |                        |
+| 01     | 02.14.18.03.01 | closed | docs baseline create   |
+| 02     | 02.14.18.03.02 | closed | strategy doc create    |
+| 03     | 02.14.18.03.03 | closed | source path scaffold   |
+| 04     | 02.14.18.03.04 | closed | dependency file create |
 
 - Create folder and file skeleton for all required outputs.
 - Add initial headers and section templates to each target doc.
@@ -133,13 +148,16 @@ _02.14.18.04 (closed) design_
 
 Design subtasks:
 
-| seq | id             | status  | task                        |
-| --- | -------------- | ------- | --------------------------- |
-| 01  | 02.14.18.04.01 | closed  | official docs scan          |
-| 02  | 02.14.18.04.02 | closed  | module boundary draft       |
-| 03  | 02.14.18.04.03 | closed  | api interaction contract    |
-| 04  | 02.14.18.04.04 | closed  | validation and retry model  |
-| 05  | 02.14.18.04.05 | closed  | cli contract and outputs    |
+| seq    |                |        |                            |
+| ------ | -------------- | ------ | -------------------------- |
+| id     |                |        |                            |
+| status |                |        |                            |
+| task   |                |        |                            |
+| 01     | 02.14.18.04.01 | closed | official docs scan         |
+| 02     | 02.14.18.04.02 | closed | module boundary draft      |
+| 03     | 02.14.18.04.03 | closed | api interaction contract   |
+| 04     | 02.14.18.04.04 | closed | validation and retry model |
+| 05     | 02.14.18.04.05 | closed | cli contract and outputs   |
 
 _02.14.18.04.01 (closed) official docs scan_
 
@@ -195,14 +213,17 @@ _02.14.18.05 (closed) development_
 
 Subtasks:
 
-| seq | id             | status  | task                    |
-| --- | -------------- | ------- | ----------------------- |
-| 01  | 02.14.18.05.01 | closed  | env setup and deps      |
-| 02  | 02.14.18.05.02 | closed  | module scaffold         |
-| 03  | 02.14.18.05.03 | closed  | read and clear impl     |
-| 04  | 02.14.18.05.04 | closed  | create and update impl  |
-| 05  | 02.14.18.05.05 | closed  | validation and errors   |
-| 06  | 02.14.18.05.06 | closed  | tests and reports       |
+| seq    |                |        |                        |
+| ------ | -------------- | ------ | ---------------------- |
+| id     |                |        |                        |
+| status |                |        |                        |
+| task   |                |        |                        |
+| 01     | 02.14.18.05.01 | closed | env setup and deps     |
+| 02     | 02.14.18.05.02 | closed | module scaffold        |
+| 03     | 02.14.18.05.03 | closed | read and clear impl    |
+| 04     | 02.14.18.05.04 | closed | create and update impl |
+| 05     | 02.14.18.05.05 | closed | validation and errors  |
+| 06     | 02.14.18.05.06 | closed | tests and reports      |
 
 - Implement source layout under `src/gsheet-formulas/*`.
 - Implement commands:
@@ -234,12 +255,15 @@ _02.14.18.06 (closed) SIT_
 
 Subtasks:
 
-| seq | id             | status  | task                   |
-| --- | -------------- | ------- | ---------------------- |
-| 01  | 02.14.18.06.01 | closed  | sit data prep          |
-| 02  | 02.14.18.06.02 | closed  | sit CRUD execution     |
-| 03  | 02.14.18.06.03 | closed  | sit result validation  |
-| 04  | 02.14.18.06.04 | closed  | sit report publish     |
+| seq    |                |        |                       |
+| ------ | -------------- | ------ | --------------------- |
+| id     |                |        |                       |
+| status |                |        |                       |
+| task   |                |        |                       |
+| 01     | 02.14.18.06.01 | closed | sit data prep         |
+| 02     | 02.14.18.06.02 | closed | sit CRUD execution    |
+| 03     | 02.14.18.06.03 | closed | sit result validation |
+| 04     | 02.14.18.06.04 | closed | sit report publish    |
 
 - Execute end-to-end integration scenarios using real API calls in controlled workbook.
 - Validate cross-component behavior: auth, input parsing, API request construction, response handling.
@@ -264,7 +288,7 @@ Closure evidence:
 
 _02.14.18.07 (closed) UAT_
 
-- Execute operator-focused scenarios from user guide for formula CRUD workflows.
+- Execute user-focused scenarios from user guide for formula CRUD workflows.
 - Validate expected outcomes in workbook after each operation.
 - Collect user feedback and confirm acceptance decisions.
 
@@ -275,7 +299,7 @@ Closure criteria:
 
 Closure evidence:
 
-- Executed operator-verified UAT scenarios for read, create, update, clear, and failed mutation audit behavior.
+- Executed user-verified UAT scenarios for read, create, update, clear, and failed mutation audit behavior.
 - Added deferred formula reference case using `=SUM($E2:D2)` and validated accepted token canonicalization.
 - Captured UAT evidence in `docs/tools/gsheet-formulas/uat-report.md`.
 - Captured UAT audit records in `docs/tools/gsheet-formulas/uat-audit.jsonl`.
@@ -285,20 +309,26 @@ _02.14.18.09 (open) batch crud enhancement_
 
 Subtasks:
 
-| seq | id             | status  | task                  |
-| --- | -------------- | ------- | --------------------- |
-| 01  | 02.14.18.09.01 | closed  | requirements baseline |
-| 02  | 02.14.18.09.02 | closed  | design                |
-| 03  | 02.14.18.09.03 | closed  | development           |
-| 04  | 02.14.18.09.04 | closed  | sit                   |
-| 05  | 02.14.18.09.05 | open    | uat                   |
+| seq    |                |        |                       |
+| ------ | -------------- | ------ | --------------------- |
+| id     |                |        |                       |
+| status |                |        |                       |
+| task   |                |        |                       |
+| 01     | 02.14.18.09.01 | closed | requirements baseline |
+| 02     | 02.14.18.09.02 | closed | design                |
+| 03     | 02.14.18.09.03 | closed | development           |
+| 04     | 02.14.18.09.04 | closed | sit                   |
+| 05     | 02.14.18.09.05 | open   | uat                   |
 
 Design gate subtasks:
 
-| seq | id                | status  | task                  |
-| --- | ----------------- | ------- | --------------------- |
-| 01  | 02.14.18.09.02.01 | closed  | api support research  |
-| 02  | 02.14.18.09.02.02 | closed  | batch contract design |
+| seq    |                   |        |                       |
+| ------ | ----------------- | ------ | --------------------- |
+| id     |                   |        |                       |
+| status |                   |        |                       |
+| task   |                   |        |                       |
+| 01     | 02.14.18.09.02.01 | closed | api support research  |
+| 02     | 02.14.18.09.02.02 | closed | batch contract design |
 
 Research decision:
 
@@ -342,12 +372,17 @@ Batch SIT evidence:
 
 ## Dependency and risk log
 
-| seq | type       | item                 | impact            | status | mitigation         |
-| --- | ---------- | -------------------- | ----------------- | ------ | ------------------ |
-| 01  | dependency | service acct access  | blocks sit and uat | closed | validated in sit   |
-| 02  | dependency | sheets api access    | blocks runtime    | closed | validated in sit   |
-| 03  | risk       | overwrite by default | data integrity    | open   | add safety control |
-| 04  | risk       | clear semantics drift | behavior mismatch | open   | enforce req wording |
+| seq        |            |                       |                    |        |                     |
+| ---------- | ---------- | --------------------- | ------------------ | ------ | ------------------- |
+| type       |            |                       |                    |        |                     |
+| item       |            |                       |                    |        |                     |
+| impact     |            |                       |                    |        |                     |
+| status     |            |                       |                    |        |                     |
+| mitigation |            |                       |                    |        |                     |
+| 01         | dependency | service acct access   | blocks sit and uat | closed | validated in sit    |
+| 02         | dependency | sheets api access     | blocks runtime     | closed | validated in sit    |
+| 03         | risk       | overwrite by default  | data integrity     | open   | add safety control  |
+| 04         | risk       | clear semantics drift | behavior mismatch  | open   | enforce req wording |
 
 Mitigation notes:
 

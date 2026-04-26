@@ -262,12 +262,12 @@ Inherits from ReconcileBase and adds stage-2 HomeBudget ledger transaction match
 
 **Seven reconciliation scenarios**:
 1. **Exact match**: Statement transaction matches HomeBudget transaction (date, amount, description)
-2. **Missing in HomeBudget**: Statement transaction has no HomeBudget match → add transaction
-3. **Missing in statement**: HomeBudget transaction has no statement match → may be pending or error
-4. **Amount mismatch**: Matching date/description but different amount → investigate and adjust
-5. **Duplicates**: Same transaction appears multiple times → deduplicate with sequence suffix
-6. **Pending transactions**: HomeBudget transaction dated before statement cutoff but not on statement → carry forward
-7. **Net-zero pairs**: Unmatched add and remove edits that cancel out → heuristic filtering option
+2. **Missing in HomeBudget**: Statement transaction has no HomeBudget match â†’ add transaction
+3. **Missing in statement**: HomeBudget transaction has no statement match â†’ may be pending or error
+4. **Amount mismatch**: Matching date/description but different amount â†’ investigate and adjust
+5. **Duplicates**: Same transaction appears multiple times â†’ deduplicate with sequence suffix
+6. **Pending transactions**: HomeBudget transaction dated before statement cutoff but not on statement â†’ carry forward
+7. **Net-zero pairs**: Unmatched add and remove edits that cancel out â†’ heuristic filtering option
 
 **Pattern**:
 - Transaction matching uses conservative one-to-one forward matching.

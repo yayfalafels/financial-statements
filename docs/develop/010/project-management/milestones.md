@@ -11,31 +11,34 @@ Cross-reference boundary:
 - [implementation-roadmap.md](../../../requirements/implementation-roadmap.md) is a requirements reference document and does not track project-management artifacts.
 - This milestone tracker translates roadmap intent into execution checkpoints and status progression.
 
-| seq | id | status  | milestone                |
-| --- | -- | ------- | ------------------------ |
-| 01  | 01 | closed  | setup dev environment    |
-| 02  | 03 | closed  | implementation roadmap   |
-| 03  | 02 | open    | requirements             |
-| 04  | 04 | pending | design                   |
-| 05  | 05 | pending | test strategy            |
-| 06  | 06 | pending | test cases               |
-| 07  | 07 | pending | build                    |
-| 08  | 08 | pending | prerequisites and setup  |
-| 09  | 09 | pending | foundation modules       |
-| 10  | 10 | pending | connectors               |
-| 11  | 11 | pending | backend database         |
-| 12  | 12 | pending | front end ui             |
-| 13  | 13 | pending | accounting models        |
-| 14  | 14 | pending | bank statements          |
-| 15  | 15 | pending | cash                     |
-| 16  | 16 | pending | account reconcile        |
-| 17  | 17 | pending | financial statements     |
-| 18  | 18 | pending | ibkr                     |
-| 19  | 19 | pending | income                   |
-| 20  | 20 | pending | cpf                      |
-| 21  | 21 | pending | uat monthly closing      |
-| 22  | 22 | pending | uat financial statements |
-| 23  | 23 | pending | data migration           |
+| seq       |     |         |                          |
+| --------- | --- | ------- | ------------------------ |
+| id        |     |         |                          |
+| status    |     |         |                          |
+| milestone |     |         |                          |
+| 01        | 01  | closed  | setup dev environment    |
+| 02        | 03  | closed  | implementation roadmap   |
+| 03        | 02  | open    | requirements             |
+| 04        | 04  | pending | design                   |
+| 05        | 05  | pending | test strategy            |
+| 06        | 06  | pending | test cases               |
+| 07        | 07  | pending | build                    |
+| 08        | 08  | pending | prerequisites and setup  |
+| 09        | 09  | pending | foundation modules       |
+| 10        | 10  | pending | connectors               |
+| 11        | 11  | pending | backend database         |
+| 12        | 12  | pending | front end ui             |
+| 13        | 13  | pending | accounting models        |
+| 14        | 14  | pending | bank statements          |
+| 15        | 15  | pending | cash                     |
+| 16        | 16  | pending | account reconcile        |
+| 17        | 17  | pending | financial statements     |
+| 18        | 18  | pending | ibkr                     |
+| 19        | 19  | pending | income                   |
+| 20        | 20  | pending | cpf                      |
+| 21        | 21  | pending | uat monthly closing      |
+| 22        | 22  | pending | uat financial statements |
+| 23        | 23  | pending | data migration           |
 
 _01 (closed) setup dev environment_
 
@@ -94,7 +97,7 @@ _11 (pending) backend database_
 
 _12 (pending) front end ui_
 
-- Scope: deliver the POC user interaction surface aligned to workflow checkpoints and operator review requirements.
+- Scope: deliver the POC user interaction surface aligned to workflow checkpoints and user review requirements.
 - Closure conditions: key user flows are operable, required inputs and outputs are visible, and acceptance paths are validated in UAT.
 
 _13 (pending) accounting models_
@@ -114,7 +117,7 @@ _15 (pending) cash_
 
 _16 (pending) account reconcile_
 
-- Scope: implement account-level reconciliation workflows, tolerance handling, and operator resolution paths for mismatches.
+- Scope: implement account-level reconciliation workflows, tolerance handling, and user resolution paths for mismatches.
 - Closure conditions: reconcile outcomes are deterministic, unresolved items are surfaced correctly, and closure conditions are test-validated.
 
 _17 (pending) financial statements_

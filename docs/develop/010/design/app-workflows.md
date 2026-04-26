@@ -1,4 +1,4 @@
-﻿# Application Workflows Design
+# Application Workflows Design
 
 **Document Type**: Design Specification  
 **Status**: Draft  
@@ -29,14 +29,27 @@ This document defines the intended workflows for the financial statements applic
 
 ### Key Differences from Current Workflow
 
-| Aspect | Current Workflow | App Workflow (Target) |
-|--------|------------------|----------------------|
-| **Orchestration** | Manual steps with Google Sheets intermediaries | CLI-driven with automated orchestration |
-| **Data flow** | Manual copy/paste between systems | Programmatic adapters with validation |
-| **State tracking** | Manual notes and spreadsheet logs | SQLite session state with audit trail |
-| **Error handling** | Ad-hoc user investigation | Structured error taxonomy with recovery paths |
-| **Checkpoints** | Implicit user review points | Explicit validation gates with approval prompts |
-| **Parallelization** | Strictly sequential | Parallel execution where data-independent |
+| Aspect                |                                                |
+| --------------------- | ---------------------------------------------- |
+| Current Workflow      |                                                |
+| App Workflow (Target) |                                                |
+| **Orchestration**     | Manual steps with Google Sheets intermediaries |
+| **Data flow**         | Manual copy/paste between systems              |
+| **State tracking**    | Manual notes and spreadsheet logs              |
+| **Error handling**    | Ad-hoc user investigation                      |
+| **Checkpoints**       | Implicit user review points                    |
+| **Parallelization**   | Strictly sequential                            |
+
+| Aspect                |                                                 |
+| --------------------- | ----------------------------------------------- |
+| Current Workflow      |                                                 |
+| App Workflow (Target) |                                                 |
+| **Orchestration**     | CLI-driven with automated orchestration         |
+| **Data flow**         | Programmatic adapters with validation           |
+| **State tracking**    | SQLite session state with audit trail           |
+| **Error handling**    | Structured error taxonomy with recovery paths   |
+| **Checkpoints**       | Explicit validation gates with approval prompts |
+| **Parallelization**   | Parallel execution where data-independent       |
 
 ### Related Documents
 
@@ -453,13 +466,25 @@ Detailed algorithm documented in `reference/hb-reconcile/docs/reconcile.md`.
 
 ### Checkpoint Types
 
-| Type | Trigger | User Action Required |
-|------|---------|---------------------|
-| **Pre-flight warning** | Missing optional data or minor config issues | Acknowledge and continue or abort |
-| **Variance review** | Reconciliation variance > tolerance | Investigate and approve/reject adjustment |
-| **Novel decision** | Unrecognized reconciliation pattern | Explain rationale and approve action |
-| **Final approval** | Before committing transactions to HomeBudget | Review summary and confirm |
-| **Statement review** | After financial statement generation | Review PDF and approve finalization |
+| Type                   |                                              |
+| ---------------------- | -------------------------------------------- |
+| Trigger                |                                              |
+| User Action Required   |                                              |
+| **Pre-flight warning** | Missing optional data or minor config issues |
+| **Variance review**    | Reconciliation variance > tolerance          |
+| **Novel decision**     | Unrecognized reconciliation pattern          |
+| **Final approval**     | Before committing transactions to HomeBudget |
+| **Statement review**   | After financial statement generation         |
+
+| Type                   |                                           |
+| ---------------------- | ----------------------------------------- |
+| Trigger                |                                           |
+| User Action Required   |                                           |
+| **Pre-flight warning** | Acknowledge and continue or abort         |
+| **Variance review**    | Investigate and approve/reject adjustment |
+| **Novel decision**     | Explain rationale and approve action      |
+| **Final approval**     | Review summary and confirm                |
+| **Statement review**   | Review PDF and approve finalization       |
 
 ### Validation Gates
 
@@ -490,16 +515,31 @@ Detailed algorithm documented in `reference/hb-reconcile/docs/reconcile.md`.
 Canonical, detailed error taxonomy is defined in `docs/develop/design/error-handling-validation.md`.
 This workflow document keeps only high-level operational mapping.
 
-| Workflow Error Group | Canonical Class (Detailed Doc) | Typical Recovery |
-|----------------------|---------------------------------|------------------|
-| **Configuration** | `ConfigError` | Fail fast and correct configuration before rerun |
-| **External integration** | `ExternalApiError` | Retry with backoff, then checkpoint for manual retry |
-| **Data quality** | `DataQualityError` | Correct source data and rerun the step |
-| **Data freshness** | `DataFreshnessError` | Warn or block based on step criticality |
-| **Import conflict** | `ImportConflictError` | Resolve dedupe/conflict and replay import |
-| **Reconciliation** | `ReconciliationError` | User review, variance explanation, or override at checkpoint |
-| **Posting** | `PostingError` | Roll back transactional writes and replay |
-| **Logic/invariant** | `LogicError` | Stop workflow and fix implementation issue |
+| Workflow Error Group           |                       |
+| ------------------------------ | --------------------- |
+| Canonical Class (Detailed Doc) |                       |
+| Typical Recovery               |                       |
+| **Configuration**              | `ConfigError`         |
+| **External integration**       | `ExternalApiError`    |
+| **Data quality**               | `DataQualityError`    |
+| **Data freshness**             | `DataFreshnessError`  |
+| **Import conflict**            | `ImportConflictError` |
+| **Reconciliation**             | `ReconciliationError` |
+| **Posting**                    | `PostingError`        |
+| **Logic/invariant**            | `LogicError`          |
+
+| Workflow Error Group           |                                                              |
+| ------------------------------ | ------------------------------------------------------------ |
+| Canonical Class (Detailed Doc) |                                                              |
+| Typical Recovery               |                                                              |
+| **Configuration**              | Fail fast and correct configuration before rerun             |
+| **External integration**       | Retry with backoff, then checkpoint for manual retry         |
+| **Data quality**               | Correct source data and rerun the step                       |
+| **Data freshness**             | Warn or block based on step criticality                      |
+| **Import conflict**            | Resolve dedupe/conflict and replay import                    |
+| **Reconciliation**             | User review, variance explanation, or override at checkpoint |
+| **Posting**                    | Roll back transactional writes and replay                    |
+| **Logic/invariant**            | Stop workflow and fix implementation issue                   |
 
 ### Rollback Strategy
 

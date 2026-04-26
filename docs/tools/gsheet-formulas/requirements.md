@@ -62,10 +62,12 @@ Define requirement-level behavior for a Python utility that performs formula CRU
 
 ## Required Inputs
 
-| id    | input              | rule                    |
-| ----- | ------------------ | ----------------------- |
-| IN-01 | client secret path | required, readable JSON |
-| IN-02 | workbook id        | required, non-empty     |
+| id    |                    |                          |
+| ----- | ------------------ | ------------------------ |
+| input |                    |                          |
+| rule  |                    |                          |
+| IN-01 | client secret path | required, readable JSON  |
+| IN-02 | workbook id        | required, non-empty      |
 | IN-03 | cell range         | required, single-cell A1 |
 
 Input rule notes:
@@ -124,18 +126,20 @@ Input rule notes:
 
 ## Acceptance Criteria
 
-| id    | scenario        | pass signal          |
-| ----- | --------------- | -------------------- |
-| AC-01 | read with formula | formula returned     |
-| AC-02 | read no formula | empty state returned |
-| AC-03 | create on empty | formula persisted    |
-| AC-04 | update formula  | new formula returned |
-| AC-05 | clear formula   | target cell empty    |
-| AC-06 | bad secret path | validation error     |
-| AC-07 | missing workbook | validation error     |
-| AC-08 | bad write range | validation error     |
-| AC-09 | mutation audit  | JSON record present  |
-| AC-10 | API failure     | runtime error logged |
+| id          |                   |                      |
+| ----------- | ----------------- | -------------------- |
+| scenario    |                   |                      |
+| pass signal |                   |                      |
+| AC-01       | read with formula | formula returned     |
+| AC-02       | read no formula   | empty state returned |
+| AC-03       | create on empty   | formula persisted    |
+| AC-04       | update formula    | new formula returned |
+| AC-05       | clear formula     | target cell empty    |
+| AC-06       | bad secret path   | validation error     |
+| AC-07       | missing workbook  | validation error     |
+| AC-08       | bad write range   | validation error     |
+| AC-09       | mutation audit    | JSON record present  |
+| AC-10       | API failure       | runtime error logged |
 
 Acceptance criteria detail:
 
@@ -160,10 +164,10 @@ Acceptance criteria detail:
 
 ## UAT Traceability
 
-- UAT-01 operator reads formula and confirms displayed result matches sheet cell.
-- UAT-02 operator creates and updates formula in one cell and confirms workbook outcome.
-- UAT-03 operator clears formula and confirms cell is empty.
-- UAT-04 operator reviews JSON audit and console summary for one successful and one failed mutation.
+- UAT-01 user reads formula and confirms displayed result matches sheet cell.
+- UAT-02 user creates and updates formula in one cell and confirms workbook outcome.
+- UAT-03 user clears formula and confirms cell is empty.
+- UAT-04 user reviews JSON audit and console summary for one successful and one failed mutation.
 
 ## Batch Enhancement 02141809
 

@@ -193,7 +193,7 @@ Define named ranges for all ranges that the Python adapter reads or writes. Do n
 
 **Formula conventions**
 
-Keep formulas that the app depends on as simple as possible. Complex multi-step calculations that the app must interpret should be moved to Python domain logic. Google Sheets formulas are appropriate for display formatting, conditional highlighting, and lightweight aggregations for the operator UI.
+Keep formulas that the app depends on as simple as possible. Complex multi-step calculations that the app must interpret should be moved to Python domain logic. Google Sheets formulas are appropriate for display formatting, conditional highlighting, and lightweight aggregations for the user UI.
 
 **API interaction**
 
@@ -221,7 +221,7 @@ Scripts that invoke Python must activate the virtual environment at `env/Scripts
 
 **Output**
 
-Use `Write-Output` for data that downstream scripts or the pipeline may consume. Use `Write-Host` only for operator-facing status messages that should not be captured by redirection. Use `Write-Error` for error messages.
+Use `Write-Output` for data that downstream scripts or the pipeline may consume. Use `Write-Host` only for user-facing status messages that should not be captured by redirection. Use `Write-Error` for error messages.
 
 ## Node.js
 
@@ -269,7 +269,7 @@ Reconciliation variances, posting failures, and data quality failures must resul
 
 **User-facing messages**
 
-Error messages surfaced to the operator in the CLI or UI must be plain English and actionable. Do not expose raw stack traces or internal variable names in operator-facing output. Log the full error detail to the session log.
+Error messages surfaced to the user in the CLI or UI must be plain English and actionable. Do not expose raw stack traces or internal variable names in user-facing output. Log the full error detail to the session log.
 
 ## Layer boundaries
 
@@ -297,7 +297,7 @@ Structured logging supports audit trails and session replay for monthly close op
 
 **Log levels**
 
-Use `DEBUG` for detailed internal state during development. Use `INFO` for normal workflow progress events. Use `WARNING` for recoverable anomalies such as missing optional config or a retried API call. Use `ERROR` for failures that block a workflow step. Use `CRITICAL` for failures that require immediate operator intervention.
+Use `DEBUG` for detailed internal state during development. Use `INFO` for normal workflow progress events. Use `WARNING` for recoverable anomalies such as missing optional config or a retried API call. Use `ERROR` for failures that block a workflow step. Use `CRITICAL` for failures that require immediate user intervention.
 
 **Structure**
 

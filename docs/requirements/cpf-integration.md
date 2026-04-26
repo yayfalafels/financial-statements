@@ -25,7 +25,7 @@ Detailed requirements for the CPF integration.
 - [Accounting logic](accounting-logic.md)
 - [Workflow orchestration](workflow-orchestration.md)
 - [Source systems and lineage](source-systems-lineage.md)
-- [Transaction category mapping](transaction-category-mapping.md)
+- [Transaction categories](transaction-categories.md)
 
 ## Inherits from accounting policy
 
@@ -43,11 +43,13 @@ Detailed requirements for the CPF integration.
 
 ## Accounts in scope
 
-| sub-account | abbreviation | description                                      |
-| ----------- | ------------ | ------------------------------------------------ |
-| Ordinary    | OA           | primary savings; used for housing, investment    |
-| Special     | SA           | retirement savings; restricted withdrawals       |
-| Medisave    | MA           | healthcare savings; restricted to medical use    |
+| sub-account  |     |                                               |
+| ------------ | --- | --------------------------------------------- |
+| abbreviation |     |                                               |
+| description  |     |                                               |
+| Ordinary     | OA  | primary savings; used for housing, investment |
+| Special      | SA  | retirement savings; restricted withdrawals    |
+| Medisave     | MA  | healthcare savings; restricted to medical use |
 
 All three sub-accounts are in POC scope.
 
@@ -105,10 +107,22 @@ Medisave sub-account (MA) may have outflows for medical claims that do not appea
 
 Each value posted to HomeBudget or the close output shall carry the following lineage fields:
 
-| id | field           | description                                                                         |
-| -- | --------------- | ----------------------------------------------------------------------------------- |
-| 01 | `period`        | period in `YYYY-MM` format                                                          |
-| 02 | `sub_account`   | CPF sub-account identifier: `OA`, `SA`, or `MA`                                    |
-| 03 | `input_type`    | type of entry: `contribution`, `interest`, `transaction`, `adjustment`              |
-| 04 | `user_note`     | free-text note from user GS UI input, if provided                                  |
-| 05 | `derived_type`  | classification applied (e.g. `transfer`, `investment_income`, `healthcare_expense`) |
+| id          |                |
+| ----------- | -------------- |
+| field       |                |
+| description |                |
+| 01          | `period`       |
+| 02          | `sub_account`  |
+| 03          | `input_type`   |
+| 04          | `user_note`    |
+| 05          | `derived_type` |
+
+| id          |                |                                                                                     |
+| ----------- | -------------- | ----------------------------------------------------------------------------------- |
+| field       |                |                                                                                     |
+| description |                |                                                                                     |
+| 01          | `period`       | period in `YYYY-MM` format                                                          |
+| 02          | `sub_account`  | CPF sub-account identifier: `OA`, `SA`, or `MA`                                     |
+| 03          | `input_type`   | type of entry: `contribution`, `interest`, `transaction`, `adjustment`              |
+| 04          | `user_note`    | free-text note from user GS UI input, if provided                                   |
+| 05          | `derived_type` | classification applied (e.g. `transfer`, `investment_income`, `healthcare_expense`) |

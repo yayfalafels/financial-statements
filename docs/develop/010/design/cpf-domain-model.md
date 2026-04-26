@@ -38,15 +38,15 @@ Additionally, members who turn 55 have a fourth account:
 
 ```
 CPF Member
-│
-├─ Ordinary Account (OA)
-│  └─ Used for: Housing, insurance, investment, education
-│
-├─ Special Account (SA)  
-│  └─ Used for: Retirement, investment
-│
-└─ MediSave Account (MA)
-   └─ Used for: Healthcare, approved medical insurance
+â”‚
+â”œâ”€ Ordinary Account (OA)
+â”‚  â””â”€ Used for: Housing, insurance, investment, education
+â”‚
+â”œâ”€ Special Account (SA)  
+â”‚  â””â”€ Used for: Retirement, investment
+â”‚
+â””â”€ MediSave Account (MA)
+   â””â”€ Used for: Healthcare, approved medical insurance
 
 Total CPF Balance = OA + SA + MA (+ RA if applicable)
 ```
@@ -107,9 +107,12 @@ Contributions are split between employer and employee and allocated across the t
 
 ### Allocation Rates (Example for Age 35 and below)
 
-| Total Contribution Rate | OA | SA | MA |
-|------------------------|----|----|-----|
-| 37% (20% employer + 17% employee) | 23% | 6% | 8% |
+| Total Contribution Rate           |     |     |     |
+| --------------------------------- | --- | --- | --- |
+| OA                                |     |     |     |
+| SA                                |     |     |     |
+| MA                                |     |     |     |
+| 37% (20% employer + 17% employee) | 23% | 6%  | 8%  |
 
 **Example Monthly Contribution on SGD 5,000 Salary:**
 
@@ -150,23 +153,30 @@ Interest is computed monthly but credited annually (December 31st).
 
 `gsheet/cpf.json` defines five sections tracking CPF metrics:
 
-| Workbook Section | Account ID (Implicit) | Purpose |
-|-----------------|----------------------|---------|
-| `cpf_total` | CPF-Total | Aggregate of all CPF accounts |
-| `cpf_oa` | CPF-OA | Ordinary Account |
-| `cpf_sa` | CPF-SA | Special Account |
-| `cpf_ma` | CPF-MA | MediSave Account |
-| `cpf_summary` | CPF-Summary | Summary metrics and derived calculations |
+| Workbook Section      |             |                                          |
+| --------------------- | ----------- | ---------------------------------------- |
+| Account ID (Implicit) |             |                                          |
+| Purpose               |             |                                          |
+| `cpf_total`           | CPF-Total   | Aggregate of all CPF accounts            |
+| `cpf_oa`              | CPF-OA      | Ordinary Account                         |
+| `cpf_sa`              | CPF-SA      | Special Account                          |
+| `cpf_ma`              | CPF-MA      | MediSave Account                         |
+| `cpf_summary`         | CPF-Summary | Summary metrics and derived calculations |
 
 ### Canonical Database Accounts
 
 From the canonical account registry used by the app:
 
-| Canonical Account ID | Type | Owner | Name | Currency | HB Account |
-|---------------------|------|-------|------|----------|------------|
-| TWH CPF OA SGD | retirement | TWH | CPF OA | SGD | CPF OA |
-| TWH CPF SA SGD | retirement | TWH | CPF SA | SGD | CPF SA |
-| TWH CPF MS SGD | savings account | TWH | CPF MS | SGD | CPF MA |
+| Canonical Account ID |                 |     |        |     |        |
+| -------------------- | --------------- | --- | ------ | --- | ------ |
+| Type                 |                 |     |        |     |        |
+| Owner                |                 |     |        |     |        |
+| Name                 |                 |     |        |     |        |
+| Currency             |                 |     |        |     |        |
+| HB Account           |                 |     |        |     |        |
+| TWH CPF OA SGD       | retirement      | TWH | CPF OA | SGD | CPF OA |
+| TWH CPF SA SGD       | retirement      | TWH | CPF SA | SGD | CPF SA |
+| TWH CPF MS SGD       | savings account | TWH | CPF MS | SGD | CPF MA |
 
 **Note:** Canonical ID uses "MS" (MediSave) but HomeBudget account name uses "MA" (MediSave Account).
 
@@ -222,15 +232,17 @@ cpf_total["END BAL"] == cpf_oa["END BAL"] + cpf_sa["END BAL"] + cpf_ma["END BAL"
 
 The CPF domain tracks these metrics for each account:
 
-| Metric Name | Description | Storage |
-|-------------|-------------|---------|
-| BEG BAL | Opening balance (start of month) | Store or derive from prior month END BAL |
-| END BAL | Closing balance (end of month) | **Store** (primary balance metric) |
-| CONTRIBUTIONS | Monthly contributions from salary | **Store** (inflow) |
-| WITHDRAWALS | Withdrawals for approved uses | **Store** (outflow) |
-| INTEREST PAID TO OA SA | Interest credited | **Store** (inflow) |
-| INTEREST PAID TO MA | Interest credited to MA | **Store** (inflow) |
-| INTEREST RATE OA SA | Interest rate (%) | Store as metadata or skip |
+| Metric Name            |                                   |                                          |
+| ---------------------- | --------------------------------- | ---------------------------------------- |
+| Description            |                                   |                                          |
+| Storage                |                                   |                                          |
+| BEG BAL                | Opening balance (start of month)  | Store or derive from prior month END BAL |
+| END BAL                | Closing balance (end of month)    | **Store** (primary balance metric)       |
+| CONTRIBUTIONS          | Monthly contributions from salary | **Store** (inflow)                       |
+| WITHDRAWALS            | Withdrawals for approved uses     | **Store** (outflow)                      |
+| INTEREST PAID TO OA SA | Interest credited                 | **Store** (inflow)                       |
+| INTEREST PAID TO MA    | Interest credited to MA           | **Store** (inflow)                       |
+| INTEREST RATE OA SA    | Interest rate (%)                 | Store as metadata or skip                |
 
 ### Table Structure
 
@@ -276,8 +288,8 @@ CREATE TABLE cpf_transactions (
 3. **Balance Formula:**
    - END BAL = BEG BAL + CONTRIBUTIONS - WITHDRAWALS + INTEREST
 4. **Interest Rate Validation:**
-   - OA interest rate ≈ 2.5-3.5%
-   - SA/MA interest rate ≈ 4-5%
+   - OA interest rate â‰ˆ 2.5-3.5%
+   - SA/MA interest rate â‰ˆ 4-5%
 
 ### Data Quality Notes
 

@@ -1,4 +1,4 @@
-﻿# Helper Workbooks Cross-Validation Report
+# Helper Workbooks Cross-Validation Report
 
 **Document Version:** 0.2.0  
 **Last Updated:** March 8, 2026  
@@ -49,17 +49,37 @@ TWH IB POSITION USD
 
 ### Account ID Usage Across Workbooks
 
-| Workbook | Sheet | Account ID Used | Match Status | Notes |
-|----------|-------|----------------|--------------|-------|
-| financial-statements | balances | TWH CASH SGD, etc. | âœ“ Canonical | Legacy seed source for canonical registry |
-| cpf | cpf_total | CPF-Total (implicit) | âš  Not in canonical list | Need to add CPF accounts |
-| cpf | cpf_oa | CPF-OA (implicit) | âš  Not in canonical list | Need to add |
-| cpf | cpf_sa | CPF-SA (implicit) | âš  Not in canonical list | Need to add |
-| cpf | cpf_ma | CPF-MA (implicit) | âš  Not in canonical list | Need to add |
-| ibkr-iba | All sections | IBKR-IBA (implicit) | âš  Not in canonical list | Need to add or map to "TWH IB POSITION USD" |
-| cash-expenses | recent_txns | "Cash" (implicit) | âš  Not in canonical list | Need to map to "TWH CASH SGD" or separate account |
-| shared-expenses | records | (no explicit account) | âŒ Missing | Need to define account for shared expenses |
-| homebudget-workbook | cat_map | Multiple in "account" column | âœ“ Appears to match | Maps to canonical accounts |
+| Workbook             |              |                              |                           |
+| -------------------- | ------------ | ---------------------------- | ------------------------- |
+| Sheet                |              |                              |                           |
+| Account ID Used      |              |                              |                           |
+| Match Status         |              |                              |                           |
+| Notes                |              |                              |                           |
+| financial-statements | balances     | TWH CASH SGD, etc.           | âœ“ Canonical             |
+| cpf                  | cpf_total    | CPF-Total (implicit)         | âš  Not in canonical list |
+| cpf                  | cpf_oa       | CPF-OA (implicit)            | âš  Not in canonical list |
+| cpf                  | cpf_sa       | CPF-SA (implicit)            | âš  Not in canonical list |
+| cpf                  | cpf_ma       | CPF-MA (implicit)            | âš  Not in canonical list |
+| ibkr-iba             | All sections | IBKR-IBA (implicit)          | âš  Not in canonical list |
+| cash-expenses        | recent_txns  | "Cash" (implicit)            | âš  Not in canonical list |
+| shared-expenses      | records      | (no explicit account)        | âŒ Missing               |
+| homebudget-workbook  | cat_map      | Multiple in "account" column | âœ“ Appears to match      |
+
+| Workbook             |              |                                                   |
+| -------------------- | ------------ | ------------------------------------------------- |
+| Sheet                |              |                                                   |
+| Account ID Used      |              |                                                   |
+| Match Status         |              |                                                   |
+| Notes                |              |                                                   |
+| financial-statements | balances     | Legacy seed source for canonical registry         |
+| cpf                  | cpf_total    | Need to add CPF accounts                          |
+| cpf                  | cpf_oa       | Need to add                                       |
+| cpf                  | cpf_sa       | Need to add                                       |
+| cpf                  | cpf_ma       | Need to add                                       |
+| ibkr-iba             | All sections | Need to add or map to "TWH IB POSITION USD"       |
+| cash-expenses        | recent_txns  | Need to map to "TWH CASH SGD" or separate account |
+| shared-expenses      | records      | Need to define account for shared expenses        |
+| homebudget-workbook  | cat_map      | Maps to canonical accounts                        |
 
 ### Missing Canonical Account IDs
 
@@ -124,14 +144,31 @@ IBKR_ACCOUNT_MAP = {
 
 ### Period Formats Observed
 
-| Workbook | Sheet | Period Format | Example | Parse Rule |
-|----------|-------|---------------|---------|------------|
-| financial-statements | balances | (year: int, month: int) | year=2026, month=2 | Composite â†’ "2026-02" |
-| financial-statements | forex_rates | date (YYYY-MM-DD) | "2026-02-01" | Extract â†’ "2026-02" |
-| cpf | All sections | Row 1: year, Row 2: month | Row1[col]=2026, Row2[col]=2 | Composite â†’ "2026-02" |
-| ibkr-iba | All sections | Row 1: year, Row 2: month | Row1[col]=2026, Row2[col]=2 | Composite â†’ "2026-02" |
-| cash-expenses | recent_txns | DD/MM/YYYY HH:MM:SS | "24/01/2026 22:51:46" | Parse datetime â†’ "2026-01" |
-| shared-expenses | records | YYYY-MM-DD | "2021-10-01" | Parse date â†’ "2021-10" |
+| Workbook             |              |                           |                             |
+| -------------------- | ------------ | ------------------------- | --------------------------- |
+| Sheet                |              |                           |                             |
+| Period Format        |              |                           |                             |
+| Example              |              |                           |                             |
+| Parse Rule           |              |                           |                             |
+| financial-statements | balances     | (year: int, month: int)   | year=2026, month=2          |
+| financial-statements | forex_rates  | date (YYYY-MM-DD)         | "2026-02-01"                |
+| cpf                  | All sections | Row 1: year, Row 2: month | Row1[col]=2026, Row2[col]=2 |
+| ibkr-iba             | All sections | Row 1: year, Row 2: month | Row1[col]=2026, Row2[col]=2 |
+| cash-expenses        | recent_txns  | DD/MM/YYYY HH:MM:SS       | "24/01/2026 22:51:46"       |
+| shared-expenses      | records      | YYYY-MM-DD                | "2021-10-01"                |
+
+| Workbook             |              |                              |
+| -------------------- | ------------ | ---------------------------- |
+| Sheet                |              |                              |
+| Period Format        |              |                              |
+| Example              |              |                              |
+| Parse Rule           |              |                              |
+| financial-statements | balances     | Composite â†’ "2026-02"      |
+| financial-statements | forex_rates  | Extract â†’ "2026-02"        |
+| cpf                  | All sections | Composite â†’ "2026-02"      |
+| ibkr-iba             | All sections | Composite â†’ "2026-02"      |
+| cash-expenses        | recent_txns  | Parse datetime â†’ "2026-01" |
+| shared-expenses      | records      | Parse date â†’ "2021-10"     |
 
 ### Canonical Period ID Format
 
@@ -177,15 +214,19 @@ def to_period_id(source, value):
 
 ### Currency Formats Observed
 
-| Workbook | Sheet | Currency Representation | Example | Notes |
-|----------|-------|------------------------|---------|-------|
-| financial-statements | balances | Implicit SGD | balance=513.90 | Assumed SGD |
-| financial-statements | forex_rates | Explicit in column | currency="USD" | ISO code |
-| financial-statements | accounts | Explicit in column | currency="SGD"/"USD" | ISO code |
-| cpf | All sections | Implicit SGD | amount=65000 | CPF is always SGD |
-| ibkr-iba | All sections | In metric name | "NAV USD", "NAV SGD" | Parse from label |
-| cash-expenses | recent_txns | Implicit SGD | amount=19.8 | Assumed SGD |
-| shared-expenses | records | Implicit SGD | total_price=59.87 | Assumed SGD |
+| Workbook                |              |                    |                      |                   |
+| ----------------------- | ------------ | ------------------ | -------------------- | ----------------- |
+| Sheet                   |              |                    |                      |                   |
+| Currency Representation |              |                    |                      |                   |
+| Example                 |              |                    |                      |                   |
+| Notes                   |              |                    |                      |                   |
+| financial-statements    | balances     | Implicit SGD       | balance=513.90       | Assumed SGD       |
+| financial-statements    | forex_rates  | Explicit in column | currency="USD"       | ISO code          |
+| financial-statements    | accounts     | Explicit in column | currency="SGD"/"USD" | ISO code          |
+| cpf                     | All sections | Implicit SGD       | amount=65000         | CPF is always SGD |
+| ibkr-iba                | All sections | In metric name     | "NAV USD", "NAV SGD" | Parse from label  |
+| cash-expenses           | recent_txns  | Implicit SGD       | amount=19.8          | Assumed SGD       |
+| shared-expenses         | records      | Implicit SGD       | total_price=59.87    | Assumed SGD       |
 
 ### Currency Detection Rules
 
@@ -226,14 +267,31 @@ def detect_currency(source, metric_name=None, account_id=None):
 
 ### Type Mapping Across Sources
 
-| Field Type | Declared Types | Observed Types | Coercion Rule | Null Handling |
-|------------|---------------|----------------|---------------|---------------|
-| Period/Date | int, date, datetime | year+month int, YYYY-MM-DD str, DD/MM/YYYY HH:MM:SS str | Parse to canonical YYYY-MM str | NOT NULL |
-| Amount/Balance | float, str (with commas) | float, str like "132,847.06" | Remove commas, cast to float | Nullable (empty cells) |
-| Account ID | str | str (uppercase) | DIRECT, uppercase | NOT NULL |
-| Category | str | str | DIRECT | Nullable |
-| Metric Name | str | str | DIRECT, trim whitespace | NOT NULL (for matrix rows) |
-| Currency | str (3-letter ISO) | str or implicit | ISO code validation | NOT NULL (default or parse) |
+| Field Type     |                          |                                                         |
+| -------------- | ------------------------ | ------------------------------------------------------- |
+| Declared Types |                          |                                                         |
+| Observed Types |                          |                                                         |
+| Coercion Rule  |                          |                                                         |
+| Null Handling  |                          |                                                         |
+| Period/Date    | int, date, datetime      | year+month int, YYYY-MM-DD str, DD/MM/YYYY HH:MM:SS str |
+| Amount/Balance | float, str (with commas) | float, str like "132,847.06"                            |
+| Account ID     | str                      | str (uppercase)                                         |
+| Category       | str                      | str                                                     |
+| Metric Name    | str                      | str                                                     |
+| Currency       | str (3-letter ISO)       | str or implicit                                         |
+
+| Field Type     |                          |                                |                             |
+| -------------- | ------------------------ | ------------------------------ | --------------------------- |
+| Declared Types |                          |                                |                             |
+| Observed Types |                          |                                |                             |
+| Coercion Rule  |                          |                                |                             |
+| Null Handling  |                          |                                |                             |
+| Period/Date    | int, date, datetime      | Parse to canonical YYYY-MM str | NOT NULL                    |
+| Amount/Balance | float, str (with commas) | Remove commas, cast to float   | Nullable (empty cells)      |
+| Account ID     | str                      | DIRECT, uppercase              | NOT NULL                    |
+| Category       | str                      | DIRECT                         | Nullable                    |
+| Metric Name    | str                      | DIRECT, trim whitespace        | NOT NULL (for matrix rows)  |
+| Currency       | str (3-letter ISO)       | ISO code validation            | NOT NULL (default or parse) |
 
 ### Type Coercion Issues
 
@@ -280,14 +338,31 @@ Multiple date formats across workbooks.
 
 ### High-Risk Drift Scenarios
 
-| Workbook | Risk | Impact | Detection | Mitigation |
-|----------|------|--------|-----------|------------|
-| cpf, ibkr-iba | New month column added | Column P shifts to Q | Column count check | Dynamic column range detection |
-| All | Header row text changes | Parser fails | Header validation | Fuzzy match or position-based parsing |
-| All | New account added | Account not in canonical list | FK constraint violation | Pre-flight account validation |
-| cpf, ibkr-iba | New metric row inserted | Row indices shift | Section boundary detection | Use section title as anchor, not row number |
-| forex_rates | Currency pair added | New rows | â€” | Flexible (no issue) |
-| cash-expenses | Sheet restructured | Parser fails | Column count change | Schema version check before parse |
+| Workbook      |                         |                               |                            |
+| ------------- | ----------------------- | ----------------------------- | -------------------------- |
+| Risk          |                         |                               |                            |
+| Impact        |                         |                               |                            |
+| Detection     |                         |                               |                            |
+| Mitigation    |                         |                               |                            |
+| cpf, ibkr-iba | New month column added  | Column P shifts to Q          | Column count check         |
+| All           | Header row text changes | Parser fails                  | Header validation          |
+| All           | New account added       | Account not in canonical list | FK constraint violation    |
+| cpf, ibkr-iba | New metric row inserted | Row indices shift             | Section boundary detection |
+| forex_rates   | Currency pair added     | New rows                      | â€”                        |
+| cash-expenses | Sheet restructured      | Parser fails                  | Column count change        |
+
+| Workbook      |                         |                                             |
+| ------------- | ----------------------- | ------------------------------------------- |
+| Risk          |                         |                                             |
+| Impact        |                         |                                             |
+| Detection     |                         |                                             |
+| Mitigation    |                         |                                             |
+| cpf, ibkr-iba | New month column added  | Dynamic column range detection              |
+| All           | Header row text changes | Fuzzy match or position-based parsing       |
+| All           | New account added       | Pre-flight account validation               |
+| cpf, ibkr-iba | New metric row inserted | Use section title as anchor, not row number |
+| forex_rates   | Currency pair added     | Flexible (no issue)                         |
+| cash-expenses | Sheet restructured      | Schema version check before parse           |
 
 ### Drift Detection Strategy
 

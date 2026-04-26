@@ -208,7 +208,7 @@ assert 170 <= row_count <= 200, \
     f"Unexpected row count: {row_count} (expected 170-200)"
 ```
 
-**Expected:** Row counts within expected range (±10% tolerance)
+**Expected:** Row counts within expected range (Â±10% tolerance)
 
 **Failure Action:** **Warning** - Possible data truncation or expansion
 
@@ -345,7 +345,7 @@ WHERE account_id LIKE '%CPF%'
 **Check:** Verify expected number of records imported
 
 ```sql
--- Example: CPF should have ~35 records per period (5 sections × 7 metrics)
+-- Example: CPF should have ~35 records per period (5 sections Ã— 7 metrics)
 SELECT period_id, COUNT(*) AS record_count
 FROM asset_balances
 WHERE source = 'gsheet_cpf'
@@ -387,7 +387,7 @@ FROM cpf_balances
 WHERE ABS((oa_bal + sa_bal + ma_bal) - total_bal) > 0.01;
 ```
 
-**Expected:** Zero rows (computed total matches reported total ±$0.01)
+**Expected:** Zero rows (computed total matches reported total Â±$0.01)
 
 **Failure Action:** **Critical** - CPF reconciliation failure
 
@@ -395,7 +395,7 @@ WHERE ABS((oa_bal + sa_bal + ma_bal) - total_bal) > 0.01;
 
 ### XW-02: IBKR NAV Currency Reconciliation
 
-**Check:** Verify NAV SGD ≈ NAV USD × FX rate
+**Check:** Verify NAV SGD â‰ˆ NAV USD Ã— FX rate
 
 ```sql
 WITH ibkr_nav AS (
@@ -424,7 +424,7 @@ FROM ibkr_nav
 WHERE ABS(nav_sgd - (nav_usd * fx_rate)) / NULLIF(nav_sgd, 0) > 0.01;  -- >1% variance
 ```
 
-**Expected:** Zero rows (NAV SGD within 1% of NAV USD × FX)
+**Expected:** Zero rows (NAV SGD within 1% of NAV USD Ã— FX)
 
 **Failure Action:** **Critical** - IBKR currency reconciliation failure
 
@@ -455,7 +455,7 @@ FROM balance_continuity
 WHERE ABS(prev_closing - curr_opening) > 0.01;
 ```
 
-**Expected:** Zero rows (opening = prior closing ±$0.01)
+**Expected:** Zero rows (opening = prior closing Â±$0.01)
 
 **Failure Action:** **Critical** - Balance continuity broken
 
@@ -513,7 +513,7 @@ assert observed_cols == expected_cols, \
 
 ### SD-02: Row Count Drift Detection
 
-**Check:** Detect significant row count changes (±20% from baseline)
+**Check:** Detect significant row count changes (Â±20% from baseline)
 
 ```python
 # Example for category_mappings
@@ -526,7 +526,7 @@ assert drift_pct <= 0.20, \
     f"Row count drift: {drift_pct*100:.1f}% (observed: {observed_rows}, baseline: {baseline_rows})"
 ```
 
-**Expected:** Row counts within ±20% of baseline
+**Expected:** Row counts within Â±20% of baseline
 
 **Failure Action:** **Warning** - Significant row count change
 
@@ -581,25 +581,31 @@ assert len(new_sections) == 0, \
 
 ### ETL Import Go/No-Go Decision Matrix
 
-| Check Result | Go | No-Go | Action |
-|--------------|----|----|--------|
-| All Critical checks pass | ✓ | | Proceed with import |
-| Workbook adapter used in production mode | | ✓ | Block run; enforce app-native adapter |
-| 1+ Critical check fails | | ✓ | Block import, investigate |
-| All Critical pass, some Warnings | ✓ | | Log warnings, manual review |
-| Schema drift detected | | ✓ | Update schema profiles, review parser |
-| Reconciliation variance >1% | | ✓ | Investigate source data |
+| Check Result                             |     |     |                                       |
+| ---------------------------------------- | --- | --- | ------------------------------------- |
+| Go                                       |     |     |                                       |
+| No-Go                                    |     |     |                                       |
+| Action                                   |     |     |                                       |
+| All Critical checks pass                 | âœ“ |     | Proceed with import                   |
+| Workbook adapter used in production mode |     | âœ“ | Block run; enforce app-native adapter |
+| 1+ Critical check fails                  |     | âœ“ | Block import, investigate             |
+| All Critical pass, some Warnings         | âœ“ |     | Log warnings, manual review           |
+| Schema drift detected                    |     | âœ“ | Update schema profiles, review parser |
+| Reconciliation variance >1%              |     | âœ“ | Investigate source data               |
 
 ### Monthly Closing Go/No-Go Decision Matrix
 
-| Check Result | Go | No-Go | Action |
-|--------------|----|----|--------|
-| All imports successful | ✓ | | Proceed to financial statements |
-| CPF reconciliation failure | | ✓ | Review CPF source inputs and adapter output |
-| IBKR reconciliation failure | | ✓ | Review IBKR source inputs and adapter output |
-| Balance continuity broken | | ✓ | Review prior period corrections |
-| Missing exchange rates | | ✓ | Refresh FX adapter/source inputs |
-| >5% data volume variance | | ✓ | Investigate record count changes |
+| Check Result                |     |     |                                              |
+| --------------------------- | --- | --- | -------------------------------------------- |
+| Go                          |     |     |                                              |
+| No-Go                       |     |     |                                              |
+| Action                      |     |     |                                              |
+| All imports successful      | âœ“ |     | Proceed to financial statements              |
+| CPF reconciliation failure  |     | âœ“ | Review CPF source inputs and adapter output  |
+| IBKR reconciliation failure |     | âœ“ | Review IBKR source inputs and adapter output |
+| Balance continuity broken   |     | âœ“ | Review prior period corrections              |
+| Missing exchange rates      |     | âœ“ | Refresh FX adapter/source inputs             |
+| >5% data volume variance    |     | âœ“ | Investigate record count changes             |
 
 ---
 

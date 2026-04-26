@@ -170,27 +170,30 @@ Use the `wkbid` value from `gsheet/cash-expenses.json` at runtime. Do not publis
 
 **Residual Balance Gap Formula:**
 ```
-Residual Gap = HB Current Balance - Actual Physical Cash - Σ Aggregated Expenses
+Residual Gap = HB Current Balance - Actual Physical Cash - Î£ Aggregated Expenses
 
 Where:
   HB Current Balance = Sum of all Cash TWH SGD transactions from period start to end
   Actual Physical Cash = User's physical cash count in SGD
-  Σ Aggregated Expenses = Sum of expense amounts from staged wallet cash aggregate txns
+  Î£ Aggregated Expenses = Sum of expense amounts from staged wallet cash aggregate txns
 ```
 
 ### Interpretation
 
 Different reconciliation gap values indicate different balance states and require different actions:
 
-| id | gap_value | tolerance_status                | system_action              |
-| -- | --------- | ------------------------------- | -------------------------- |
-| 01 | ≈ 0       | within cash tolerance threshold | auto-create adjustment     |
-| 02 | exceeds   | > cash tolerance threshold      | flag for user review       |
-| 03 | approved  | user-approved                   | create adjustment if ok'd  |
+| id               |          |                                 |                           |
+| ---------------- | -------- | ------------------------------- | ------------------------- |
+| gap_value        |          |                                 |                           |
+| tolerance_status |          |                                 |                           |
+| system_action    |          |                                 |                           |
+| 01               | â‰ˆ 0    | within cash tolerance threshold | auto-create adjustment    |
+| 02               | exceeds  | > cash tolerance threshold      | flag for user review      |
+| 03               | approved | user-approved                   | create adjustment if ok'd |
 
 **Adjustment behavior by gap value and tolerance:**
 
-- **Gap ≈ 0, within tolerance:** Reconciliation within tolerance. System automatically generates adjustment transaction with category `Balancing:Unknown`. Log session with adjustment created.
+- **Gap â‰ˆ 0, within tolerance:** Reconciliation within tolerance. System automatically generates adjustment transaction with category `Balancing:Unknown`. Log session with adjustment created.
 - **Gap > 0, exceeds tolerance:** HB shows MORE cash than physical count plus expenses account for. Suggests missing expenses in HomeBudget or extra transactions. System flags for user review with recommended negative adjustment. User can approve, modify, or investigate further. If approved, system creates adjustment with category `Balancing:Unknown`.
 - **Gap < 0, exceeds tolerance:** HB shows LESS cash than physical count plus expenses account for. Suggests duplicate or incorrect transactions in HomeBudget, or unrecorded cash additions. System flags for user review with recommended positive adjustment. User can approve, modify, or investigate further. If approved, system creates adjustment with category `Balancing:Unknown`.
 

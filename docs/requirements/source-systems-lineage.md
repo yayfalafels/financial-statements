@@ -28,6 +28,7 @@ This document defines the source systems, data flow paths, and traceability requ
 - [accounting logic and mapping](accounting-logic.md)
 - [reconciliation engine](reconciliation-engine.md)
 - [transaction category mapping](transaction-category-mapping.md)
+- [transaction categories](transaction-categories.md)
 - [data model](data-model.md)
 
 **Primary scope:**
@@ -46,46 +47,55 @@ This document defines the source systems, data flow paths, and traceability requ
 
 The source systems listed below contribute to the monthly close:
 
-| id | system name               | source type                        | lineage anchor           |
-| -- | ------------------------- | ---------------------------------- | ------------------------ |
-| 01 | Statement Digital Twin    | statement files + PDF archive      | app DB `statements` schema |
-| 02 | HomeBudget                | wrapper sync + direct user inputs  | hb sync transaction uid  |
-| 03 | IBKR                      | CSV statements                      | IBKR activity statement  |
-| 04 | CPF                       | Google Sheets UI                    | closing-session workbook |
-| 05 | User Manual Inputs        | user-observed balances and qty      | Google Sheets UI entries |
-| 06 | Yahoo Finance             | market data API                     | API response snapshot    |
-| 07 | Bills Domain              | parsed bills plus bridge UI input   | app DB `bills` schema    |
+| id             |                        |                                   |                            |
+| -------------- | ---------------------- | --------------------------------- | -------------------------- |
+| system name    |                        |                                   |                            |
+| source type    |                        |                                   |                            |
+| lineage anchor |                        |                                   |                            |
+| 01             | Statement Digital Twin | statement files + PDF archive     | app DB `statements` schema |
+| 02             | HomeBudget             | wrapper sync + direct user inputs | hb sync transaction uid    |
+| 03             | IBKR                   | CSV statements                    | IBKR activity statement    |
+| 04             | CPF                    | Google Sheets UI                  | closing-session workbook   |
+| 05             | User Manual Inputs     | user-observed balances and qty    | Google Sheets UI entries   |
+| 06             | Yahoo Finance          | market data API                   | API response snapshot      |
+| 07             | Bills Domain           | parsed bills plus bridge UI input | app DB `bills` schema      |
 
 > HomeBudget sync schema objects and canonical table names are defined in [data-model.md](data-model.md).
 
 **Source inputs and usage**
 
-| id | format    | usage        | vol  | account group  | account                        | stmt_process |
-| -- | --------- | ------------ | ---- | -------------- | ------------------------------ | ------------ |
-| 01 | csv       | txn          | high | bank accounts  | TWH DBS Multi SGD              | yes          |
-| 02 | pdf       | archive      | high | bank accounts  | TWH DBS Multi SGD              | yes          |
-| 03 | csv       | txn          | high | bank accounts  | TWH Visa USD                   | yes          |
-| 04 | pdf       | archive      | high | bank accounts  | TWH Visa USD                   | yes          |
-| 05 | csv       | txn          | high | bank accounts  | TWH CITI USD                   | yes          |
-| 06 | pdf       | archive      | high | bank accounts  | TWH CITI USD                   | yes          |
-| 07 | excel     | txn          | high | bank accounts  | TWH UOB One SGD                | yes          |
-| 08 | pdf       | archive      | high | bank accounts  | TWH UOB One SGD                | yes          |
-| 09 | pdf       | txn, archive | low  | bank accounts  | Wells Fargo USD                | no           |
-| 10 | gs        | txn          | high | cash           | TWH Cash SGD                   | no           |
-| 11 | gs[1]     | balance      | low  | wallets        | TWH Cash USD                   | no           |
-| 12 | gs[1]     | balance      | low  | wallets        | others - EZLink, Amazon, etc.. | no           |
-| 13 | csv[2]    | txn          | low  | ibkr           | IBKR IBA                       | no           |
-| 14 | csv[2]    | txn          | low  | ibkr           | IBKR IRA                       | no           |
-| 15 | gs[1]     | qty          | low  | investments    | Silver Bullions                | no           |
-| 16 | api       | unit price   | low  | investments    | Silver Bullions                | no           |
-| 17 | api       | forex rates  | low  | forex          | --                             | no           |
-| 18 | pdf       | txn          | high | bills          | Singtel                        | no           |
-| 19 | pdf       | txn          | high | bills          | PUB SP Services                | no           |
-| 20 | gs[1]     | balance      | high | bank accounts  | TWH DBS Multi SGD              | no           |
-| 21 | gs[1]     | balance      | high | bank accounts  | TWH Visa USD                   | no           |
-| 22 | gs[1]     | balance      | high | bank accounts  | TWH CITI USD                   | no           |
-| 23 | gs[1]     | balance      | high | bank accounts  | TWH UOB One SGD                | no           |
-| 24 | gs[1]     | balance      | low  | bank accounts  | Wells Fargo USD                | no           |
+| id            |        |              |      |               |                                |     |
+| ------------- | ------ | ------------ | ---- | ------------- | ------------------------------ | --- |
+| format        |        |              |      |               |                                |     |
+| usage         |        |              |      |               |                                |     |
+| vol           |        |              |      |               |                                |     |
+| account group |        |              |      |               |                                |     |
+| account       |        |              |      |               |                                |     |
+| stmt_process  |        |              |      |               |                                |     |
+| 01            | csv    | txn          | high | bank accounts | TWH DBS Multi SGD              | yes |
+| 02            | pdf    | archive      | high | bank accounts | TWH DBS Multi SGD              | yes |
+| 03            | csv    | txn          | high | bank accounts | TWH Visa USD                   | yes |
+| 04            | pdf    | archive      | high | bank accounts | TWH Visa USD                   | yes |
+| 05            | csv    | txn          | high | bank accounts | TWH CITI USD                   | yes |
+| 06            | pdf    | archive      | high | bank accounts | TWH CITI USD                   | yes |
+| 07            | excel  | txn          | high | bank accounts | TWH UOB One SGD                | yes |
+| 08            | pdf    | archive      | high | bank accounts | TWH UOB One SGD                | yes |
+| 09            | pdf    | txn, archive | low  | bank accounts | Wells Fargo USD                | no  |
+| 10            | gs     | txn          | high | cash          | TWH Cash SGD                   | no  |
+| 11            | gs[1]  | balance      | low  | wallets       | TWH Cash USD                   | no  |
+| 12            | gs[1]  | balance      | low  | wallets       | others - EZLink, Amazon, etc.. | no  |
+| 13            | csv[2] | txn          | low  | ibkr          | IBKR IBA                       | no  |
+| 14            | csv[2] | txn          | low  | ibkr          | IBKR IRA                       | no  |
+| 15            | gs[1]  | qty          | low  | investments   | Silver Bullions                | no  |
+| 16            | api    | unit price   | low  | investments   | Silver Bullions                | no  |
+| 17            | api    | forex rates  | low  | forex         | --                             | no  |
+| 18            | pdf    | txn          | high | bills         | Singtel                        | no  |
+| 19            | pdf    | txn          | high | bills         | PUB SP Services                | no  |
+| 20            | gs[1]  | balance      | high | bank accounts | TWH DBS Multi SGD              | no  |
+| 21            | gs[1]  | balance      | high | bank accounts | TWH Visa USD                   | no  |
+| 22            | gs[1]  | balance      | high | bank accounts | TWH CITI USD                   | no  |
+| 23            | gs[1]  | balance      | high | bank accounts | TWH UOB One SGD                | no  |
+| 24            | gs[1]  | balance      | low  | bank accounts | Wells Fargo USD                | no  |
 
 1. user-entered via closing-session Google Sheets workbook
 2. in later version MVP will use direct api
@@ -122,12 +132,12 @@ For this path, HomeBudget is the source of truth.
 **Bills and shared-cost domain**
 
 - Source: parsed bill statement records, shared-cost inputs, and consumption metrics
-- Data ingest: parse bill statements into bill-domain records; during POC, operators may enter or review records through Google Sheets bridge UI
+- Data ingest: parse bill statements into bill-domain records; during POC, users may enter or review records through Google Sheets bridge UI
 - Data sync: persist canonical bill-domain state in the app `bills` schema
 - Lineage anchor: app `bills` schema row reference, source statement reference, and update timestamp
 - Reconciliation: bill lifecycle checks, period rollups, and shared-cost settlement status checks
 - Accounts: in-scope bill-payment and shared-cost accounts
-- Source authority: a single bill transaction appears in up to six representations — the bill statement, the bank statement, HomeBudget, the `hb` sync schema, the `close_book` schema, and the `bills` schema. The bill statement is authoritative for expense categorization and line-item breakdown. The bank statement is authoritative for transaction amount and posting date. All other representations are secondary and must reconcile to these two sources.
+- Source authority: a single bill transaction appears in up to six representations â€” the bill statement, the bank statement, HomeBudget, the `hb` sync schema, the `close_book` schema, and the `bills` schema. The bill statement is authoritative for expense categorization and line-item breakdown. The bank statement is authoritative for transaction amount and posting date. All other representations are secondary and must reconcile to these two sources.
 
 **IBKR**
 
@@ -224,8 +234,8 @@ A single bill transaction has a footprint across up to six representations: the 
 
 Transaction authority:
 
-1. **Primary source (categorization and breakdown):** bill statement — authoritative for expense category, line-item detail, and payee
-2. **Primary source (amount and date):** bank statement transaction record — authoritative for posted amount and posting date
+1. **Primary source (categorization and breakdown):** bill statement â€” authoritative for expense category, line-item detail, and payee
+2. **Primary source (amount and date):** bank statement transaction record â€” authoritative for posted amount and posting date
 3. **Secondary sources:** HomeBudget, `hb` sync schema, `close_book` schema, and `bills` schema
 4. **Conflict rule:** all secondary representations must reconcile to the bill statement and bank statement. Discrepancies are reconciliation findings requiring explicit variance treatment before close.
 
@@ -298,16 +308,16 @@ For reconciliation closure, each transaction must satisfy exactly one traceabili
 - **Source reference:** statement file name and row identifier, with page number when applicable
 - **Parsing metadata:** extraction timestamp, parser version
 - **Reconciliation linkage:** match status with hb sync ledger record, if linked
-- **Lineage trail:** from statement source file → app consolidated database `statements` schema → financial statements workbook
+- **Lineage trail:** from statement source file â†’ app consolidated database `statements` schema â†’ financial statements workbook
 
 ### HomeBudget transactions
 
 - **Invariant fields:** transaction date, amount, currency, account
 - **Source reference:** hb sync transaction uid, wrapper source reference, and app sync timestamp
 - **Categorization metadata:** hb sync category reference and category change history, if modified
-- **Mapping lineage:** HB category → GL account mapping version used
+- **Mapping lineage:** HB category â†’ GL account mapping version used
 - **Reconciliation linkage:** bank statement match status, if the account is bank-linked
-- **Lineage trail:** from HomeBudget wrapper source → hb sync schema → financial statements workbook
+- **Lineage trail:** from HomeBudget wrapper source â†’ hb sync schema â†’ financial statements workbook
 
 ### Cash balances
 
@@ -323,7 +333,7 @@ For reconciliation closure, each transaction must satisfy exactly one traceabili
 - **Source reference:** activity statement date, activity statement line item ID or activity reference
 - **Derivation metadata:** NAV calculation components, if applicable, and FX rates used
 - **Reconciliation linkage:** position statement cross-check
-- **Lineage trail:** from IBKR activity statement → financial statements workbook
+- **Lineage trail:** from IBKR activity statement â†’ financial statements workbook
 
 ### CPF balances and contributions
 
@@ -331,7 +341,7 @@ For reconciliation closure, each transaction must satisfy exactly one traceabili
 - **Source reference:** cpf GS UI entry timestamp, input version
 - **Entry metadata:** user entry timestamp, user confirmation timestamp
 - **Reconciliation linkage:** contribution flow consistency
-- **Lineage trail:** from GS UI closing-session entry → financial statements workbook
+- **Lineage trail:** from GS UI closing-session entry â†’ financial statements workbook
 
 ## Balance lineage requirements
 
@@ -339,16 +349,19 @@ This section defines the minimum balance metadata required for traceability, der
 
 ### Minimum traceability metadata per balance
 
-| id | property               | example                 | notes          |
-| -- | ---------------------- | ----------------------- | -------------- |
-| 01 | period_date            | 2026-02-28              | close date     |
-| 02 | source_system          | bank_statement_path     | source label   |
-| 03 | account                | 1010                    | cash account   |
-| 04 | amount                 | 5000.00 SGD             | reported value |
-| 05 | source_date            | 2026-02-28              | statement date |
-| 06 | extraction_timestamp   | 2026-03-01 11:30:00 UTC | load timestamp |
-| 07 | source_reference       | app DB statements row ID | lineage key   |
-| 08 | reconciliation_status  | closed                  | workflow state |
+| id       |                       |                          |                |
+| -------- | --------------------- | ------------------------ | -------------- |
+| property |                       |                          |                |
+| example  |                       |                          |                |
+| notes    |                       |                          |                |
+| 01       | period_date           | 2026-02-28               | close date     |
+| 02       | source_system         | bank_statement_path      | source label   |
+| 03       | account               | 1010                     | cash account   |
+| 04       | amount                | 5000.00 SGD              | reported value |
+| 05       | source_date           | 2026-02-28               | statement date |
+| 06       | extraction_timestamp  | 2026-03-01 11:30:00 UTC  | load timestamp |
+| 07       | source_reference      | app DB statements row ID | lineage key    |
+| 08       | reconciliation_status | closed                   | workflow state |
 
 ### Aggregation and derivation requirements
 
@@ -392,15 +405,18 @@ This section defines retention and closure documentation requirements for audit 
 
 The following artifacts must be retained and accessible for audit:
 
-| id | artifact                 | location                | access     |
-| -- | ------------------------ | ----------------------- | ---------- |
-| 01 | Bank statement PDFs      | s3                      | read-only  |
-| 02 | `statements` tables      | app database schema     | read-write |
-| 03 | HomeBudget txn snapshots by month | s3             | read-only  |
-| 04 | IBKR activity statements | s3                      | read-only  |
-| 05 | GS UI inputs             | s3                      | read-only  |
-| 06 | financial statements     | s3                      | read-only  |
-| 07 | Reconciliation analysis  | s3                      | read-only  |
-| 08 | Cash source snapshots    | s3                      | read-only  |
-| 09 | `cash_staging` tables    | app database schema     | read-write |
-| 10 | `bills` tables           | app database schema     | read-write |
+| id       |                                   |                     |            |
+| -------- | --------------------------------- | ------------------- | ---------- |
+| artifact |                                   |                     |            |
+| location |                                   |                     |            |
+| access   |                                   |                     |            |
+| 01       | Bank statement PDFs               | s3                  | read-only  |
+| 02       | `statements` tables               | app database schema | read-write |
+| 03       | HomeBudget txn snapshots by month | s3                  | read-only  |
+| 04       | IBKR activity statements          | s3                  | read-only  |
+| 05       | GS UI inputs                      | s3                  | read-only  |
+| 06       | financial statements              | s3                  | read-only  |
+| 07       | Reconciliation analysis           | s3                  | read-only  |
+| 08       | Cash source snapshots             | s3                  | read-only  |
+| 09       | `cash_staging` tables             | app database schema | read-write |
+| 10       | `bills` tables                    | app database schema | read-write |

@@ -29,7 +29,7 @@ scope: poc
 	- [Reconciliation methods](#reconciliation-methods)
 	- [Reconciliation methods by account type](#reconciliation-methods-by-account-type)
 
-Custom accounting logic guides how expenses and income are categorized, tracked, and reported in the home budget system. It defines the rules and principles for recording financial transactions, ensuring consistency and accuracy in financial reporting.
+Custom accounting logic defines how transactions are recognized, valued, timed, and booked in the home budget system before statement classification and roll-up are applied. It defines the rules and principles for recording financial transactions, ensuring consistency and accuracy in financial reporting.
 
 ## Related documents
 
@@ -99,14 +99,16 @@ closing balance = opening balance + purchases - sales proceeds + realized gain +
 
 ## Forex
 
-Forex effects are treated as a separate expense. There are two types of forex expenses
+Forex effects have two different accounting outcomes.
 
-1. M2M forex on balances
+1. Forex translation gain or loss on balances
 2. Forex on transactions
 
-### M2M forex on balances
+### Forex translation gain or loss on balances
 
-M2M forex on balance is the unrealized gain or loss on the existing balance of an account due to changes in exchange rates. It is calculated as the difference between the value of the balance at the end of the period and the value of the balance at the beginning of the period, using the exchange rates at those respective times.
+Forex translation on balances is the unrealized gain or loss on the existing balance of an account due to changes in exchange rates. It is calculated as the difference between the value of the balance at the end of the period and the value of the balance at the beginning of the period, using the exchange rates at those respective times.
+
+This translation effect is a financial-statement-level adjustment. It appears only in the financial statements layer and is not recorded as an account-level HomeBudget ledger transaction, because HomeBudget ledgers balance in a single currency and do not contain cross-currency translation entries.
 
 >M2M forex on balances = currency balance * (rate(end of period) - rate(beginning of period))
 
@@ -173,11 +175,11 @@ The simplest reconciliation method is at the account level to compare the ledger
 
 A reconciliation date can be at any day in the month. For reconciliation of bank statements, there will be three groups of transactions. For the pending transactions that are before reconciliation date, treat them as occuring after the reconcilaion date, and add a note in the description field of the actual transaction date "13 Mar", "25 Jan", etc... later after two reconcilation periods have passed, the dates for these transactions can be updated to the actual transaction date. 
 
-| id | category  | statement | homebudget | date    | action                                        |
-| -- | --------- | --------- | ---------- | ------- | --------------------------------------------- |
-| 01 | captured  | X         | X          | before  | reconcile HB amount to match statement        |
-| 02 | pending   |           | X          | before  | move txns to after the reconciliation date    |  
-| 03 | forecast  |           | X          | after   | leave as-is, not in scope for reconciliation  |  
+| id | category | statement | homebudget | date   | action                                       |
+| -- | -------- | --------- | ---------- | ------ | -------------------------------------------- |
+| 01 | captured | X         | X          | before | reconcile HB amount to match statement       |
+| 02 | pending  |           | X          | before | move txns to after the reconciliation date   |
+| 03 | forecast |           | X          | after  | leave as-is, not in scope for reconciliation |
 
 ### Reconciliation methods
 

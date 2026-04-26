@@ -114,12 +114,18 @@ Workbook ID: `1-Gy9kEUF0RbKWsztoZbVwbi65PXNhP1qPdylXod5JBE`
 
 ##### Schema
 
-| Column Name | Position | Declared Type | Inferred Type | Null Behavior | Example Values | Notes |
-|-------------|----------|---------------|---------------|---------------|----------------|-------|
-| year        | A        | int           | int           | NOT NULL      | 2026, 2025     | 4-digit year |
-| month       | B        | int           | int           | NOT NULL      | 1-12           | 1=Jan, 12=Dec |
-| account     | C        | str           | str           | NOT NULL      | "CPF-OA", "IBKR-IBA" | Account identifier |
-| balance     | D        | float         | float         | Nullable      | 15234.56, -123.45 | Balance in SGD, negative allowed |
+| Column Name    |     |       |       |          |                      |                                  |
+| -------------- | --- | ----- | ----- | -------- | -------------------- | -------------------------------- |
+| Position       |     |       |       |          |                      |                                  |
+| Declared Type  |     |       |       |          |                      |                                  |
+| Inferred Type  |     |       |       |          |                      |                                  |
+| Null Behavior  |     |       |       |          |                      |                                  |
+| Example Values |     |       |       |          |                      |                                  |
+| Notes          |     |       |       |          |                      |                                  |
+| year           | A   | int   | int   | NOT NULL | 2026, 2025           | 4-digit year                     |
+| month          | B   | int   | int   | NOT NULL | 1-12                 | 1=Jan, 12=Dec                    |
+| account        | C   | str   | str   | NOT NULL | "CPF-OA", "IBKR-IBA" | Account identifier               |
+| balance        | D   | float | float | Nullable | 15234.56, -123.45    | Balance in SGD, negative allowed |
 
 ##### Key Fields
 
@@ -182,14 +188,20 @@ Workbook ID: `1-Gy9kEUF0RbKWsztoZbVwbi65PXNhP1qPdylXod5JBE`
 
 ##### Schema
 
-| Column Name | Position | Declared Type | Inferred Type | Null Behavior | Example Values | Notes |
-|-------------|----------|---------------|---------------|---------------|----------------|-------|
-| year        | A        | int           | int           | NOT NULL      | 2026, 2025     | 4-digit year |
-| month       | B        | int           | int           | NOT NULL      | 1-12           | 1=Jan, 12=Dec |
-| date        | C        | date          | date          | NOT NULL      | 2026-02-01     | ISO format YYYY-MM-DD |
-| currency    | D        | str           | str           | NOT NULL      | "USD"          | 3-letter ISO code |
-| rate_SGD    | E        | float         | float         | NOT NULL      | 1.3456         | Exchange rate to SGD |
-| {unknown}   | F        | —             | str           | Nullable      | —              | Purpose unclear |
+| Column Name    |     |       |       |          |            |                       |
+| -------------- | --- | ----- | ----- | -------- | ---------- | --------------------- |
+| Position       |     |       |       |          |            |                       |
+| Declared Type  |     |       |       |          |            |                       |
+| Inferred Type  |     |       |       |          |            |                       |
+| Null Behavior  |     |       |       |          |            |                       |
+| Example Values |     |       |       |          |            |                       |
+| Notes          |     |       |       |          |            |                       |
+| year           | A   | int   | int   | NOT NULL | 2026, 2025 | 4-digit year          |
+| month          | B   | int   | int   | NOT NULL | 1-12       | 1=Jan, 12=Dec         |
+| date           | C   | date  | date  | NOT NULL | 2026-02-01 | ISO format YYYY-MM-DD |
+| currency       | D   | str   | str   | NOT NULL | "USD"      | 3-letter ISO code     |
+| rate_SGD       | E   | float | float | NOT NULL | 1.3456     | Exchange rate to SGD  |
+| {unknown}      | F   | â€”   | str   | Nullable | â€”        | Purpose unclear       |
 
 ##### Key Fields
 
@@ -219,10 +231,10 @@ Workbook ID: `1-Gy9kEUF0RbKWsztoZbVwbi65PXNhP1qPdylXod5JBE`
 - **Target Table Group:** Reference
 - **Target Table(s):** `exchange_rates`
 - **Normalization Strategy:** Direct mapping
-  - `date` → date
-  - `currency_from` → currency
+  - `date` â†’ date
+  - `currency_from` â†’ currency
   - `currency_to` = "SGD"
-  - `rate` → rate_SGD
+  - `rate` â†’ rate_SGD
 
 ##### Validation Rules
 
@@ -252,9 +264,15 @@ Workbook ID: `1-Gy9kEUF0RbKWsztoZbVwbi65PXNhP1qPdylXod5JBE`
 
 ##### Schema
 
-| Column Name | Position | Declared Type | Inferred Type | Null Behavior | Example Values | Notes |
-|-------------|----------|---------------|---------------|---------------|----------------|-------|
-| {unknown}   | A-G      | —             | —             | —             | —              | Needs live inspection |
+| Column Name    |     |     |     |     |     |                       |
+| -------------- | --- | --- | --- | --- | --- | --------------------- |
+| Position       |     |     |     |     |     |                       |
+| Declared Type  |     |     |     |     |     |                       |
+| Inferred Type  |     |     |     |     |     |                       |
+| Null Behavior  |     |     |     |     |     |                       |
+| Example Values |     |     |     |     |     |                       |
+| Notes          |     |     |     |     |     |                       |
+| {unknown}      | A-G | â€” | â€” | â€” | â€” | Needs live inspection |
 
 ##### Key Fields
 
@@ -314,9 +332,15 @@ Workbook ID: `1xF_cmgyKw2NHV6uj-bwo2O1D-eiyJwihlhFJSpMEKPg`
 
 ##### Schema
 
-| Column Name | Position | Declared Type | Inferred Type | Null Behavior | Example Values | Notes |
-|-------------|----------|---------------|---------------|---------------|----------------|-------|
-| {unknown}   | A-J      | —             | —             | —             | —              | Needs live inspection; 10 columns suggest hierarchical mapping |
+| Column Name    |     |     |     |     |     |                                                                |
+| -------------- | --- | --- | --- | --- | --- | -------------------------------------------------------------- |
+| Position       |     |     |     |     |     |                                                                |
+| Declared Type  |     |     |     |     |     |                                                                |
+| Inferred Type  |     |     |     |     |     |                                                                |
+| Null Behavior  |     |     |     |     |     |                                                                |
+| Example Values |     |     |     |     |     |                                                                |
+| Notes          |     |     |     |     |     |                                                                |
+| {unknown}      | A-J | â€” | â€” | â€” | â€” | Needs live inspection; 10 columns suggest hierarchical mapping |
 
 ##### Key Fields
 
@@ -382,10 +406,27 @@ All ranges share the same header: `worksheet!$A$2:$P$2` (15 columns spanning col
 
 ##### Schema
 
-| Column Name | Position | Declared Type | Inferred Type | Null Behavior | Example Values | Notes |
-|-------------|----------|---------------|---------------|---------------|----------------|-------|
-| {metric}    | A        | —             | str           | NOT NULL      | "Opening", "Contrib", "Interest", "Closing" | Metric label |
-| {months...} | B-P      | —             | float         | Nullable      | 12345.67       | 15 month columns (15 periods) |
+| Column Name    |     |     |       |          |                                             |
+| -------------- | --- | --- | ----- | -------- | ------------------------------------------- |
+| Position       |     |     |       |          |                                             |
+| Declared Type  |     |     |       |          |                                             |
+| Inferred Type  |     |     |       |          |                                             |
+| Null Behavior  |     |     |       |          |                                             |
+| Example Values |     |     |       |          |                                             |
+| Notes          |     |     |       |          |                                             |
+| {metric}       | A   | â€” | str   | NOT NULL | "Opening", "Contrib", "Interest", "Closing" |
+| {months...}    | B-P | â€” | float | Nullable | 12345.67                                    |
+
+| Column Name    |     |                               |
+| -------------- | --- | ----------------------------- |
+| Position       |     |                               |
+| Declared Type  |     |                               |
+| Inferred Type  |     |                               |
+| Null Behavior  |     |                               |
+| Example Values |     |                               |
+| Notes          |     |                               |
+| {metric}       | A   | Metric label                  |
+| {months...}    | B-P | 15 month columns (15 periods) |
 
 ##### Key Fields
 
@@ -396,7 +437,7 @@ All ranges share the same header: `worksheet!$A$2:$P$2` (15 columns spanning col
 
 ##### Data Characteristics
 
-- **Grain:** Cross-tab matrix (metrics × months)
+- **Grain:** Cross-tab matrix (metrics Ã— months)
 - **Layout Type:** Report-matrix
 - **Section Boundaries:** Rows 3, 11 likely spacers before/after this section
 - **Pivot Structure:** Metric labels in column A, month values in columns B-P
@@ -479,9 +520,9 @@ Same as `cpf_total`.
 
 Same unpivot logic as `cpf_total`, with account_id differentiated:
 
-- cpf_oa → "CPF-OA"
-- cpf_sa → "CPF-SA"
-- cpf_ma → "CPF-MA"
+- cpf_oa â†’ "CPF-OA"
+- cpf_sa â†’ "CPF-SA"
+- cpf_ma â†’ "CPF-MA"
 
 ##### Target Mapping
 
@@ -512,7 +553,7 @@ Same as `cpf_total`.
 
 ##### Schema
 
-Same matrix structure (metrics × months).
+Same matrix structure (metrics Ã— months).
 
 ##### Key Fields
 
@@ -573,10 +614,16 @@ All ranges share the same header: `worksheet!$A$2:$P$2` (15 columns)
 
 Same matrix structure as CPF sections.
 
-| Column Name | Position | Declared Type | Inferred Type | Null Behavior | Example Values | Notes |
-|-------------|----------|---------------|---------------|---------------|----------------|-------|
-| {metric}    | A        | —             | str           | NOT NULL      | "NAV USD", "NAV SGD", "Deposits", "P&L" | Metric label |
-| {months...} | B-P      | —             | float         | Nullable      | 12345.67       | 15 month columns |
+| Column Name    |     |     |       |          |                                         |                  |
+| -------------- | --- | --- | ----- | -------- | --------------------------------------- | ---------------- |
+| Position       |     |     |       |          |                                         |                  |
+| Declared Type  |     |     |       |          |                                         |                  |
+| Inferred Type  |     |     |       |          |                                         |                  |
+| Null Behavior  |     |     |       |          |                                         |                  |
+| Example Values |     |     |       |          |                                         |                  |
+| Notes          |     |     |       |          |                                         |                  |
+| {metric}       | A   | â€” | str   | NOT NULL | "NAV USD", "NAV SGD", "Deposits", "P&L" | Metric label     |
+| {months...}    | B-P | â€” | float | Nullable | 12345.67                                | 15 month columns |
 
 ##### Key Fields
 
@@ -587,7 +634,7 @@ Same matrix structure as CPF sections.
 
 ##### Data Characteristics
 
-- **Grain:** Cross-tab matrix (metrics × months)
+- **Grain:** Cross-tab matrix (metrics Ã— months)
 - **Layout Type:** Report-matrix
 - **Section Boundaries:** Row 3 spacer before, row 11 spacer after
 - **Pivot Structure:** Metric labels in column A, month values in columns B-P
@@ -600,9 +647,9 @@ Same unpivot logic as CPF sections, with currency parsing from metric name.
 
 **Currency Detection:**
 
-- If metric contains "USD" → currency = "USD"
-- If metric contains "SGD" → currency = "SGD"
-- Else → currency = "USD" (default for IBKR)
+- If metric contains "USD" â†’ currency = "USD"
+- If metric contains "SGD" â†’ currency = "SGD"
+- Else â†’ currency = "USD" (default for IBKR)
 
 ##### Target Mapping
 
@@ -620,7 +667,7 @@ Same unpivot logic as CPF sections, with currency parsing from metric name.
 - Metric names are non-empty
 - Month headers parse to valid year-month
 - Values are numeric or empty
-- NAV USD * FX Rate ≈ NAV SGD (cross-validation with forex_rates)
+- NAV USD * FX Rate â‰ˆ NAV SGD (cross-validation with forex_rates)
 
 ##### Risks and Ambiguities
 
@@ -662,16 +709,16 @@ Same unpivot logic, with section-specific account_id or metric_type tagging.
 
 Same target table, potentially with `metric_section` field to distinguish:
 
-- ib_net_liquidity → "NetLiquidity"
-- ib_cash → "Cash"
-- ib_securities → "Securities"
-- ib_summary → "Summary"
+- ib_net_liquidity â†’ "NetLiquidity"
+- ib_cash â†’ "Cash"
+- ib_securities â†’ "Securities"
+- ib_summary â†’ "Summary"
 
 ##### Validation Rules
 
 Same as `ib_net_liquidity`, plus:
 
-- Sum(ib_cash, ib_securities) ≈ ib_net_liquidity for reconciliation
+- Sum(ib_cash, ib_securities) â‰ˆ ib_net_liquidity for reconciliation
 
 ##### Risks and Ambiguities
 
@@ -698,12 +745,18 @@ Workbook ID: `1ijbXG_wEP_icWH7xtbIO0bNVp4RbWPe1A5X1Q1i1nIo`
 
 ##### Schema
 
-| Column Name | Position | Declared Type | Inferred Type | Null Behavior | Example Values | Notes |
-|-------------|----------|---------------|---------------|---------------|----------------|-------|
-| {unknown}   | A        | —             | —             | —             | —              | Likely date |
-| {unknown}   | B        | —             | —             | —             | —              | Likely description |
-| {unknown}   | C        | —             | —             | —             | —              | Likely category |
-| {unknown}   | D        | —             | —             | —             | —              | Likely amount |
+| Column Name    |     |     |     |     |     |                    |
+| -------------- | --- | --- | --- | --- | --- | ------------------ |
+| Position       |     |     |     |     |     |                    |
+| Declared Type  |     |     |     |     |     |                    |
+| Inferred Type  |     |     |     |     |     |                    |
+| Null Behavior  |     |     |     |     |     |                    |
+| Example Values |     |     |     |     |     |                    |
+| Notes          |     |     |     |     |     |                    |
+| {unknown}      | A   | â€” | â€” | â€” | â€” | Likely date        |
+| {unknown}      | B   | â€” | â€” | â€” | â€” | Likely description |
+| {unknown}      | C   | â€” | â€” | â€” | â€” | Likely category    |
+| {unknown}      | D   | â€” | â€” | â€” | â€” | Likely amount      |
 
 ##### Key Fields
 
@@ -767,9 +820,15 @@ Workbook ID: `1fVkiB_CXyJl2kBFEFrRb3Eb2wytWCUo1rOvveiGKZeo`
 
 ##### Schema
 
-| Column Name | Position | Declared Type | Inferred Type | Null Behavior | Example Values | Notes |
-|-------------|----------|---------------|---------------|---------------|----------------|-------|
-| {unknown}   | A-H      | —             | —             | —             | —              | 8 columns, needs inspection |
+| Column Name    |     |     |     |     |     |                             |
+| -------------- | --- | --- | --- | --- | --- | --------------------------- |
+| Position       |     |     |     |     |     |                             |
+| Declared Type  |     |     |     |     |     |                             |
+| Inferred Type  |     |     |     |     |     |                             |
+| Null Behavior  |     |     |     |     |     |                             |
+| Example Values |     |     |     |     |     |                             |
+| Notes          |     |     |     |     |     |                             |
+| {unknown}      | A-H | â€” | â€” | â€” | â€” | 8 columns, needs inspection |
 
 ##### Key Fields
 
@@ -817,7 +876,7 @@ To be defined.
 
 To be validated across all workbooks:
 
-- **Canonical Source:** `gsheet/financial-statements.json` → `accounts` sheet
+- **Canonical Source:** `gsheet/financial-statements.json` â†’ `accounts` sheet
 - **Referenced In:**
   - balances sheet (financial-statements)
   - CPF sections (implicit: "CPF-Total", "CPF-OA", "CPF-SA", "CPF-MA")

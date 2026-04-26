@@ -47,15 +47,17 @@ This document defines requirements for user interaction and approval behavior du
 
 ## Review checkpoints by workflow stage
 
-| id | stage        | checkpoint focus                             |
-| -- | ------------ | -------------------------------------------- |
-| 01 | pre-flight   | source readiness and period selection        |
-| 02 | forex        | exchange-rate source and period checks       |
-| 03 | data ingest  | source files received and GS UI entries confirmed |
-| 04 | data sync    | mapping sanity and `hb_gl_txn` plus dimension refresh status |
-| 05 | reconcile    | variance review and close-blocking outcomes  |
-| 06 | statements   | statement totals and classification review   |
-| 07 | publish      | final artifact confirmation                  |
+| id               |             |                                                              |
+| ---------------- | ----------- | ------------------------------------------------------------ |
+| stage            |             |                                                              |
+| checkpoint focus |             |                                                              |
+| 01               | pre-flight  | source readiness and period selection                        |
+| 02               | forex       | exchange-rate source and period checks                       |
+| 03               | data ingest | source files received and GS UI entries confirmed            |
+| 04               | data sync   | mapping sanity and `hb_gl_txn` plus dimension refresh status |
+| 05               | reconcile   | variance review and close-blocking outcomes                  |
+| 06               | statements  | statement totals and classification review                   |
+| 07               | publish     | final artifact confirmation                                  |
 
 ## Checkpoint criteria by workflow stage
 

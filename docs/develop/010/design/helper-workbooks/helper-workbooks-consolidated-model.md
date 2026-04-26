@@ -1,4 +1,4 @@
-﻿# Helper Workbooks Consolidated Data Model
+# Helper Workbooks Consolidated Data Model
 
 **Document Version:** 0.2.0  
 **Last Updated:** March 8, 2026  
@@ -485,82 +485,129 @@ Validate account IDs against JSON file during ETL.
 
 ### CPF Workbook â†’ `asset_balances`
 
-| Source | Source Field | Target Field | Transform |
-|--------|-------------|--------------|-----------|
-| cpf.json â†’ cpf_oa | Row 1 (year) | period_id | Composite: `{year}-{month:02d}` |
-| cpf.json â†’ cpf_oa | Row 2 (month) | period_id | Composite: `{year}-{month:02d}` |
-| cpf.json â†’ cpf_oa | Section name | account_id | Map: cpf_oa â†’ 'TWH CPF OA SGD' |
-| cpf.json â†’ cpf_oa | Column A (metric) | metric_name | Direct |
-| cpf.json â†’ cpf_oa | Cell value | amount | Parse numeric, remove commas |
-| cpf.json â†’ cpf_oa | (constant) | currency | 'SGD' |
-| cpf.json â†’ cpf_oa | Section name | metric_section | 'cpf_oa' |
-| cpf.json â†’ cpf_oa | (constant) | source | 'gsheet_cpf' |
+| Source              |                   |                |                                  |
+| ------------------- | ----------------- | -------------- | -------------------------------- |
+| Source Field        |                   |                |                                  |
+| Target Field        |                   |                |                                  |
+| Transform           |                   |                |                                  |
+| cpf.json â†’ cpf_oa | Row 1 (year)      | period_id      | Composite: `{year}-{month:02d}`  |
+| cpf.json â†’ cpf_oa | Row 2 (month)     | period_id      | Composite: `{year}-{month:02d}`  |
+| cpf.json â†’ cpf_oa | Section name      | account_id     | Map: cpf_oa â†’ 'TWH CPF OA SGD' |
+| cpf.json â†’ cpf_oa | Column A (metric) | metric_name    | Direct                           |
+| cpf.json â†’ cpf_oa | Cell value        | amount         | Parse numeric, remove commas     |
+| cpf.json â†’ cpf_oa | (constant)        | currency       | 'SGD'                            |
+| cpf.json â†’ cpf_oa | Section name      | metric_section | 'cpf_oa'                         |
+| cpf.json â†’ cpf_oa | (constant)        | source         | 'gsheet_cpf'                     |
 
 ### IBKR Workbook â†’ `asset_balances`
 
-| Source | Source Field | Target Field | Transform |
-|--------|-------------|--------------|-----------|
-| ibkr-iba.json â†’ ib_net_liquidity | Row 1 (year) | period_id | Composite: `{year}-{month:02d}` |
-| ibkr-iba.json â†’ ib_net_liquidity | Row 2 (month) | period_id | Composite: `{year}-{month:02d}` |
-| ibkr-iba.json â†’ ib_net_liquidity | (NAV metrics) | account_id | 'TWH IB POSITION USD' |
-| ibkr-iba.json â†’ ib_cash | (Cash metrics) | account_id | 'TWH IB CASH USD' |
-| ibkr-iba.json â†’ ib_net_liquidity | Column A (metric) | metric_name | Direct |
-| ibkr-iba.json â†’ ib_net_liquidity | Cell value | amount | Parse numeric, remove commas |
-| ibkr-iba.json â†’ ib_net_liquidity | Metric name | currency | Parse: "NAV USD" â†’ 'USD', "NAV SGD" â†’ 'SGD' |
-| ibkr-iba.json â†’ ib_net_liquidity | Section name | metric_section | 'ib_net_liquidity' |
-| ibkr-iba.json â†’ ib_net_liquidity | (constant) | source | 'gsheet_ibkr' |
+| Source                             |                   |                |
+| ---------------------------------- | ----------------- | -------------- |
+| Source Field                       |                   |                |
+| Target Field                       |                   |                |
+| Transform                          |                   |                |
+| ibkr-iba.json â†’ ib_net_liquidity | Row 1 (year)      | period_id      |
+| ibkr-iba.json â†’ ib_net_liquidity | Row 2 (month)     | period_id      |
+| ibkr-iba.json â†’ ib_net_liquidity | (NAV metrics)     | account_id     |
+| ibkr-iba.json â†’ ib_cash          | (Cash metrics)    | account_id     |
+| ibkr-iba.json â†’ ib_net_liquidity | Column A (metric) | metric_name    |
+| ibkr-iba.json â†’ ib_net_liquidity | Cell value        | amount         |
+| ibkr-iba.json â†’ ib_net_liquidity | Metric name       | currency       |
+| ibkr-iba.json â†’ ib_net_liquidity | Section name      | metric_section |
+| ibkr-iba.json â†’ ib_net_liquidity | (constant)        | source         |
+
+| Source                             |                                                 |
+| ---------------------------------- | ----------------------------------------------- |
+| Source Field                       |                                                 |
+| Target Field                       |                                                 |
+| Transform                          |                                                 |
+| ibkr-iba.json â†’ ib_net_liquidity | Composite: `{year}-{month:02d}`                 |
+| ibkr-iba.json â†’ ib_net_liquidity | Composite: `{year}-{month:02d}`                 |
+| ibkr-iba.json â†’ ib_net_liquidity | 'TWH IB POSITION USD'                           |
+| ibkr-iba.json â†’ ib_cash          | 'TWH IB CASH USD'                               |
+| ibkr-iba.json â†’ ib_net_liquidity | Direct                                          |
+| ibkr-iba.json â†’ ib_net_liquidity | Parse numeric, remove commas                    |
+| ibkr-iba.json â†’ ib_net_liquidity | Parse: "NAV USD" â†’ 'USD', "NAV SGD" â†’ 'SGD' |
+| ibkr-iba.json â†’ ib_net_liquidity | 'ib_net_liquidity'                              |
+| ibkr-iba.json â†’ ib_net_liquidity | 'gsheet_ibkr'                                   |
 
 ### Cash Expenses Workbook â†’ `cash_transactions`
 
-| Source | Source Field | Target Field | Transform |
-|--------|-------------|--------------|-----------|
-| cash-expenses.json â†’ recent_txns | date | transaction_date | Parse: 'DD/MM/YYYY HH:MM:SS' â†’ 'YYYY-MM-DD HH:MM:SS' |
-| cash-expenses.json â†’ recent_txns | (derived) | period_id | Extract: 'YYYY-MM' from transaction_date |
-| cash-expenses.json â†’ recent_txns | (constant or config) | account_id | 'TWH CASH SGD' |
-| cash-expenses.json â†’ recent_txns | budget | budget | Direct |
-| cash-expenses.json â†’ recent_txns | category | category | Direct |
-| cash-expenses.json â†’ recent_txns | amount | amount | Direct (numeric) |
-| cash-expenses.json â†’ recent_txns | (constant) | currency | 'SGD' |
-| cash-expenses.json â†’ recent_txns | (constant) | source | 'gsheet_cash_expenses' |
+| Source                             |                      |                  |
+| ---------------------------------- | -------------------- | ---------------- |
+| Source Field                       |                      |                  |
+| Target Field                       |                      |                  |
+| Transform                          |                      |                  |
+| cash-expenses.json â†’ recent_txns | date                 | transaction_date |
+| cash-expenses.json â†’ recent_txns | (derived)            | period_id        |
+| cash-expenses.json â†’ recent_txns | (constant or config) | account_id       |
+| cash-expenses.json â†’ recent_txns | budget               | budget           |
+| cash-expenses.json â†’ recent_txns | category             | category         |
+| cash-expenses.json â†’ recent_txns | amount               | amount           |
+| cash-expenses.json â†’ recent_txns | (constant)           | currency         |
+| cash-expenses.json â†’ recent_txns | (constant)           | source           |
+
+| Source                             |                                                        |
+| ---------------------------------- | ------------------------------------------------------ |
+| Source Field                       |                                                        |
+| Target Field                       |                                                        |
+| Transform                          |                                                        |
+| cash-expenses.json â†’ recent_txns | Parse: 'DD/MM/YYYY HH:MM:SS' â†’ 'YYYY-MM-DD HH:MM:SS' |
+| cash-expenses.json â†’ recent_txns | Extract: 'YYYY-MM' from transaction_date               |
+| cash-expenses.json â†’ recent_txns | 'TWH CASH SGD'                                         |
+| cash-expenses.json â†’ recent_txns | Direct                                                 |
+| cash-expenses.json â†’ recent_txns | Direct                                                 |
+| cash-expenses.json â†’ recent_txns | Direct (numeric)                                       |
+| cash-expenses.json â†’ recent_txns | 'SGD'                                                  |
+| cash-expenses.json â†’ recent_txns | 'gsheet_cash_expenses'                                 |
 
 ### Shared Expenses Workbook â†’ `shared_expense_transactions`
 
-| Source | Source Field | Target Field | Transform |
-|--------|-------------|--------------|-----------|
-| shared-expenses.json â†’ records | date | transaction_date | Parse: 'YYYY-MM-DD' |
-| shared-expenses.json â†’ records | (derived) | period_id | Extract: 'YYYY-MM' from date |
-| shared-expenses.json â†’ records | month | month_id | Direct (e.g., '202110') |
-| shared-expenses.json â†’ records | item | item | Direct |
-| shared-expenses.json â†’ records | note | note | Direct |
-| shared-expenses.json â†’ records | units | units | Direct |
-| shared-expenses.json â†’ records | qty | quantity | Direct (numeric) |
-| shared-expenses.json â†’ records | rooms | rooms | Direct (int) |
-| shared-expenses.json â†’ records | total price | total_price | Direct (numeric) |
-| shared-expenses.json â†’ records | (constant) | currency | 'SGD' |
-| shared-expenses.json â†’ records | (constant or config) | account_id | 'COM UOB SGD' or shared account |
-| shared-expenses.json â†’ records | (constant) | source | 'gsheet_shared_expenses' |
+| Source                           |                      |                  |                                 |
+| -------------------------------- | -------------------- | ---------------- | ------------------------------- |
+| Source Field                     |                      |                  |                                 |
+| Target Field                     |                      |                  |                                 |
+| Transform                        |                      |                  |                                 |
+| shared-expenses.json â†’ records | date                 | transaction_date | Parse: 'YYYY-MM-DD'             |
+| shared-expenses.json â†’ records | (derived)            | period_id        | Extract: 'YYYY-MM' from date    |
+| shared-expenses.json â†’ records | month                | month_id         | Direct (e.g., '202110')         |
+| shared-expenses.json â†’ records | item                 | item             | Direct                          |
+| shared-expenses.json â†’ records | note                 | note             | Direct                          |
+| shared-expenses.json â†’ records | units                | units            | Direct                          |
+| shared-expenses.json â†’ records | qty                  | quantity         | Direct (numeric)                |
+| shared-expenses.json â†’ records | rooms                | rooms            | Direct (int)                    |
+| shared-expenses.json â†’ records | total price          | total_price      | Direct (numeric)                |
+| shared-expenses.json â†’ records | (constant)           | currency         | 'SGD'                           |
+| shared-expenses.json â†’ records | (constant or config) | account_id       | 'COM UOB SGD' or shared account |
+| shared-expenses.json â†’ records | (constant)           | source           | 'gsheet_shared_expenses'        |
 
 ### Financial Statements Workbook â†’ `account_balances`
 
-| Source | Source Field | Target Field | Transform |
-|--------|-------------|--------------|-----------|
-| financial-statements.json â†’ balances | year, month | period_id | Composite: `{year}-{month:02d}` |
-| financial-statements.json â†’ balances | account | account_id | Direct (already canonical) |
-| financial-statements.json â†’ balances | balance | closing_balance | Direct (numeric) |
-| financial-statements.json â†’ balances | (constant) | currency | 'SGD' |
-| financial-statements.json â†’ balances | (constant) | source | 'gsheet_balances' |
+| Source                                 |             |                 |                                 |
+| -------------------------------------- | ----------- | --------------- | ------------------------------- |
+| Source Field                           |             |                 |                                 |
+| Target Field                           |             |                 |                                 |
+| Transform                              |             |                 |                                 |
+| financial-statements.json â†’ balances | year, month | period_id       | Composite: `{year}-{month:02d}` |
+| financial-statements.json â†’ balances | account     | account_id      | Direct (already canonical)      |
+| financial-statements.json â†’ balances | balance     | closing_balance | Direct (numeric)                |
+| financial-statements.json â†’ balances | (constant)  | currency        | 'SGD'                           |
+| financial-statements.json â†’ balances | (constant)  | source          | 'gsheet_balances'               |
 
 **Note:** `opening_balance` derived from prior period `closing_balance`.
 
 ### Forex Rates Workbook â†’ `exchange_rates`
 
-| Source | Source Field | Target Field | Transform |
-|--------|-------------|--------------|-----------|
-| financial-statements.json â†’ forex_rates | date | date | Direct (YYYY-MM-DD) |
-| financial-statements.json â†’ forex_rates | currency | currency_from | Direct |
-| financial-statements.json â†’ forex_rates | (constant) | currency_to | 'SGD' |
-| financial-statements.json â†’ forex_rates | rate SGD | rate | Direct (numeric) |
-| financial-statements.json â†’ forex_rates | (constant) | source | 'gsheet_forex' |
+| Source                                    |            |               |                     |
+| ----------------------------------------- | ---------- | ------------- | ------------------- |
+| Source Field                              |            |               |                     |
+| Target Field                              |            |               |                     |
+| Transform                                 |            |               |                     |
+| financial-statements.json â†’ forex_rates | date       | date          | Direct (YYYY-MM-DD) |
+| financial-statements.json â†’ forex_rates | currency   | currency_from | Direct              |
+| financial-statements.json â†’ forex_rates | (constant) | currency_to   | 'SGD'               |
+| financial-statements.json â†’ forex_rates | rate SGD   | rate          | Direct (numeric)    |
+| financial-statements.json â†’ forex_rates | (constant) | source        | 'gsheet_forex'      |
 
 ---
 
@@ -657,15 +704,18 @@ category_mappings (independent reference table)
 
 ### Data Volume Projections (Per Month)
 
-| Table | Rows/Month | Annual Rows | Growth Rate |
-|-------|-----------|-------------|-------------|
-| asset_balances | 1,200 | 14,400 | Linear |
-| cash_transactions | 75 | 900 | Linear |
-| shared_expense_transactions | 12 | 144 | Linear |
-| exchange_rates | 2 | 24 | Linear |
-| account_balances | 25 | 300 | Linear |
-| category_mappings | 0 (static) | 180 (total) | Rare updates |
-| source_import_log | 8 | 96 | Linear |
+| Table                       |            |             |              |
+| --------------------------- | ---------- | ----------- | ------------ |
+| Rows/Month                  |            |             |              |
+| Annual Rows                 |            |             |              |
+| Growth Rate                 |            |             |              |
+| asset_balances              | 1,200      | 14,400      | Linear       |
+| cash_transactions           | 75         | 900         | Linear       |
+| shared_expense_transactions | 12         | 144         | Linear       |
+| exchange_rates              | 2          | 24          | Linear       |
+| account_balances            | 25         | 300         | Linear       |
+| category_mappings           | 0 (static) | 180 (total) | Rare updates |
+| source_import_log           | 8          | 96          | Linear       |
 
 **Total Annual Inserts:** ~16,000 rows (manageable for SQLite)
 

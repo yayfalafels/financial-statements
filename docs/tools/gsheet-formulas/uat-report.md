@@ -12,16 +12,18 @@
 
 ## UAT Scenario Outcomes
 
-| id | scenario              | result |
-| -- | --------------------- | ------ |
-| 01 | read baseline         | pass   |
-| 02 | create formula        | pass   |
-| 03 | update formula        | pass   |
-| 04 | clear formula         | pass   |
-| 05 | failed mutation audit | pass   |
-| 06 | reference formula     | pass   |
+| id       |                       |      |
+| -------- | --------------------- | ---- |
+| scenario |                       |      |
+| result   |                       |      |
+| 01       | read baseline         | pass |
+| 02       | create formula        | pass |
+| 03       | update formula        | pass |
+| 04       | clear formula         | pass |
+| 05       | failed mutation audit | pass |
+| 06       | reference formula     | pass |
 
-## Operator Verification Notes
+## User Verification Notes
 
 - Baseline read verified blank A3.
 - Create and update scenarios matched live sheet expectations.

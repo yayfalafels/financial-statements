@@ -38,14 +38,16 @@ published statements.
 
 ### Source and bridge regions
 
-| id | region   | role                     |
-| -- | -------- | ------------------------ |
-| 01 | hb_exp   | HomeBudget expense feed  |
-| 02 | hb_inc   | HomeBudget income feed   |
-| 03 | hb_xfr   | HomeBudget transfer feed |
-| 04 | stm_txns | statement transaction    |
-| 05 | hb_ext   | external balance feed    |
-| 06 | hb_gl    | normalized GL bridge     |
+| id     |          |                          |
+| ------ | -------- | ------------------------ |
+| region |          |                          |
+| role   |          |                          |
+| 01     | hb_exp   | HomeBudget expense feed  |
+| 02     | hb_inc   | HomeBudget income feed   |
+| 03     | hb_xfr   | HomeBudget transfer feed |
+| 04     | stm_txns | statement transaction    |
+| 05     | hb_ext   | external balance feed    |
+| 06     | hb_gl    | normalized GL bridge     |
 
 Range references:
 
@@ -59,14 +61,16 @@ Range references:
 
 ### Mapping and account-classification regions
 
-| id | region          | role                          |
-| -- | --------------- | ----------------------------- |
-| 07 | fin_exp_cat_map | expense to statement mapping  |
-| 08 | accounts        | balance-sheet account mapping |
-| 09 | balances        | period ending balance input   |
-| 10 | forex_rates     | SGD conversion input          |
-| 11 | income_statement | published income statement    |
-| 12 | balance_sheet   | published balance sheet       |
+| id     |                  |                               |
+| ------ | ---------------- | ----------------------------- |
+| region |                  |                               |
+| role   |                  |                               |
+| 07     | fin_exp_cat_map  | expense to statement mapping  |
+| 08     | accounts         | balance-sheet account mapping |
+| 09     | balances         | period ending balance input   |
+| 10     | forex_rates      | SGD conversion input          |
+| 11     | income_statement | published income statement    |
+| 12     | balance_sheet    | published balance sheet       |
 
 Range references:
 
@@ -81,16 +85,18 @@ Range references:
 
 ### Reconcile regions
 
-| id | family      | role                         |
-| -- | ----------- | ---------------------------- |
-| 13 | cash        | cash detail and cash summary |
-| 14 | position    | position detail and transfer |
-| 15 | balances    | account and class rollups    |
-| 16 | expenses    | cost-center rollup           |
-| 17 | fx          | FX mark to market rollup     |
-| 18 | fin_stm     | statement summary rollup     |
-| 19 | private fx  | private FX transfer detail   |
-| 20 | private inc | private income detail        |
+| id     |             |                              |
+| ------ | ----------- | ---------------------------- |
+| family |             |                              |
+| role   |             |                              |
+| 13     | cash        | cash detail and cash summary |
+| 14     | position    | position detail and transfer |
+| 15     | balances    | account and class rollups    |
+| 16     | expenses    | cost-center rollup           |
+| 17     | fx          | FX mark to market rollup     |
+| 18     | fin_stm     | statement summary rollup     |
+| 19     | private fx  | private FX transfer detail   |
+| 20     | private inc | private income detail        |
 
 Region families:
 
@@ -111,22 +117,25 @@ Evidence was generated from live workbook inspection using
 
 ### Core region counts
 
-| id | region                    | rows | cols |
-| -- | ------------------------- | ---- | ---- |
-| 01 | hb_exp                    | 42   | 4    |
-| 02 | hb_inc                    | 133  | 5    |
-| 03 | hb_xfr                    | 455  | 5    |
-| 04 | stm_txns                  | 91   | 5    |
-| 05 | hb_gl                     | 5772 | 23   |
-| 06 | fin_exp_cat_map           | 33   | 5    |
-| 07 | accounts                  | 29   | 7    |
-| 08 | balances                  | 1376 | 4    |
-| 09 | forex_rates               | 92   | 6    |
-| 10 | reconcile_exp_cost_centers | 4    | 20   |
-| 11 | reconcile_fin_stm_summary | 69   | 20   |
-| 12 | reconcile_bal_by_acct     | 20   | 14   |
-| 13 | income_statement          | 71   | 16   |
-| 14 | balance_sheet             | 55   | 16   |
+| id     |                            |      |     |
+| ------ | -------------------------- | ---- | --- |
+| region |                            |      |     |
+| rows   |                            |      |     |
+| cols   |                            |      |     |
+| 01     | hb_exp                     | 42   | 4   |
+| 02     | hb_inc                     | 133  | 5   |
+| 03     | hb_xfr                     | 455  | 5   |
+| 04     | stm_txns                   | 91   | 5   |
+| 05     | hb_gl                      | 5772 | 23  |
+| 06     | fin_exp_cat_map            | 33   | 5   |
+| 07     | accounts                   | 29   | 7   |
+| 08     | balances                   | 1376 | 4   |
+| 09     | forex_rates                | 92   | 6   |
+| 10     | reconcile_exp_cost_centers | 4    | 20  |
+| 11     | reconcile_fin_stm_summary  | 69   | 20  |
+| 12     | reconcile_bal_by_acct      | 20   | 14  |
+| 13     | income_statement           | 71   | 16  |
+| 14     | balance_sheet              | 55   | 16  |
 
 ### Key schema observations
 
@@ -155,16 +164,18 @@ pipeline from normalized source feeds into monthly statement outputs.
 
 ### Derivation stages
 
-| id | stage            | output                     |
-| -- | ---------------- | -------------------------- |
-| 01 | source feeds     | hb_exp hb_inc hb_xfr stm_txns |
-| 02 | transaction map  | hb_gl                      |
-| 03 | expense rollup   | reconcile_exp_cost_centers |
-| 04 | statement rollup | reconcile_fin_stm_summary  |
-| 05 | publish P and L  | income_statement           |
-| 06 | balance inputs   | balances forex_rates accounts |
-| 07 | balance rollup   | reconcile_bal_by_acct      |
-| 08 | publish B and S  | balance_sheet              |
+| id     |                  |                               |
+| ------ | ---------------- | ----------------------------- |
+| stage  |                  |                               |
+| output |                  |                               |
+| 01     | source feeds     | hb_exp hb_inc hb_xfr stm_txns |
+| 02     | transaction map  | hb_gl                         |
+| 03     | expense rollup   | reconcile_exp_cost_centers    |
+| 04     | statement rollup | reconcile_fin_stm_summary     |
+| 05     | publish P and L  | income_statement              |
+| 06     | balance inputs   | balances forex_rates accounts |
+| 07     | balance rollup   | reconcile_bal_by_acct         |
+| 08     | publish B and S  | balance_sheet                 |
 
 ### Income statement derivation
 
@@ -229,14 +240,16 @@ object, so formula tokens can be read now using direct API calls with
 
 ### Formula targets
 
-| id | region                    | focus                         |
-| -- | ------------------------- | ----------------------------- |
-| 01 | hb_gl                     | mapped columns U:W            |
-| 02 | reconcile_exp_cost_centers | monthly expense totals        |
-| 03 | reconcile_fin_stm_summary | monthly statement totals      |
-| 04 | reconcile_bal_by_acct     | monthly balance totals        |
-| 05 | income_statement          | published row formulas        |
-| 06 | balance_sheet             | published row formulas        |
+| id     |                            |                          |
+| ------ | -------------------------- | ------------------------ |
+| region |                            |                          |
+| focus  |                            |                          |
+| 01     | hb_gl                      | mapped columns U:W       |
+| 02     | reconcile_exp_cost_centers | monthly expense totals   |
+| 03     | reconcile_fin_stm_summary  | monthly statement totals |
+| 04     | reconcile_bal_by_acct      | monthly balance totals   |
+| 05     | income_statement           | published row formulas   |
+| 06     | balance_sheet              | published row formulas   |
 
 Formula inspection method:
 
@@ -270,14 +283,16 @@ formula = result.get("values", [[""]])[0][0]
 
 Live formula outputs from current workbook:
 
-| id | cell                | formula token            |
-| -- | ------------------- | ------------------------ |
-| 01 | income_statement!D4 | =sum(D6:D8)             |
-| 02 | balance_sheet!D4    | =bal_sht_prior_year!P4  |
-| 03 | reconcile!H4        | =H18+H31*G1             |
-| 04 | hb_gl!U2            | no formula token        |
-| 05 | hb_gl!V2            | no formula token        |
-| 06 | hb_gl!W2            | no formula token        |
+| id            |                     |                        |
+| ------------- | ------------------- | ---------------------- |
+| cell          |                     |                        |
+| formula token |                     |                        |
+| 01            | income_statement!D4 | =sum(D6:D8)            |
+| 02            | balance_sheet!D4    | =bal_sht_prior_year!P4 |
+| 03            | reconcile!H4        | =H18+H31*G1            |
+| 04            | hb_gl!U2            | no formula token       |
+| 05            | hb_gl!V2            | no formula token       |
+| 06            | hb_gl!W2            | no formula token       |
 
 Example evidence artifact:
 

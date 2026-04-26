@@ -54,7 +54,7 @@ Use this template to document each parsing rule:
 #### Output Schema
 
 - **Record Format:** {describe output structure}
-- **Field Mapping:** {input → output field mappings}
+- **Field Mapping:** {input â†’ output field mappings}
 
 #### Pseudocode
 
@@ -80,7 +80,7 @@ Use this template to document each parsing rule:
 
 **Rule ID:** `PARSE-001`  
 **Applies To:** CPF workbook (all sections), IBKR workbook (all sections)  
-**Layout Pattern:** Matrix (metrics × time periods)
+**Layout Pattern:** Matrix (metrics Ã— time periods)
 
 #### Input Schema
 
@@ -111,12 +111,12 @@ Use this template to document each parsing rule:
 
 - **Record Format:** Normalized long-format records
 - **Field Mapping:**
-  - `period_id` ← Parsed from column header
-  - `account_id` ← Section-specific constant (e.g., "CPF-OA", "IBKR-IBA")
-  - `metric_name` ← Column A value
-  - `amount` ← Cell value at (row, column)
-  - `currency` ← Parsed from metric name or default "SGD"
-  - `metric_section` ← Section identifier (e.g., "cpf_oa", "ib_net_liquidity")
+  - `period_id` â† Parsed from column header
+  - `account_id` â† Section-specific constant (e.g., "CPF-OA", "IBKR-IBA")
+  - `metric_name` â† Column A value
+  - `amount` â† Cell value at (row, column)
+  - `currency` â† Parsed from metric name or default "SGD"
+  - `metric_section` â† Section identifier (e.g., "cpf_oa", "ib_net_liquidity")
 
 #### Pseudocode
 
@@ -178,9 +178,9 @@ def parse_period_id(header_text):
     Parse period identifier from column header.
     
     Examples:
-        "Jan 2026" → "2026-01"
-        "2026-01" → "2026-01"
-        "2026 01" → "2026-01"
+        "Jan 2026" â†’ "2026-01"
+        "2026-01" â†’ "2026-01"
+        "2026 01" â†’ "2026-01"
     """
     # Implementation depends on actual header format
     pass
@@ -191,9 +191,9 @@ def extract_currency(metric_name, default="SGD"):
     Extract currency code from metric name.
     
     Examples:
-        "NAV USD" → "USD"
-        "NAV SGD" → "SGD"
-        "Opening Balance" → "SGD" (default)
+        "NAV USD" â†’ "USD"
+        "NAV SGD" â†’ "SGD"
+        "Opening Balance" â†’ "SGD" (default)
     """
     if "USD" in metric_name:
         return "USD"
@@ -222,8 +222,8 @@ def is_empty(value):
 - All amounts must be numeric (float) or empty
 - Metric names must be non-empty strings
 - Currency codes must be valid 3-letter ISO codes
-- For CPF sections: Sum(OA, SA, MA) closing balance ≈ Total closing balance per month
-- For IBKR: NAV_USD * FX_rate ≈ NAV_SGD per month
+- For CPF sections: Sum(OA, SA, MA) closing balance â‰ˆ Total closing balance per month
+- For IBKR: NAV_USD * FX_rate â‰ˆ NAV_SGD per month
 
 ---
 
@@ -263,7 +263,7 @@ def parse_multi_section_workbook(workbook_id, workbook_config, account_id_map):
     Args:
         workbook_id: Google Sheets workbook ID
         workbook_config: Dict with section configs (from JSON)
-        account_id_map: Dict mapping section_name → account_id
+        account_id_map: Dict mapping section_name â†’ account_id
     
     Returns:
         List of all records from all sections
@@ -323,8 +323,8 @@ def parse_multi_section_workbook(workbook_id, workbook_config, account_id_map):
 
 #### Output Schema
 
-- **Record Format:** Direct mapping (one sheet row → one record)
-- **Field Mapping:** Column name → field name (may require renaming)
+- **Record Format:** Direct mapping (one sheet row â†’ one record)
+- **Field Mapping:** Column name â†’ field name (may require renaming)
 
 #### Pseudocode
 
@@ -391,7 +391,7 @@ def coerce_type(value, type_name, date_format='%Y-%m-%d'):
             return None
     
     if type_name == 'int':
-        return int(float(value))  # Handle "123.0" → 123
+        return int(float(value))  # Handle "123.0" â†’ 123
     elif type_name == 'float':
         return float(value)
     elif type_name == 'date':
@@ -427,7 +427,7 @@ def is_row_empty(row):
 ### CPF Workbook Parsing
 
 **Workbook ID:** `1x9Dfq5RVwvmCGqX9aIgCRoarkhLYR3mWGmRRvQnLkbo`  
-**Primary Parser:** Multi-Section Parser (PARSE-002) → Matrix Unpivot Parser (PARSE-001)
+**Primary Parser:** Multi-Section Parser (PARSE-002) â†’ Matrix Unpivot Parser (PARSE-001)
 
 #### Section to Account ID Mapping
 
@@ -458,7 +458,7 @@ Expected metric names (to be validated):
 ### IBKR Workbook Parsing
 
 **Workbook ID:** `1i_ITkqvLRw5AFVmzqLaHp6PHlA2OERi3E-la00Ukngg`  
-**Primary Parser:** Multi-Section Parser (PARSE-002) → Matrix Unpivot Parser (PARSE-001)
+**Primary Parser:** Multi-Section Parser (PARSE-002) â†’ Matrix Unpivot Parser (PARSE-001)
 
 #### Section to Account ID Mapping
 
@@ -564,10 +564,10 @@ NUMERIC_TYPES = ['int', 'float']
 
 - `None`, empty string `""`, whitespace `"   "` all treated as empty
 - For numeric fields:
-  - `int`: empty → 0
-  - `float`: empty → NaN or None
-- For string fields: empty → None or empty string
-- For date fields: empty → None
+  - `int`: empty â†’ 0
+  - `float`: empty â†’ NaN or None
+- For string fields: empty â†’ None or empty string
+- For date fields: empty â†’ None
 
 ### Error Handling Strategy
 

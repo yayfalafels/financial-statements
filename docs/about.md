@@ -16,11 +16,11 @@ Current version: `0.1.0` POC
 
 - Deliver a fast local proof that improves monthly close effort versus the current Google Sheets and manual process.
 - Prove end-to-end feasibility across local sqlite, Google Sheets, and HomeBudget with minimal workflow disruption.
-- Keep setup and operations simple for a single operator, while establishing the technical baseline for MVP hardening.
+- Keep setup and operations simple for a single user, while establishing the technical baseline for MVP hardening.
 
 **Included in this release**:
 
-- current local-only workflow, one operator, zero cloud cost, and session-based updates.
+- current local-only workflow, one user, zero cloud cost, and session-based updates.
 - Retain Google Sheets as the primary session UI.
 - Retain Google Sheets workbook configs and assets.
 - Retain HomeBudget integration for monthly close workflows.

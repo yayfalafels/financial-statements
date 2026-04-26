@@ -15,7 +15,7 @@ This page introduces the POC requirement intent, defines the active scope, and p
 
 ## POC overview
 
-Release `0.1.0` POC is a local monthly-close workflow for one operator.
+Release `0.1.0` POC is a local monthly-close workflow for one user.
 
 The POC requirements focus on the following outcomes:
 
@@ -36,7 +36,7 @@ The active requirements scope is constrained to release `0.1.0` POC intent.
 In scope:
 
 - Local-only operation.
-- One operator.
+- One user.
 - Session-based updates.
 - Google Sheets as the primary session UI.
 - HomeBudget integration for live accounting workflows.
@@ -56,7 +56,7 @@ Out of scope:
 
 The current outline covers the following topic groups:
 
-- Workflow and operator control, including workflow orchestration, review checkpoints, approvals, and statement lifecycle behavior.
+- Workflow and user control, including workflow orchestration, review checkpoints, approvals, and statement lifecycle behavior.
 - Accounting and close logic, including accounting policy, account classification, category mapping, and reconciliation behavior.
 - Source systems and integration surfaces, including lineage and the retained operational systems and inputs used during monthly close.
 - Supporting close workflows, including bill payment and shared-cost settlement.
@@ -68,30 +68,34 @@ For the current detailed topic list, use the topic index table below.
 
 The topic pages for detailed requirement are included below.
 
-| id | document                        | role      |
-| -- | ------------------------------- | --------- |
-| 01 | workflow-orchestration.md       | owner     |
-| 02 | interaction-approvals.md        | owner     |
-| 03 | statements-lifecycle.md         | owner     |
-| 04 | source-systems-lineage.md       | owner     |
-| 05 | accounting-logic.md             | owner     |
-| 06 | account-classification.md       | owner     |
-| 07 | transaction-category-mapping.md | owner     |
-| 08 | reconciliation-engine.md        | owner     |
-| 09 | bill-payment.md                 | owner     |
-| 10 | shared-costs.md                 | owner     |
-| 11 | homebudget.md                   | owner     |
-| 12 | google-sheets.md                | owner     |
-| 13 | ibkr-integration.md             | owner     |
-| 14 | cpf-integration.md              | owner     |
-| 15 | data-model.md                   | owner     |
-| 16 | cash-reconcile.md               | reference |
-| 17 | glossary.md                     | reference |
-| 18 | implementation-roadmap.md       | reference |
-| 19 | poc.md                          | reference |
-| 20 | mvp.md                          | reference |
-| 21 | dependencies.md                 | reference |
-| 22 | environment.md                  | reference |
+| id       |                           |           |
+| -------- | ------------------------- | --------- |
+| document |                           |           |
+| role     |                           |           |
+| 01       | workflow-orchestration.md | owner     |
+| 02       | interaction-approvals.md  | owner     |
+| 03       | statements-lifecycle.md   | owner     |
+| 04       | source-systems-lineage.md | owner     |
+| 05       | accounting-logic.md       | owner     |
+| 06       | account-classification.md | owner     |
+| 07       | transaction-categories.md | owner     |
+| 08       | financial-statements.md   | owner     |
+| 09       | reconciliation-engine.md  | owner     |
+| 10       | bill-payment.md           | owner     |
+| 11       | shared-costs.md           | owner     |
+| 12       | homebudget.md             | owner     |
+| 13       | google-sheets.md          | owner     |
+| 14       | ibkr-integration.md       | owner     |
+| 15       | cpf-integration.md        | owner     |
+| 16       | data-model.md             | owner     |
+| 17       | cash-reconcile.md         | reference |
+| 18       | glossary.md               | reference |
+| 19       | implementation-roadmap.md | reference |
+| 20       | poc.md                    | reference |
+| 21       | mvp.md                    | reference |
+| 22       | dependencies.md           | reference |
+| 23       | environment.md            | reference |
+| 24       | user-interface.md         | owner     |
 
 ## Cross-page ownership rules
 

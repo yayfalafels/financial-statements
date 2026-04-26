@@ -85,11 +85,14 @@ Reviewed supporting references:
 
 ## Conflict Inventory
 
-| id | conflict area                | evidence key | impact                             |
-| -- | ---------------------------- | ------------ | ---------------------------------- |
-| 01 | workflow ownership overlap   | CF-01        | resolved by owner-page publication |
-| 02 | accounting ownership overlap | CF-02        | resolved by hierarchy publication  |
-| 03 | bill/shared-cost split gap   | CF-03        | resolved by split publication      |
+| id            |                              |       |                                    |
+| ------------- | ---------------------------- | ----- | ---------------------------------- |
+| conflict area |                              |       |                                    |
+| evidence key  |                              |       |                                    |
+| impact        |                              |       |                                    |
+| 01            | workflow ownership overlap   | CF-01 | resolved by owner-page publication |
+| 02            | accounting ownership overlap | CF-02 | resolved by hierarchy publication  |
+| 03            | bill/shared-cost split gap   | CF-03 | resolved by split publication      |
 
 Evidence keys:
 
@@ -99,12 +102,15 @@ Evidence keys:
 
 ## Documentation Gap Inventory
 
-| id | gap                         | evidence key | impact                             |
-| -- | --------------------------- | ------------ | ---------------------------------- |
-| 01 | empty requirements index    | DG-01        | resolved                           |
-| 02 | lineage linkage residual    | DG-02        | resolved                           |
-| 03 | missing category mapping    | DG-03        | resolved                           |
-| 04 | missing reconcile engine    | DG-04        | resolved                           |
+| id           |                          |       |          |
+| ------------ | ------------------------ | ----- | -------- |
+| gap          |                          |       |          |
+| evidence key |                          |       |          |
+| impact       |                          |       |          |
+| 01           | empty requirements index | DG-01 | resolved |
+| 02           | lineage linkage residual | DG-02 | resolved |
+| 03           | missing category mapping | DG-03 | resolved |
+| 04           | missing reconcile engine | DG-04 | resolved |
 
 Evidence keys:
 
@@ -115,10 +121,13 @@ Evidence keys:
 
 ## Data-Source and Requirement Misalignment
 
-| id | misalignment                | evidence key | impact                            |
-| -- | --------------------------- | ------------ | --------------------------------- |
-| 01 | tolerance policy mismatch   | DM-01        | resolved by policy alignment      |
-| 02 | account naming mismatch     | DM-02        | resolved by canonical naming rule |
+| id           |                           |       |                                   |
+| ------------ | ------------------------- | ----- | --------------------------------- |
+| misalignment |                           |       |                                   |
+| evidence key |                           |       |                                   |
+| impact       |                           |       |                                   |
+| 01           | tolerance policy mismatch | DM-01 | resolved by policy alignment      |
+| 02           | account naming mismatch   | DM-02 | resolved by canonical naming rule |
 
 Evidence keys:
 
@@ -157,7 +166,7 @@ The workflow requirement boundary is not explicit. A single page,
 `docs/requirements/current-workflow.md`, currently combines:
 
 - workflow sequencing and timing
-- operator review and checkpoint behavior
+- user review and checkpoint behavior
 - report-output update and close-out behavior
 
 Because these concerns are grouped together, requirement ownership is unclear
@@ -168,7 +177,7 @@ lifecycle requirements.
 
 - `docs/requirements/current-workflow.md`
 	- section `Sequential steps and time estimates` defines end-to-end stage flow
-	- section `Account update` includes operator review actions
+	- section `Account update` includes user review actions
 	- section `Report update` includes output-review and publish actions
 - `.github/prompts/requirements.prompt.md`
 	- separates these as distinct requirement areas:
@@ -257,42 +266,45 @@ Use metadata to identify each document as `owner` or `reference` and record line
 
 #### Destination outlines and section mapping
 
-| id | status | document                  | section                                  |
-| -- | ------ | ------------------------- | ---------------------------------------- |
-| 01 | gap    | workflow-orchestration.md | Purpose and boundary                     |
-| 02 | mapped | workflow-orchestration.md | Stage model for monthly close            |
-| 03 | gap    | workflow-orchestration.md | Stage entry criteria                     |
-| 04 | gap    | workflow-orchestration.md | Stage exit criteria                      |
-| 05 | mapped | workflow-orchestration.md | Stage inputs                             |
-| 06 | mapped | workflow-orchestration.md | Stage outputs                            |
-| 07 | gap    | workflow-orchestration.md | Stage invariants                         |
-| 08 | gap    | workflow-orchestration.md | Rerun behavior                           |
-| 09 | gap    | workflow-orchestration.md | Resume behavior                          |
-| 10 | gap    | workflow-orchestration.md | Failure handling and recovery flow       |
-| 11 | gap    | workflow-orchestration.md | Inter-stage dependencies and handoff rules |
-| 12 | gap    | workflow-orchestration.md | Acceptance criteria                      |
-| 13 | gap    | interaction-approvals.md  | Purpose and boundary                     |
-| 14 | mapped | interaction-approvals.md  | Review checkpoints by workflow stage     |
-| 15 | gap    | interaction-approvals.md  | Checkpoint criteria by workflow stage    |
-| 16 | gap    | interaction-approvals.md  | Required user confirmations before commit |
-| 17 | gap    | interaction-approvals.md  | Approval authority                       |
-| 18 | gap    | interaction-approvals.md  | Escalation and rework boundary           |
-| 19 | gap    | interaction-approvals.md  | Novel-decision capture and rationale logging |
-| 20 | gap    | interaction-approvals.md  | Prompt and output readability requirements |
-| 21 | gap    | interaction-approvals.md  | Rejection and rework behavior            |
-| 22 | gap    | interaction-approvals.md  | Acceptance criteria                      |
-| 23 | gap    | statements-lifecycle.md   | Purpose and boundary                     |
-| 24 | mapped | statements-lifecycle.md   | Lifecycle phase behavior                 |
-| 25 | gap    | statements-lifecycle.md   | Lifecycle state model by period          |
-| 26 | mapped | statements-lifecycle.md   | Draft and review behavior                |
-| 27 | gap    | statements-lifecycle.md   | Finalization criteria                    |
-| 28 | gap    | statements-lifecycle.md   | Reopen policy                            |
-| 29 | gap    | statements-lifecycle.md   | Revision policy                          |
-| 30 | mapped | statements-lifecycle.md   | Publish output actions                   |
-| 31 | mapped | statements-lifecycle.md   | Artifact output requirements             |
-| 32 | gap    | statements-lifecycle.md   | Versioning and lineage linkage           |
-| 33 | gap    | statements-lifecycle.md   | Period snapshot and immutability rules   |
-| 34 | gap    | statements-lifecycle.md   | Acceptance criteria                      |
+| id       |        |                           |                                              |
+| -------- | ------ | ------------------------- | -------------------------------------------- |
+| status   |        |                           |                                              |
+| document |        |                           |                                              |
+| section  |        |                           |                                              |
+| 01       | gap    | workflow-orchestration.md | Purpose and boundary                         |
+| 02       | mapped | workflow-orchestration.md | Stage model for monthly close                |
+| 03       | gap    | workflow-orchestration.md | Stage entry criteria                         |
+| 04       | gap    | workflow-orchestration.md | Stage exit criteria                          |
+| 05       | mapped | workflow-orchestration.md | Stage inputs                                 |
+| 06       | mapped | workflow-orchestration.md | Stage outputs                                |
+| 07       | gap    | workflow-orchestration.md | Stage invariants                             |
+| 08       | gap    | workflow-orchestration.md | Rerun behavior                               |
+| 09       | gap    | workflow-orchestration.md | Resume behavior                              |
+| 10       | gap    | workflow-orchestration.md | Failure handling and recovery flow           |
+| 11       | gap    | workflow-orchestration.md | Inter-stage dependencies and handoff rules   |
+| 12       | gap    | workflow-orchestration.md | Acceptance criteria                          |
+| 13       | gap    | interaction-approvals.md  | Purpose and boundary                         |
+| 14       | mapped | interaction-approvals.md  | Review checkpoints by workflow stage         |
+| 15       | gap    | interaction-approvals.md  | Checkpoint criteria by workflow stage        |
+| 16       | gap    | interaction-approvals.md  | Required user confirmations before commit    |
+| 17       | gap    | interaction-approvals.md  | Approval authority                           |
+| 18       | gap    | interaction-approvals.md  | Escalation and rework boundary               |
+| 19       | gap    | interaction-approvals.md  | Novel-decision capture and rationale logging |
+| 20       | gap    | interaction-approvals.md  | Prompt and output readability requirements   |
+| 21       | gap    | interaction-approvals.md  | Rejection and rework behavior                |
+| 22       | gap    | interaction-approvals.md  | Acceptance criteria                          |
+| 23       | gap    | statements-lifecycle.md   | Purpose and boundary                         |
+| 24       | mapped | statements-lifecycle.md   | Lifecycle phase behavior                     |
+| 25       | gap    | statements-lifecycle.md   | Lifecycle state model by period              |
+| 26       | mapped | statements-lifecycle.md   | Draft and review behavior                    |
+| 27       | gap    | statements-lifecycle.md   | Finalization criteria                        |
+| 28       | gap    | statements-lifecycle.md   | Reopen policy                                |
+| 29       | gap    | statements-lifecycle.md   | Revision policy                              |
+| 30       | mapped | statements-lifecycle.md   | Publish output actions                       |
+| 31       | mapped | statements-lifecycle.md   | Artifact output requirements                 |
+| 32       | gap    | statements-lifecycle.md   | Versioning and lineage linkage               |
+| 33       | gap    | statements-lifecycle.md   | Period snapshot and immutability rules       |
+| 34       | gap    | statements-lifecycle.md   | Acceptance criteria                          |
 
 Current-workflow source document
 
@@ -301,18 +313,22 @@ Source file: `docs/reference/current-workflow.md`
 
 Direct section-to-destination mapping table:
 
-| id | source section    | source sub-section            | destination section           | status     |
-| -- | ----------------- | ----------------------------- | ----------------------------- | ---------- |
-| 01 | Overview          | workflow summary text         | Workflow Orchestration        | mapped     |
-| 02 | Sequential steps  | stage order and durations     | Workflow Orchestration        | mapped     |
-| 03 | Forex             | fetch and load forex rates    | Workflow Orchestration        | mapped     |
-| 04 | Account update    | execution steps               | Workflow Orchestration        | mapped     |
-| 05 | Account update    | human review step             | Interaction and Approvals     | mapped     |
-| 06 | Report update     | reconcile review step         | Interaction and Approvals     | mapped     |
-| 07 | Report update     | update and review statements  | Statements Lifecycle          | mapped     |
-| 08 | Report update     | save and upload report output | Statements Lifecycle          | mapped     |
-| 09 | Pre-flight checks | section body                  | Workflow Orchestration        | gap        |
-| 10 | Close-out refresh | section body                  | Workflow Orchestration        | gap        |
+| id                  |                   |                               |                           |        |
+| ------------------- | ----------------- | ----------------------------- | ------------------------- | ------ |
+| source section      |                   |                               |                           |        |
+| source sub-section  |                   |                               |                           |        |
+| destination section |                   |                               |                           |        |
+| status              |                   |                               |                           |        |
+| 01                  | Overview          | workflow summary text         | Workflow Orchestration    | mapped |
+| 02                  | Sequential steps  | stage order and durations     | Workflow Orchestration    | mapped |
+| 03                  | Forex             | fetch and load forex rates    | Workflow Orchestration    | mapped |
+| 04                  | Account update    | execution steps               | Workflow Orchestration    | mapped |
+| 05                  | Account update    | human review step             | Interaction and Approvals | mapped |
+| 06                  | Report update     | reconcile review step         | Interaction and Approvals | mapped |
+| 07                  | Report update     | update and review statements  | Statements Lifecycle      | mapped |
+| 08                  | Report update     | save and upload report output | Statements Lifecycle      | mapped |
+| 09                  | Pre-flight checks | section body                  | Workflow Orchestration    | gap    |
+| 10                  | Close-out refresh | section body                  | Workflow Orchestration    | gap    |
 
 Mapping notes:
 
@@ -323,28 +339,31 @@ Mapping notes:
 
 Destination-to-source coverage and gaps table:
 
-| id | destination requirement sub-section | source subsection evidence       | status   |
-| -- | ----------------------------------- | -------------------------------- | -------- |
-| 01 | WO stage model                       | sequential steps and durations   | mapped   |
-| 02 | WO stage inputs and outputs          | account update execution steps   | mapped   |
-| 03 | WO entry criteria                    | none                             | gap      |
-| 04 | WO exit criteria                     | none                             | gap      |
-| 05 | WO invariants                        | none                             | gap      |
-| 06 | WO rerun behavior                    | none                             | gap      |
-| 07 | WO resume behavior                   | none                             | gap      |
-| 08 | IA review checkpoints                | review steps in account/report   | mapped   |
-| 09 | IA checkpoint criteria               | none                             | gap      |
-| 10 | IA pre-commit confirmations          | none                             | gap      |
-| 11 | IA approval authority                | none                             | gap      |
-| 12 | IA escalation and rework policy      | none                             | gap      |
-| 13 | IA decision logging                  | none                             | gap      |
-| 14 | SL lifecycle phase behavior          | report update actions            | mapped   |
-| 15 | SL state model by period             | none                             | gap      |
-| 16 | SL finalization criteria             | none                             | gap      |
-| 17 | SL publish output rules              | save and upload report output    | mapped   |
-| 18 | SL reopen policy                     | none                             | gap      |
-| 19 | SL revision policy                   | none                             | gap      |
-| 20 | SL snapshot immutability             | none                             | gap      |
+| id                                  |                                 |                                |        |
+| ----------------------------------- | ------------------------------- | ------------------------------ | ------ |
+| destination requirement sub-section |                                 |                                |        |
+| source subsection evidence          |                                 |                                |        |
+| status                              |                                 |                                |        |
+| 01                                  | WO stage model                  | sequential steps and durations | mapped |
+| 02                                  | WO stage inputs and outputs     | account update execution steps | mapped |
+| 03                                  | WO entry criteria               | none                           | gap    |
+| 04                                  | WO exit criteria                | none                           | gap    |
+| 05                                  | WO invariants                   | none                           | gap    |
+| 06                                  | WO rerun behavior               | none                           | gap    |
+| 07                                  | WO resume behavior              | none                           | gap    |
+| 08                                  | IA review checkpoints           | review steps in account/report | mapped |
+| 09                                  | IA checkpoint criteria          | none                           | gap    |
+| 10                                  | IA pre-commit confirmations     | none                           | gap    |
+| 11                                  | IA approval authority           | none                           | gap    |
+| 12                                  | IA escalation and rework policy | none                           | gap    |
+| 13                                  | IA decision logging             | none                           | gap    |
+| 14                                  | SL lifecycle phase behavior     | report update actions          | mapped |
+| 15                                  | SL state model by period        | none                           | gap    |
+| 16                                  | SL finalization criteria        | none                           | gap    |
+| 17                                  | SL publish output rules         | save and upload report output  | mapped |
+| 18                                  | SL reopen policy                | none                           | gap    |
+| 19                                  | SL revision policy              | none                           | gap    |
+| 20                                  | SL snapshot immutability        | none                           | gap    |
 
 Coverage notes:
 
@@ -465,11 +484,13 @@ Primary sources and what each provides:
 
 lifecycle state model for bill records:
 
-| state    | meaning                                              | next states      |
-| -------- | ---------------------------------------------------- | ---------------- |
-| pending  | bill identified but not yet paid                     | paid, scheduled  |
-| scheduled| payment is planned for a future date within period   | paid             |
-| paid     | payment confirmed with bank-statement transaction    |                  |
+| state       |                                                    |                 |
+| ----------- | -------------------------------------------------- | --------------- |
+| meaning     |                                                    |                 |
+| next states |                                                    |                 |
+| pending     | bill identified but not yet paid                   | paid, scheduled |
+| scheduled   | payment is planned for a future date within period | paid            |
+| paid        | payment confirmed with bank-statement transaction  |                 |
 
 Active bill scope:
 
@@ -480,14 +501,17 @@ Active bill scope:
 
 bill data model:
 
-| field          | type | req | rule                                          |
-| -------------- | ---- | --- | --------------------------------------------- |
-| name           | text | y   | unique bill identifier                        |
-| payee          | text | y   | counterparty receiving payment                |
-| amount_type    | enum | y   | fixed or variable                             |
-| expected_amount| dec  | n   | required when amount_type is fixed, SGD       |
-| billing_cycle  | enum | y   | monthly, quarterly, or annual                 |
-| active         | bool | y   | true means included in period checks          |
+| field           |      |     |                                         |
+| --------------- | ---- | --- | --------------------------------------- |
+| type            |      |     |                                         |
+| req             |      |     |                                         |
+| rule            |      |     |                                         |
+| name            | text | y   | unique bill identifier                  |
+| payee           | text | y   | counterparty receiving payment          |
+| amount_type     | enum | y   | fixed or variable                       |
+| expected_amount | dec  | n   | required when amount_type is fixed, SGD |
+| billing_cycle   | enum | y   | monthly, quarterly, or annual           |
+| active          | bool | y   | true means included in period checks    |
 
 Close criteria for bill lifecycle:
 
@@ -514,20 +538,45 @@ Reconciliation checks by scope:
 
 Bill-level checks:
 
-| id | check                       | source fields                        | pass condition                                                 |
-| -- | --------------------------- | ------------------------------------ | -------------------------------------------------------------- |
-| 01 | amount match                | bill `amount` vs statement line item | amounts equal within SGD 0.00 tolerance                        |
-| 02 | payee match                 | bill `payee` vs statement payee      | payee maps to same approved counterparty                       |
-| 03 | payment date within period  | bill `payment_date` vs close period  | date falls within 2 months before or after the period end date |
-| 04 | paid status complete        | bill `paid` flag                     | flag is true and linkage ref is present                        |
+| id             |                            |                                      |
+| -------------- | -------------------------- | ------------------------------------ |
+| check          |                            |                                      |
+| source fields  |                            |                                      |
+| pass condition |                            |                                      |
+| 01             | amount match               | bill `amount` vs statement line item |
+| 02             | payee match                | bill `payee` vs statement payee      |
+| 03             | payment date within period | bill `payment_date` vs close period  |
+| 04             | paid status complete       | bill `paid` flag                     |
+
+| id             |                            |                                                                |
+| -------------- | -------------------------- | -------------------------------------------------------------- |
+| check          |                            |                                                                |
+| source fields  |                            |                                                                |
+| pass condition |                            |                                                                |
+| 01             | amount match               | amounts equal within SGD 0.00 tolerance                        |
+| 02             | payee match                | payee maps to same approved counterparty                       |
+| 03             | payment date within period | date falls within 2 months before or after the period end date |
+| 04             | paid status complete       | flag is true and linkage ref is present                        |
 
 Period-level checks:
 
-| id | check                       | source fields                        | pass condition                                          |
-| -- | --------------------------- | ------------------------------------ | ------------------------------------------------------- |
-| 01 | bills count matches         | `bills_count` vs active bill rows    | count equals number of active bills for the period      |
-| 02 | bills paid count matches    | `bills_paid` vs active bill rows     | paid count equals active bills in `paid` state          |
-| 03 | all bills resolved          | bill state distribution              | no active bill remains in pending state                 |
+| id             |                          |                                   |
+| -------------- | ------------------------ | --------------------------------- |
+| check          |                          |                                   |
+| source fields  |                          |                                   |
+| pass condition |                          |                                   |
+| 01             | bills count matches      | `bills_count` vs active bill rows |
+| 02             | bills paid count matches | `bills_paid` vs active bill rows  |
+| 03             | all bills resolved       | bill state distribution           |
+
+| id             |                          |                                                    |
+| -------------- | ------------------------ | -------------------------------------------------- |
+| check          |                          |                                                    |
+| source fields  |                          |                                                    |
+| pass condition |                          |                                                    |
+| 01             | bills count matches      | count equals number of active bills for the period |
+| 02             | bills paid count matches | paid count equals active bills in `paid` state     |
+| 03             | all bills resolved       | no active bill remains in pending state            |
 
 #### Field-level contract examples and validation baseline
 
@@ -552,16 +601,37 @@ Examples:
 Validation baseline for shared-cost records,
 `gsheet/shared-expenses.json` range `records!A:H`:
 
-| id | field             | type    | req | rule                   | validation baseline            |
-| -- | ----------------- | ------- | --- | ---------------------- | ------------------------------ |
-| 01 | record_date       | date    | y   | posting date           | valid date and within close mo |
-| 02 | description       | text    | y   | short narrative        | 1 to 200 chars                 |
-| 03 | total_amount_sgd  | decimal | y   | gross shared amount    | signed decimal and scale 2     |
-| 04 | user_share_pct    | decimal | n   | percent split input    | > 0 and <= 1.0                 |
-| 05 | user_share_amount | decimal | n   | derived: pct x total   | abs value <= abs total         |
-| 06 | category          | text    | y   | allocation class       | in allowed shared-cost set     |
-| 07 | payee             | text    | y   | settlement counterparty | non-empty and mapped party     |
-| 08 | status            | enum    | y   | HB record state        | created or recorded            |
+| id                  |                   |         |     |                         |
+| ------------------- | ----------------- | ------- | --- | ----------------------- |
+| field               |                   |         |     |                         |
+| type                |                   |         |     |                         |
+| req                 |                   |         |     |                         |
+| rule                |                   |         |     |                         |
+| validation baseline |                   |         |     |                         |
+| 01                  | record_date       | date    | y   | posting date            |
+| 02                  | description       | text    | y   | short narrative         |
+| 03                  | total_amount_sgd  | decimal | y   | gross shared amount     |
+| 04                  | user_share_pct    | decimal | n   | percent split input     |
+| 05                  | user_share_amount | decimal | n   | derived: pct x total    |
+| 06                  | category          | text    | y   | allocation class        |
+| 07                  | payee             | text    | y   | settlement counterparty |
+| 08                  | status            | enum    | y   | HB record state         |
+
+| id                  |                   |                                |
+| ------------------- | ----------------- | ------------------------------ |
+| field               |                   |                                |
+| type                |                   |                                |
+| req                 |                   |                                |
+| rule                |                   |                                |
+| validation baseline |                   |                                |
+| 01                  | record_date       | valid date and within close mo |
+| 02                  | description       | 1 to 200 chars                 |
+| 03                  | total_amount_sgd  | signed decimal and scale 2     |
+| 04                  | user_share_pct    | > 0 and <= 1.0                 |
+| 05                  | user_share_amount | abs value <= abs total         |
+| 06                  | category          | in allowed shared-cost set     |
+| 07                  | payee             | non-empty and mapped party     |
+| 08                  | status            | created or recorded            |
 
 Shared-cost parameter constraints:
 
@@ -570,35 +640,81 @@ Session completion rule for shared costs:
 - if any shared-cost record remains incomplete for HomeBudget recording,
 	the session is incomplete
 
-| id | parameter                  | type    | req | rule                    | validation baseline            |
-| -- | -------------------------- | ------- | --- | ----------------------- | ------------------------------ |
-| 01 | split_basis                | const   | y   | percentage split only   | pct                            |
-| 02 | rounding_mode              | enum    | y   | monetary rounding       | half-up to 2 dp                |
-| 03 | settlement_account         | text    | y   | HB settlement account   | must equal 30 CC Hashemis      |
-| 04 | settlement_currency        | enum    | y   | posting currency        | SGD only                       |
-| 05 | variance_tolerance_sgd     | decimal | y   | max allowed variance    | fixed 0.00                     |
+| id                  |                        |         |     |                       |
+| ------------------- | ---------------------- | ------- | --- | --------------------- |
+| parameter           |                        |         |     |                       |
+| type                |                        |         |     |                       |
+| req                 |                        |         |     |                       |
+| rule                |                        |         |     |                       |
+| validation baseline |                        |         |     |                       |
+| 01                  | split_basis            | const   | y   | percentage split only |
+| 02                  | rounding_mode          | enum    | y   | monetary rounding     |
+| 03                  | settlement_account     | text    | y   | HB settlement account |
+| 04                  | settlement_currency    | enum    | y   | posting currency      |
+| 05                  | variance_tolerance_sgd | decimal | y   | max allowed variance  |
+
+| id                  |                        |                           |
+| ------------------- | ---------------------- | ------------------------- |
+| parameter           |                        |                           |
+| type                |                        |                           |
+| req                 |                        |                           |
+| rule                |                        |                           |
+| validation baseline |                        |                           |
+| 01                  | split_basis            | pct                       |
+| 02                  | rounding_mode          | half-up to 2 dp           |
+| 03                  | settlement_account     | must equal 30 CC Hashemis |
+| 04                  | settlement_currency    | SGD only                  |
+| 05                  | variance_tolerance_sgd | fixed 0.00                |
 
 Validation baseline for consumption records:
 
-| id | field                | type    | req | rule                    | validation baseline            |
-| -- | -------------------- | ------- | --- | ----------------------- | ------------------------------ |
-| 01 | period_year          | int     | y   | close period year       | 2000 to 2100                   |
-| 02 | period_month         | int     | y   | close period month      | 1 to 12                        |
-| 03 | utility_type         | enum    | y   | metric family           | electricity water gas          |
-| 04 | usage_value          | decimal | y   | measured quantity       | signed decimal                 |
-| 05 | usage_unit           | enum    | y   | measurement unit        | kwh or m3                      |
-| 06 | billed_amount_sgd    | decimal | y   | billed total            | signed decimal and scale 2     |
-| 07 | statement_issue_date | date    | y   | source statement date   | valid date                     |
-| 08 | statement_due_date   | date    | n   | payment due date        | >= issue date when present     |
-| 09 | source_account       | text    | y   | paying account          | in bills in-scope account list |
-| 10 | source_statement_ref | text    | y   | lineage key             | unique within period and payee |
+| id                  |                      |         |     |                       |
+| ------------------- | -------------------- | ------- | --- | --------------------- |
+| field               |                      |         |     |                       |
+| type                |                      |         |     |                       |
+| req                 |                      |         |     |                       |
+| rule                |                      |         |     |                       |
+| validation baseline |                      |         |     |                       |
+| 01                  | period_year          | int     | y   | close period year     |
+| 02                  | period_month         | int     | y   | close period month    |
+| 03                  | utility_type         | enum    | y   | metric family         |
+| 04                  | usage_value          | decimal | y   | measured quantity     |
+| 05                  | usage_unit           | enum    | y   | measurement unit      |
+| 06                  | billed_amount_sgd    | decimal | y   | billed total          |
+| 07                  | statement_issue_date | date    | y   | source statement date |
+| 08                  | statement_due_date   | date    | n   | payment due date      |
+| 09                  | source_account       | text    | y   | paying account        |
+| 10                  | source_statement_ref | text    | y   | lineage key           |
+
+| id                  |                      |                                |
+| ------------------- | -------------------- | ------------------------------ |
+| field               |                      |                                |
+| type                |                      |                                |
+| req                 |                      |                                |
+| rule                |                      |                                |
+| validation baseline |                      |                                |
+| 01                  | period_year          | 2000 to 2100                   |
+| 02                  | period_month         | 1 to 12                        |
+| 03                  | utility_type         | electricity water gas          |
+| 04                  | usage_value          | signed decimal                 |
+| 05                  | usage_unit           | kwh or m3                      |
+| 06                  | billed_amount_sgd    | signed decimal and scale 2     |
+| 07                  | statement_issue_date | valid date                     |
+| 08                  | statement_due_date   | >= issue date when present     |
+| 09                  | source_account       | in bills in-scope account list |
+| 10                  | source_statement_ref | unique within period and payee |
 
 Consumption parameter constraints:
 
-| id | parameter              | type    | req | rule                    | validation baseline            |
-| -- | ---------------------- | ------- | --- | ----------------------- | ------------------------------ |
-| 01 | missing_value_policy   | enum    | y   | null handling           | block                          |
-| 02 | duplicate_row_policy   | enum    | y   | dedupe handling         | reject_same_ref_same_period    |
+| id                  |                      |      |     |                 |                             |
+| ------------------- | -------------------- | ---- | --- | --------------- | --------------------------- |
+| parameter           |                      |      |     |                 |                             |
+| type                |                      |      |     |                 |                             |
+| req                 |                      |      |     |                 |                             |
+| rule                |                      |      |     |                 |                             |
+| validation baseline |                      |      |     |                 |                             |
+| 01                  | missing_value_policy | enum | y   | null handling   | block                       |
+| 02                  | duplicate_row_policy | enum | y   | dedupe handling | reject_same_ref_same_period |
 
 #### Concrete examples of overlap
 
@@ -780,7 +896,7 @@ operates in two distinct stages. The concept is formally defined in the
 `Three-Stage Category Mapping` section of skill
 `.github/skills/data-sources-inspect/SKILL.md`.
 
-**Stage 1: HomeBudget category → GL account**
+**Stage 1: HomeBudget category â†’ GL account**
 
 Stage 1 maps HomeBudget expense categories to an internal GL account code. The
 mapping data lives in the `cat_map` region of the helper workbook configured at
@@ -789,7 +905,7 @@ contains 181 rows across 10 columns. There is no equivalent Stage 1 mapping for
 income transactions; income categories are assigned during the monthly closing
 workflow rather than maintained as HomeBudget master data.
 
-**Stage 2: GL account → financial statements category**
+**Stage 2: GL account â†’ financial statements category**
 
 Stage 2 takes the GL-enriched transaction bridge and maps it into the line items
 of the published income statement and balance sheet. It is implemented inside
@@ -802,14 +918,14 @@ parallel mapping paths:
   `fin_exp_cat_map` (33 rows, 5 columns: `fin_stm_category`, `COLE`,
   `fa_category`, `fa_subcategory`, `custom logic`) maps those enriched fields to
   income statement line items. Reconcile rollup regions
-	(`reconcile_exp_cost_centers` → `reconcile_fin_stm_summary`) aggregate the
+	(`reconcile_exp_cost_centers` â†’ `reconcile_fin_stm_summary`) aggregate the
 	mapped rows before publication to `income_statement`.
 
 - Balance sheet path: the `accounts` region (29 rows, 7 columns: `id`, `type`,
   `owner`, `name`, `currency`, `HB account`, `stm account`) assigns each account
   to its balance sheet bucket and class. Period-ending balances come from the
   `balances` region. Currency conversion uses `forex_rates`. Rollup regions
-  (`reconcile_bal_by_acct` → `reconcile_bal_summary`) aggregate per-class before
+  (`reconcile_bal_by_acct` â†’ `reconcile_bal_summary`) aggregate per-class before
   publication to `balance_sheet`.
 
 Stage 2 is fully documented in
@@ -940,7 +1056,7 @@ specification:
 5. Extract tolerance and stop-behavior checkpoints:
 	 - tolerance definitions and review triggers from requirements docs
 	 - explicit close-blocking conditions when reconcile equations do not close
-	 - operator-review checkpoint placement in monthly close workflow
+	 - user-review checkpoint placement in monthly close workflow
 
 #### Resolution direction
 
