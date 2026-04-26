@@ -76,26 +76,27 @@ The topic pages for detailed requirement are included below.
 | 02       | interaction-approvals.md  | owner     |
 | 03       | statements-lifecycle.md   | owner     |
 | 04       | source-systems-lineage.md | owner     |
-| 05       | accounting-logic.md       | owner     |
-| 06       | account-classification.md | owner     |
-| 07       | transaction-categories.md | owner     |
-| 08       | financial-statements.md   | owner     |
-| 09       | reconciliation-engine.md  | owner     |
-| 10       | bill-payment.md           | owner     |
-| 11       | shared-costs.md           | owner     |
-| 12       | homebudget.md             | owner     |
-| 13       | google-sheets.md          | owner     |
-| 14       | ibkr-integration.md       | owner     |
-| 15       | cpf-integration.md        | owner     |
-| 16       | data-model.md             | owner     |
-| 17       | cash-reconcile.md         | reference |
-| 18       | glossary.md               | reference |
-| 19       | implementation-roadmap.md | reference |
-| 20       | poc.md                    | reference |
-| 21       | mvp.md                    | reference |
-| 22       | dependencies.md           | reference |
-| 23       | environment.md            | reference |
-| 24       | user-interface.md         | owner     |
+| 05       | bank-statements.md        | owner     |
+| 06       | accounting-logic.md       | owner     |
+| 07       | account-classification.md | owner     |
+| 08       | transaction-categories.md | owner     |
+| 09       | financial-statements.md   | owner     |
+| 10       | reconciliation-engine.md  | owner     |
+| 11       | bill-payment.md           | owner     |
+| 12       | shared-costs.md           | owner     |
+| 13       | homebudget.md             | owner     |
+| 14       | google-sheets.md          | owner     |
+| 15       | ibkr-integration.md       | owner     |
+| 16       | cpf-integration.md        | owner     |
+| 17       | data-model.md             | owner     |
+| 18       | cash-reconcile.md         | reference |
+| 19       | glossary.md               | reference |
+| 20       | implementation-roadmap.md | reference |
+| 21       | poc.md                    | reference |
+| 22       | mvp.md                    | reference |
+| 23       | dependencies.md           | reference |
+| 24       | environment.md            | reference |
+| 25       | user-interface.md         | owner     |
 
 ## Cross-page ownership rules
 

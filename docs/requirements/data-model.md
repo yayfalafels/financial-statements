@@ -21,7 +21,12 @@ scope: poc
 
 This document defines data-model schema definitions, schema naming, and schema object boundaries for the POC.
 
-The canonical app schema name for the final reconciled statement-ready state is `close_book`.
+| id | layer            | function                                                         |
+| -- | ---------------- | ---------------------------------------------------------------- |
+| 01 | source systems   | HomeBudget, bank statements, IBKR, wallet cash, bills, forex     |
+| 02 | app database     | consolidate, reconcile to authoritative sources, map             |
+| 03 | `close_book`     | single exclusive source for all statement aggregates             |
+| 04 | output           | standard accounting-formatted income statement and balance sheet |
 
 ## Purpose and boundary
 
@@ -55,16 +60,14 @@ Additional schemas and objects, for example session-state domains, are expected 
 
 ## Active schema set for POC
 
-| id     |              |                                             |
-| ------ | ------------ | ------------------------------------------- |
-| schema |              |                                             |
-| role   |              |                                             |
-| 01     | close_book   | reconciled statement-ready source           |
-| 02     | statements   | bank statement transaction staging          |
-| 03     | hb           | HomeBudget wrapper sync state               |
-| 04     | mapping      | mapping state and mapping versions          |
-| 05     | cash_staging | wallet cash GS form aggregate staging       |
-| 06     | bills        | bills, shared-costs, and consumption domain |
+| id | schema      | role                                        |
+| -- | ----------- | ------------------------------------------- |
+| 01 | close_book  | reconciled statement-ready source           |
+| 02 | statements  | bank statement transaction staging          |
+| 03 | hb          | HomeBudget wrapper sync state               |
+| 04 | mapping     | mapping state and mapping versions          |
+| 05 | cash_staging| wallet cash GS form aggregate staging       |
+| 06 | bills       | bills, shared-costs, and consumption domain |
 
 ## Schema definitions
 
@@ -80,6 +83,7 @@ Additional schemas and objects, for example session-state domains, are expected 
 - Raw imported and staged source transactions and balances for bank-statement sources.
 - Bank-statement sources are staged at transaction level.
 - Preserves source-level evidence needed for lineage and reconciliation.
+- Parser input formats, transformation rules, and output contracts are owned by [bank-statements.md](bank-statements.md).
 
 ### `cash_staging`
 

@@ -61,17 +61,15 @@ This document defines requirements for monthly-close workflow orchestration.
 
 ## Stage model for monthly close
 
-| id        |             |                                                               |
-| --------- | ----------- | ------------------------------------------------------------- |
-| stage     |             |                                                               |
-| objective |             |                                                               |
-| 01        | pre-flight  | validate inputs, environment, and sources                     |
-| 02        | forex       | load and validate period exchange rates                       |
-| 03        | data ingest | user authenticates sources, downloads files, enters GS UI     |
-| 04        | data sync   | process ingested inputs and refresh app-managed source tables |
-| 05        | reconcile   | execute reconcile checks and close gaps                       |
-| 06        | statements  | update and validate statement outputs                         |
-| 07        | publish     | produce period artifacts and close session                    |
+| id | stage       | objective                                                       |
+| -- | ----------- | --------------------------------------------------------------- |
+| 01 | pre-flight  | validate inputs, environment, and sources                       |
+| 02 | forex       | load and validate period exchange rates                         |
+| 03 | data ingest | user authenticates sources, downloads files, enters GS UI       |
+| 04 | data sync   | process ingested inputs and refresh app-managed source tables   |
+| 05 | reconcile   | execute reconcile checks and close gaps                         |
+| 06 | statements  | update and validate statement outputs                           |
+| 07 | publish     | produce period artifacts and close session                      |
 
 ## Workflow orchestration diagram
 
@@ -160,45 +158,27 @@ flowchart TD
 
 ## Account-group workflow routes
 
-| id             |                         |            |                         |
-| -------------- | ----------------------- | ---------- | ----------------------- |
-| account group  |                         |            |                         |
-| stage route    |                         |            |                         |
-| reconcile gate |                         |            |                         |
-| 01             | bank statement accounts | pf > (fx \ | di) > ds > rc > st > pb |
-| 02             | ibkr accounts           | pf > (fx \ | di) > ds > rc > st > pb |
-| 03             | cpf accounts            | pf > (fx \ | di) > ds > rc > st > pb |
-| 04             | cash accounts           | pf > (fx \ | di) > ds > rc > st > pb |
-| 05             | wallets                 | pf > (fx \ | di) > ds > rc > st > pb |
-| 06             | investments             | pf > (fx \ | di) > ds > rc > st > pb |
-| 07             | others                  | pf > (fx \ | di) > ds > rc > st > pb |
-
-| id             |                         |                                                |
-| -------------- | ----------------------- | ---------------------------------------------- |
-| account group  |                         |                                                |
-| stage route    |                         |                                                |
-| reconcile gate |                         |                                                |
-| 01             | bank statement accounts | statement ingestion and bridge complete        |
-| 02             | ibkr accounts           | csv parse and nav derivation complete          |
-| 03             | cpf accounts            | GS UI entry confirmed and roll-forward pass    |
-| 04             | cash accounts           | close balance and gap decision logged          |
-| 05             | wallets                 | observed balance and delta review complete     |
-| 06             | investments             | pricing input and valuation reconcile complete |
-| 07             | others                  | source-specific checks and reconcile complete  |
+| id | account group            | stage route                              | reconcile gate                                  |
+| -- | ------------------------ | ---------------------------------------- | ----------------------------------------------- |
+| 01 | bank statement accounts  | pf > (fx or di) > ds > rc > st > pb      | statement ingestion and bridge complete         |
+| 02 | ibkr accounts            | pf > (fx or di) > ds > rc > st > pb      | csv parse and nav derivation complete           |
+| 03 | cpf accounts             | pf > (fx or di) > ds > rc > st > pb      | GS UI entry confirmed and roll-forward pass     |
+| 04 | cash accounts            | pf > (fx or di) > ds > rc > st > pb      | close balance and gap decision logged           |
+| 05 | wallets                  | pf > (fx or di) > ds > rc > st > pb      | observed balance and delta review complete      |
+| 06 | investments              | pf > (fx or di) > ds > rc > st > pb      | pricing input and valuation reconcile complete  |
+| 07 | others                   | pf > (fx or di) > ds > rc > st > pb      | source-specific checks and reconcile complete   |
 
 - Route token legend: `pf` pre-flight, `fx` forex, `di` data ingest, `ds` data sync, `rc` reconcile, `st` statements, `pb` publish.
 - `(fx | di)` means forex and data ingest run in parallel after pre-flight; both must complete before data sync can begin.
 
 ## Parallel workstreams
 
-| id        |                  |                                              |
-| --------- | ---------------- | -------------------------------------------- |
-| stage     |                  |                                              |
-| objective |                  |                                              |
-| 01        | bill intake      | collect and validate bill inputs             |
-| 02        | share allocate   | derive shared-cost split and settlement data |
-| 03        | post entries     | post payment and settlement entries          |
-| 04        | workstream close | publish bill-workstream completion status    |
+| id | stage            | objective                                    |
+| -- | ---------------- | -------------------------------------------- |
+| 01 | bill intake      | collect and validate bill inputs             |
+| 02 | share allocate   | derive shared-cost split and settlement data |
+| 03 | post entries     | post payment and settlement entries          |
+| 04 | workstream close | publish bill-workstream completion status    |
 
 - Bill payment and shared-cost settlement run as one parallel workstream during the close session.
 - This workstream starts after pre-flight and progresses independently of account-group data sync and reconcile progression.
@@ -209,7 +189,7 @@ flowchart TD
 
 ## Account-group dependency rules
 
-- Bank statement-process accounts require statement file download during data ingest and statement-file processing into the statement digital twin during data sync.
+- Bank statement-process accounts require statement file download during data ingest and statement-file processing into the statement digital twin during data sync. See [bank-statements.md](bank-statements.md) for input format and parsing requirements.
 - IBKR accounts require activity-statement CSV download during data ingest and CSV parsing with top-down NAV derivation during data sync.
 - CPF accounts require GS UI sub-account entry during data ingest and roll-forward computation during data sync.
 - Cash accounts require GS UI close-balance entry and cash-form transaction pull during data ingest, and cash-form transaction aggregation during data sync.
@@ -263,17 +243,15 @@ Account-group stage exits:
 
 ## Stage inputs
 
-| id              |             |                                                                   |
-| --------------- | ----------- | ----------------------------------------------------------------- |
-| stage           |             |                                                                   |
-| required inputs |             |                                                                   |
-| 01              | pre-flight  | target period selection, environment configuration                |
-| 02              | forex       | pre-flight success status, target period                          |
-| 03              | data ingest | pre-flight success, source website access, GS UI session ready    |
-| 04              | data sync   | forex completion, data ingest completion, confirmed GS UI entries |
-| 05              | reconcile   | data sync route-gate completion, hb sync state, stm twin state    |
-| 06              | statements  | reconcile success status for all required account groups          |
-| 07              | publish     | completed user statement review and approval                      |
+| id | stage       | required inputs                                                   |
+| -- | ----------- | ----------------------------------------------------------------- |
+| 01 | pre-flight  | target period selection, environment configuration                |
+| 02 | forex       | pre-flight success status, target period                          |
+| 03 | data ingest | pre-flight success, source website access, GS UI session ready    |
+| 04 | data sync   | forex completion, data ingest completion, confirmed GS UI entries |
+| 05 | reconcile   | data sync route-gate completion, hb sync state, stm twin state    |
+| 06 | statements  | reconcile success status for all required account groups          |
+| 07 | publish     | completed user statement review and approval                      |
 
 Data ingest inputs detail:
 
@@ -287,17 +265,15 @@ Data sync is fully app-driven once data ingest is complete. For HomeBudget-sourc
 
 ## Stage outputs
 
-| id               |             |                                                                       |
-| ---------------- | ----------- | --------------------------------------------------------------------- |
-| stage            |             |                                                                       |
-| produced outputs |             |                                                                       |
-| 01               | pre-flight  | validated period selection, environment readiness confirmation        |
-| 02               | forex       | period exchange rates loaded into the forex rates store               |
-| 03               | data ingest | downloaded statement files, confirmed GS UI entries per account       |
-| 04               | data sync   | refreshed hb schema sync state, stm twin records, route-gate statuses |
-| 05               | reconcile   | reconcile gate status per account group, variance log                 |
-| 06               | statements  | draft income statement and balance sheet for review                   |
-| 07               | publish     | finalized PDF statements, S3 upload, session close record             |
+| id | stage       | produced outputs                                                       |
+| -- | ----------- | --------------------------------------------------------------------- |
+| 01 | pre-flight  | validated period selection, environment readiness confirmation        |
+| 02 | forex       | period exchange rates loaded into the forex rates store               |
+| 03 | data ingest | downloaded statement files, confirmed GS UI entries per account       |
+| 04 | data sync   | refreshed hb schema sync state, stm twin records, route-gate statuses |
+| 05 | reconcile   | reconcile gate status per account group, variance log                 |
+| 06 | statements  | draft income statement and balance sheet for review                   |
+| 07 | publish     | finalized PDF statements, S3 upload, session close record             |
 
 ## Stage invariants
 

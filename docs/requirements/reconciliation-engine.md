@@ -321,7 +321,7 @@ Account-group procedures reuse shared workflow phases and method-class rules. Th
 
 - **Accounts in scope:** TWH DBS Multi SGD, TWH CITI USD, TWH UOB One SGD, TWH Visa USD
 - **Method class:** Transaction-level method class
-- **Comparison basis:** `statements` schema parsed transaction ledger, `stm_gl`, versus `hb_gl_txn` records
+- **Comparison basis:** `statements` schema parsed transaction ledger, `stm_gl`, versus `hb_gl_txn` records — see [bank-statements.md](bank-statements.md) for the parser contract that populates `statements`
 - **Tolerance:** Exact match required, zero tolerance for residual unmatched amounts
 
 **Reconciliation parameters:**

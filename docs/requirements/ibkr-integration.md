@@ -45,14 +45,10 @@ Detailed requirements for the IBKR integration.
 
 ## Accounts in scope
 
-| account      |          |                   |     |                  |
-| ------------ | -------- | ----------------- | --- | ---------------- |
-| id           |          |                   |     |                  |
-| type         |          |                   |     |                  |
-| currency     |          |                   |     |                  |
-| sub-accounts |          |                   |     |                  |
-| IBA          | U1109040 | individual margin | USD | cash + positions |
-| IRA          | U9311815 | rollover IRA      | USD | position only    |
+| account | id       | type              | currency | sub-accounts      |
+| ------- | -------- | ----------------- | -------- | ----------------- |
+| IBA     | U1109040 | individual margin | USD      | cash + positions  |
+| IRA     | U9311815 | rollover IRA      | USD      | position only     |
 
 Both accounts are in POC scope. IBA and IRA have different income classification and accounting-model derivation requirements and must be handled by separate processing paths.
 
@@ -66,16 +62,22 @@ The CSV format is section-based, not a flat row format. Each row begins with a s
 
 Sections used by the system:
 
-| section           |                                            |
+| section           | purpose                                    |
 | ----------------- | ------------------------------------------ |
-| purpose           |                                            |
 | `Statement`       | period and account metadata                |
 | `Net Asset Value` | beginning and ending totals by asset class |
-| `Cash Report`     | net trades, deposits, and withdrawals      |
+| `Cash Report`     | cash movement rows used for derivation     |
+| `Change in NAV`   | cross-check for deposits and withdrawals   |
 
 ## IBA account requirements
 
 IBA balances and income are derived top-down from the `Net Asset Value` and `Cash Report` sections. No bottom-up parsing of individual trade, dividend, interest, or commission line items is required.
+
+Posting model for generated HomeBudget entries:
+
+- Default posting is end-of-period aggregate entries for derived components.
+- Withdrawals are posted at transaction level because they link directly to bank-account transactions used in transaction-level reconciliation.
+- IBKR mark-to-market entries are generated as transactions in the IBKR flow.
 
 Derivation from `Net Asset Value`:
 
@@ -87,18 +89,27 @@ change_pos     = NAV change total âˆ’ change_cash
 Derivation from `Cash Report`:
 
 ```
-buy_sell              = âˆ’1 Ã— (net trades from Cash Report)
-deposit_withdrawal    = mapped directly from Cash Report  [to be specified]
+buy_sell              = -1 x (net trades from Cash Report)
+deposit_withdrawal    = deposits + withdrawals from Cash Report
 ```
+
+Cash Report mapping rules from inspected Activity Statement samples:
+
+- Use section `Cash Report`, row type `Data`, and currency `Base Currency Summary`.
+- `deposits` source row is `Deposits`, using the `Total` value.
+- `withdrawals` source row is `Withdrawals`, using the `Total` value.
+- `deposit_withdrawal = deposits + withdrawals`.
+- `net trades from Cash Report = Trades (Sales) + Trades (Purchase)`.
+- `buy_sell = -1 x net trades from Cash Report`.
+- If `Deposits` or `Withdrawals` rows are not present for the month, treat the missing value as `0.00`.
+- Cross-check: `deposit_withdrawal` should match `Change in NAV` row `Deposits & Withdrawals` within USD `0.01`.
 
 Computed outputs:
 
 ```
-position_capital_gains = change_pos âˆ’ buy_sell
-investment_income      = change_cash + buy_sell âˆ’ deposit_withdrawal
+position_capital_gains = change_pos - buy_sell
+investment_income      = change_cash + buy_sell - deposit_withdrawal
 ```
-
-The deposit and withdrawal mapping from the `Cash Report` involves additional treatment and will be specified in a follow-up.
 
 ## IRA account requirements
 
@@ -107,25 +118,23 @@ IRA is treated as a single position account using a simpler top-down derivation.
 Derivation from `Net Asset Value` and `Cash Report`:
 
 ```
-change_pos         = NAV total end âˆ’ NAV total beg
+change_pos         = NAV total end - NAV total beg
 buy_sell           = deposit_withdrawal  (from Cash Report)
-capital_gains_loss = change_pos âˆ’ buy_sell
+capital_gains_loss = change_pos - buy_sell
 ```
 
 All period income â€” dividends, interest, commissions net â€” is captured in `capital_gains_loss` without sub-type breakdown, consistent with the illiquid treatment of the account.
 
 ## Classification rules
 
-| account        |                        |                   |
-| -------------- | ---------------------- | ----------------- |
-| component      |                        |                   |
-| classification |                        |                   |
-| IBA            | position capital gains | capital gains     |
-| IBA            | investment income      | investment income |
-| IBA            | deposits/withdrawals   | transfer          |
-| IBA            | buy/sell               | internal transfer |
-| IRA            | capital gains/loss     | capital gains     |
-| IRA            | deposits/withdrawals   | transfer          |
+| account | component              | classification    |
+| ------- | ---------------------- | ----------------- |
+| IBA     | position capital gains | capital gains     |
+| IBA     | investment income      | investment income |
+| IBA     | deposits/withdrawals   | transfer          |
+| IBA     | buy/sell               | internal transfer |
+| IRA     | capital gains/loss     | capital gains     |
+| IRA     | deposits/withdrawals   | transfer          |
 
 ## Validation and close-gate requirements
 
@@ -140,8 +149,7 @@ All period income â€” dividends, interest, commissions net â€” is capt
 
 Each derived value posted to HomeBudget or the close output shall carry the following lineage fields:
 
-| field          |                                                                  |
+| field          | description                                                      |
 | -------------- | ---------------------------------------------------------------- |
-| description    |                                                                  |
 | `period`       | statement period in `YYYY-MM` format                             |
 | `derived_type` | classification applied (e.g. `m2m`, `dividend`, `realized_gain`) |

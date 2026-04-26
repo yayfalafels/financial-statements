@@ -43,13 +43,11 @@ Detailed requirements for the CPF integration.
 
 ## Accounts in scope
 
-| sub-account  |     |                                               |
-| ------------ | --- | --------------------------------------------- |
-| abbreviation |     |                                               |
-| description  |     |                                               |
-| Ordinary     | OA  | primary savings; used for housing, investment |
-| Special      | SA  | retirement savings; restricted withdrawals    |
-| Medisave     | MA  | healthcare savings; restricted to medical use |
+| sub-account | abbreviation | description                                   |
+| ----------- | ------------ | --------------------------------------------- |
+| Ordinary    | OA           | primary savings; used for housing, investment |
+| Special     | SA           | retirement savings; restricted withdrawals    |
+| Medisave    | MA           | healthcare savings; restricted to medical use |
 
 All three sub-accounts are in POC scope.
 
@@ -81,10 +79,13 @@ CPF contributions are monthly fixed amounts derived from salary. Employer and em
 
 CPF interest is credited annually rather than monthly. Annual interest income is in scope for POC.
 
+CPF official FAQ states interest is computed monthly and credited to accounts by the following year, with annual compounding.
+
 - The system shall accept interest income per sub-account as an user-entered value in the period GS UI entry.
 - Interest income shall be classified as investment income and booked as a credit to the relevant sub-account.
 - If interest is not applicable for the current period (non-annual period), the `interest` field shall be zero or absent; the system shall treat absent as zero.
 - The system shall flag interest entries greater than zero outside of the expected annual credit period for user confirmation before posting.
+- Expected annual credit period for user validation is year-end through 1 January of the following year.
 
 ## Medisave transaction requirements
 
@@ -107,22 +108,10 @@ Medisave sub-account (MA) may have outflows for medical claims that do not appea
 
 Each value posted to HomeBudget or the close output shall carry the following lineage fields:
 
-| id          |                |
-| ----------- | -------------- |
-| field       |                |
-| description |                |
-| 01          | `period`       |
-| 02          | `sub_account`  |
-| 03          | `input_type`   |
-| 04          | `user_note`    |
-| 05          | `derived_type` |
-
-| id          |                |                                                                                     |
-| ----------- | -------------- | ----------------------------------------------------------------------------------- |
-| field       |                |                                                                                     |
-| description |                |                                                                                     |
-| 01          | `period`       | period in `YYYY-MM` format                                                          |
-| 02          | `sub_account`  | CPF sub-account identifier: `OA`, `SA`, or `MA`                                     |
-| 03          | `input_type`   | type of entry: `contribution`, `interest`, `transaction`, `adjustment`              |
-| 04          | `user_note`    | free-text note from user GS UI input, if provided                                   |
-| 05          | `derived_type` | classification applied (e.g. `transfer`, `investment_income`, `healthcare_expense`) |
+| id | field         | description                                                                         |
+| -- | ------------- | ----------------------------------------------------------------------------------- |
+| 01 | `period`      | period in `YYYY-MM` format                                                          |
+| 02 | `sub_account` | CPF sub-account identifier: `OA`, `SA`, or `MA`                                     |
+| 03 | `input_type`  | type of entry: `contribution`, `interest`, `transaction`, `adjustment`             |
+| 04 | `user_note`   | free-text note from user GS UI input, if provided                                   |
+| 05 | `derived_type`| classification applied (e.g. `transfer`, `investment_income`, `healthcare_expense`) |

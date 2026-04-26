@@ -54,6 +54,7 @@ This document defines the requirements for the transaction category model and ho
 ## Source of truth and ownership
 
 - The category data model is app-managed and is the source of truth for how transactions aggregate onto the income statement.
+- Transition rule for POC: before SQLite category store creation and validation, legacy source remains source of truth; after validation, SQLite is source of truth and Google Sheets is UI only.
 - The expense category dimension defines the income statement line items for expense-class transactions. The `gl_code` field is the canonical income statement expense line label. In the legacy Google Sheets workbook this field is named `fin_stm_category`.
 - Account type, as defined in account-classification.md, governs income statement section placement for income and investment activity.
 - This page owns transaction class semantics, expense category taxonomy, income category requirements, and income statement aggregation rules.
@@ -111,36 +112,36 @@ The expense category dimension defines the income statement expense lines. Each 
 
 Unified expense category table (all categories with group assignments):
 
-| id | category_label         | gl_code              | category_group_key  |
-| -- | ---------------------- | -------------------- | ------------------- |
-| 01 | rental                 | rental               | rental_expenses     |
-| 02 | food                   | food                 | cole_expenses       |
-| 03 | transport              | transport            | cole_expenses       |
-| 04 | healthcare out-of-pocket | healthcare_oop    | cole_expenses       |
-| 05 | insurance              | insurance            | cole_expenses       |
-| 06 | mobile                 | mobile               | cole_expenses       |
-| 07 | clothing               | clothing             | cole_expenses       |
-| 08 | postal services        | post                 | cole_expenses       |
-| 09 | singtel internet       | singtel_internet     | cole_expenses       |
-| 10 | PUB water/gas          | pub_water_gas        | cole_expenses       |
-| 11 | electricity            | electricity          | cole_expenses       |
-| 12 | sundries               | sundries             | cole_expenses       |
-| 13 | maintenance            | maintenance          | cole_expenses       |
-| 14 | fitness                | fitness              | discretionary_expenses |
-| 15 | non-alcoholic drinks   | non_alcoholic_drinks | discretionary_expenses |
-| 16 | alcohol                | alcohol              | discretionary_expenses |
-| 17 | socializing            | socializing          | discretionary_expenses |
-| 18 | it software            | it_software          | discretionary_expenses |
-| 19 | it hardware            | it_hardware          | discretionary_expenses |
-| 20 | books                  | books                | discretionary_expenses |
-| 21 | travel                 | travel               | discretionary_expenses |
-| 22 | higher education       | higher_education     | discretionary_expenses |
-| 23 | projects               | projects             | discretionary_expenses |
-| 24 | discretionary misc     | discretionary_misc   | discretionary_expenses |
-| 25 | pets and plants        | pets_and_plants      | discretionary_expenses |
-| 26 | durables               | durables             | discretionary_expenses |
-| 27 | cleaning service       | cleaning_service     | discretionary_expenses |
-| 28 | family gifts           | family_gifts         | discretionary_expenses |
+| id | category_label           | gl_code              | category_group_key     |
+| -- | ------------------------ | -------------------- | ---------------------- |
+| 01 | rental                   | rental               | rental_expenses        |
+| 02 | food                     | food                 | cole_expenses          |
+| 03 | transport                | transport            | cole_expenses          |
+| 04 | healthcare out-of-pocket | healthcare_oop       | cole_expenses          |
+| 05 | insurance                | insurance            | cole_expenses          |
+| 06 | mobile                   | mobile               | cole_expenses          |
+| 07 | clothing                 | clothing             | cole_expenses          |
+| 08 | postal services          | post                 | cole_expenses          |
+| 09 | singtel internet         | singtel_internet     | cole_expenses          |
+| 10 | PUB water/gas            | pub_water_gas        | cole_expenses          |
+| 11 | electricity              | electricity          | cole_expenses          |
+| 12 | sundries                 | sundries             | cole_expenses          |
+| 13 | maintenance              | maintenance          | cole_expenses          |
+| 14 | fitness                  | fitness              | discretionary_expenses |
+| 15 | non-alcoholic drinks     | non_alcoholic_drinks | discretionary_expenses |
+| 16 | alcohol                  | alcohol              | discretionary_expenses |
+| 17 | socializing              | socializing          | discretionary_expenses |
+| 18 | it software              | it_software          | discretionary_expenses |
+| 19 | it hardware              | it_hardware          | discretionary_expenses |
+| 20 | books                    | books                | discretionary_expenses |
+| 21 | travel                   | travel               | discretionary_expenses |
+| 22 | higher education         | higher_education     | discretionary_expenses |
+| 23 | projects                 | projects             | discretionary_expenses |
+| 24 | discretionary misc       | discretionary_misc   | discretionary_expenses |
+| 25 | pets and plants          | pets_and_plants      | discretionary_expenses |
+| 26 | durables                 | durables             | discretionary_expenses |
+| 27 | cleaning service         | cleaning_service     | discretionary_expenses |
+| 28 | family gifts             | family_gifts         | discretionary_expenses |
 
 Category record requirements:
 
@@ -150,19 +151,32 @@ Category record requirements:
 - Additional fields may include `fa_category` (bridge to normalized transaction feed, populated by category management module) and optional `fa_subcategory` and `custom_logic_note` fields.
 - A transfer-designated transaction must not be assigned an expense category.
 - A single expense category must not produce line items in more than one expense group.
+- A single expense category must not produce line items in more than one expense group.
+
+**Expense category field contract**
+
+| id | field              | type        | required | unique | notes                                          |
+| -- | ------------------ | ----------- | -------- | ------ | ---------------------------------------------- |
+| 01 | category_label     | text        | yes      | yes    | display name used in HomeBudget                |
+| 02 | gl_code            | text        | yes      | yes    | snake_case; income statement line key          |
+| 03 | category_group_key | text (enum) | yes      | no     | expense group for income statement aggregation |
+| 04 | fa_category        | text        | no       | no     | legacy bridge field; null if unused            |
+| 05 | fa_subcategory     | text        | no       | no     | legacy bridge field; null if unused            |
+| 06 | custom_logic_note  | text        | no       | no     | exception routing notes; null if unused        |
+| 07 | is_active          | boolean     | yes      | no     | false for deprecated categories                |
 
 ## Income category requirements
 
 Income categories are determined by income type. Personal income flows through the primary income account. Income types must be recognized across the following classifications. Note: account type (balance sheet concept owned by account-classification.md) determines which income statement section receives the income; income type determines what kind of income is being recognized.
 
-| id | income type          | description  |
-| -- | -------------------- | --------------------- |
-| 01 | base salary          | regular salary compensation from primary employment |
-| 02 | bonus                | performance or discretionary bonus payments |
-| 03 | part-time            | income from secondary or contract work |
-| 04 | other income         | miscellaneous income not classified above |
-| 05 | taxes paid           | tax refunds or recoveries; reduces net income (negative income) |
-| 06 | CPF employer contribution | employer mandatory contribution to CPF sub-accounts; recognized as income |
+| id | income type               | description                                                                |
+| -- | ------------------------- | -------------------------------------------------------------------------- |
+| 01 | base salary               | regular salary compensation from primary employment                        |
+| 02 | bonus                     | performance or discretionary bonus payments                                |
+| 03 | part-time                 | income from secondary or contract work                                     |
+| 04 | other income              | miscellaneous income not classified above                                  |
+| 05 | taxes paid                | tax refunds or recoveries; reduces net income (negative income)            |
+| 06 | CPF employer contribution | employer mandatory contribution to CPF sub-accounts; recognized as income  |
 
 CPF employer contribution is income credited directly to CPF sub-accounts; it does not flow through the cash salary account but is included in total salary income. CPF employee contributions are transfers, not income; they move funds from the cash salary account into CPF sub-accounts and are recorded in the CPF contributions tracking subsection as balance-sheet transfers. CPF-specific accounting rules are defined in cpf-integration.md and accounting-logic.md.
 

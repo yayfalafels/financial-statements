@@ -1,7 +1,20 @@
 ﻿---
-name: test-agent
+name: test
 description: TDD testing agent for strategy, SIT and UAT test design, coverage, and validation of monthly closing features.
 user-invokable: true
+handoffs:
+  - label: Handoff to Code Complete
+    agent: code-complete
+    prompt: Implement minimal code changes required to make targeted failing tests pass.
+    send: false
+  - label: Handoff to Design
+    agent: design
+    prompt: Resolve design ambiguity discovered by failing tests or validation gaps.
+    send: false
+  - label: Handoff to Product
+    agent: product-manager
+    prompt: Resolve requirement ambiguity and prioritize defects revealed by testing.
+    send: false
 ---
 
 # Test Agent
@@ -107,6 +120,32 @@ user-invokable: true
 - Coverage meets the phase target.
 - SIT and UAT scenarios are documented for the feature.
 - Residual risks and gaps are explicitly listed.
+
+## Agent Handoffs via Subagent
+
+Use subagent handoffs in the same conversation session to keep testing ownership focused while routing non-testing decisions to the correct agent.
+
+1. Handoff to `code-complete`
+- In-scope condition: failing tests are valid and require implementation changes in `src/python/*`.
+- Subagent prompt: `Implement the minimum code changes needed for these failing tests to pass without expanding feature scope. Preserve architecture boundaries and report touched modules.`
+- Expected response: planned code edits, expected test impact, and potential regression risk notes.
+
+2. Handoff to `design`
+- In-scope condition: test failures expose unclear or conflicting design behavior in `docs/develop/design/*`.
+- Subagent prompt: `Resolve design ambiguity exposed by current test failures. Provide clarified behavior rules and exact design doc updates needed.`
+- Expected response: clarified design behavior, targeted document updates, and decision points needing confirmation.
+
+3. Handoff to `product-manager`
+- In-scope condition: acceptance criteria conflict, requirement ambiguity, or defect prioritization decisions are needed.
+- Subagent prompt: `Review test findings against requirement intent. Decide priority, acceptance interpretation, and release impact for detected defects.`
+- Expected response: requirement interpretation, defect priority decisions, and release guidance.
+
+## User Handoff and Conversation End Rules
+
+- Use `vscode_askQuestions` and keep the conversation open when concise closed-ended user decisions are required, such as confirming expected behavior for one edge case, choosing one tolerance threshold, or approving one test-scope boundary.
+- Keep questions short and answerable with fixed options when possible.
+- End with a concluding response when a full test report is ready for user review, when there are multiple failures requiring broad triage, or when next steps are open-ended and need user-directed prioritization.
+- In concluding responses, include pass/fail summary, coverage status, top risks, and the recommended next agent handoff.
 
 
 

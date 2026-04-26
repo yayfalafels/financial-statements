@@ -76,69 +76,31 @@ The POC UI assumption is a single consolidated Google Sheets workbook with one s
 
 The table below maps each workflow stage to user-facing touchpoints and identifies where the interaction should occur in the consolidated workbook.
 
-| id          |               |                                      |        |                          |
-| ----------- | ------------- | ------------------------------------ | ------ | ------------------------ |
-| stage       |               |                                      |        |                          |
-| touchpoint  |               |                                      |        |                          |
-| io          |               |                                      |        |                          |
-| ui page     |               |                                      |        |                          |
-| page format |               |                                      |        |                          |
-| status      |               |                                      |        |                          |
-| 01          | pre-flight    | select close period and stage status | input  | session_dashboard        |
-| 02          | pre-flight    | source readiness checklist           | input  | source_ingest_status     |
-| 03          | forex         | review loaded period rates           | output | forex_rates              |
-| 04          | data ingest   | bank file receipt confirmation       | input  | source_ingest_status     |
-| 05          | data ingest   | ibkr period values                   | input  | ibkr_input               |
-| 06          | data ingest   | cpf oa, sa, ma values                | input  | cpf_input                |
-| 07          | data ingest   | cash transactions                    | input  | cash_txn_entry           |
-| 08          | data ingest   | observed balances                    | input  | account_balance_input    |
-| 09          | data ingest   | investment quantity and price inputs | input  | investment_input         |
-| 10          | data sync     | mapping sanity and sync evidence     | output | sync_review              |
-| 11          | reconcile     | variance and gap review              | output | reconcile_dashboard      |
-| 12          | reconcile     | adjustment approval notes            | input  | reconcile_dashboard      |
-| 13          | statements    | income statement                     | output | income_statement         |
-| 14          | statements    | balance sheet                        | output | balance_sheet            |
-| 15          | publish       | publish confirmation                 | input  | publish_control          |
-| 16          | publish       | session close log                    | input  | session_log              |
-| 17          | bill flow     | bill record intake and status        | input  | bill_records             |
-| 18          | bill flow     | shared-cost allocation               | input  | shared_cost_entry        |
-| 19          | all stages    | checkpoint pass or fail feedback     | output | session_dashboard        |
-| 20          | reconcile     | account ledger drill-down            | output | ledger_explorer          |
-| 21          | reconcile     | flagged transaction drill-down       | output | transaction_review_queue |
-| 22          | ad-hoc review | account ledger ad-hoc review         | output | ledger_explorer          |
-| 23          | ad-hoc review | flagged transaction resolution       | input  | transaction_review_queue |
-
-| id          |               |                          |        |
-| ----------- | ------------- | ------------------------ | ------ |
-| stage       |               |                          |        |
-| touchpoint  |               |                          |        |
-| io          |               |                          |        |
-| ui page     |               |                          |        |
-| page format |               |                          |        |
-| status      |               |                          |        |
-| 01          | pre-flight    | form plus stage board    | new    |
-| 02          | pre-flight    | checklist grid           | new    |
-| 03          | forex         | month-rate table         | modify |
-| 04          | data ingest   | status grid              | new    |
-| 05          | data ingest   | period columns           | modify |
-| 06          | data ingest   | period columns           | modify |
-| 07          | data ingest   | transaction table        | copy   |
-| 08          | data ingest   | account-balance table    | modify |
-| 09          | data ingest   | holdings table           | new    |
-| 10          | data sync     | status and evidence grid | new    |
-| 11          | reconcile     | matrix plus filters      | modify |
-| 12          | reconcile     | action columns           | modify |
-| 13          | statements    | statement report view    | copy   |
-| 14          | statements    | statement report view    | copy   |
-| 15          | publish       | checklist plus confirm   | new    |
-| 16          | publish       | append-only log table    | modify |
-| 17          | bill flow     | lifecycle table          | new    |
-| 18          | bill flow     | allocation table         | modify |
-| 19          | all stages    | form plus stage board    | new    |
-| 20          | reconcile     | filterable ledger table  | new    |
-| 21          | reconcile     | queue plus detail panel  | new    |
-| 22          | ad-hoc review | filterable ledger table  | new    |
-| 23          | ad-hoc review | action columns           | new    |
+| id | stage       | touchpoint                            | io     | ui page                  | page format              | status |
+| -- | ----------- | ------------------------------------- | ------ | ------------------------ | ------------------------ | ------ |
+| 01 | pre-flight  | select close period and stage status  | input  | session_dashboard        | form plus stage board    | new    |
+| 02 | pre-flight  | source readiness checklist            | input  | source_ingest_status     | checklist grid           | new    |
+| 03 | forex       | review loaded period rates            | output | forex_rates              | month-rate table         | modify |
+| 04 | data ingest | bank file receipt confirmation        | input  | source_ingest_status     | status grid              | new    |
+| 05 | data ingest | ibkr period values                    | input  | ibkr_input               | period columns           | modify |
+| 06 | data ingest | cpf oa, sa, ma values                 | input  | cpf_input                | period columns           | modify |
+| 07 | data ingest | cash transactions                     | input  | cash_txn_entry           | transaction table        | copy   |
+| 08 | data ingest | observed balances                     | input  | account_balance_input    | account-balance table    | modify |
+| 09 | data ingest | investment quantity and price inputs  | input  | investment_input         | holdings table           | new    |
+| 10 | data sync   | mapping sanity and sync evidence      | output | sync_review              | status and evidence grid | new    |
+| 11 | reconcile   | variance and gap review               | output | reconcile_dashboard      | matrix plus filters      | modify |
+| 12 | reconcile   | adjustment approval notes             | input  | reconcile_dashboard      | action columns           | modify |
+| 13 | statements  | income statement                      | output | income_statement         | statement report view    | copy   |
+| 14 | statements  | balance sheet                         | output | balance_sheet            | statement report view    | copy   |
+| 15 | publish     | publish confirmation                  | input  | publish_control          | checklist plus confirm   | new    |
+| 16 | publish     | session close log                     | input  | session_log              | append-only log table    | modify |
+| 17 | bill flow   | bill record intake and status         | input  | bill_records             | lifecycle table          | new    |
+| 18 | bill flow   | shared-cost allocation                | input  | shared_cost_entry        | allocation table         | modify |
+| 19 | all stages  | checkpoint pass or fail feedback      | output | session_dashboard        | form plus stage board    | new    |
+| 20 | reconcile   | account ledger drill-down             | output | ledger_explorer          | filterable ledger table  | new    |
+| 21 | reconcile   | flagged transaction drill-down        | output | transaction_review_queue | queue plus detail panel  | new    |
+| 22 | ad-hoc review | account ledger ad-hoc review        | output | ledger_explorer          | filterable ledger table  | new    |
+| 23 | ad-hoc review | flagged transaction resolution      | input  | transaction_review_queue | action columns           | new    |
 
 Status legend:
 
@@ -150,83 +112,40 @@ Status legend:
 
 The page inventory below defines the complete POC UI scope for the consolidated workbook.
 
-| id              |                          |                                      |
-| --------------- | ------------------------ | ------------------------------------ |
-| page name       |                          |                                      |
-| primary purpose |                          |                                      |
-| source basis    |                          |                                      |
-| status          |                          |                                      |
-| 01              | session_dashboard        | period select, workflow checkpoints  |
-| 02              | source_ingest_status     | source readiness and file receipt    |
-| 03              | forex_rates              | period forex review                  |
-| 04              | ibkr_input               | ibkr period values                   |
-| 05              | cpf_input                | cpf period values                    |
-| 06              | cash_txn_entry           | cash transaction entry               |
-| 07              | account_balance_input    | observed balances by account         |
-| 08              | investment_input         | qty and unit price inputs            |
-| 09              | category_mapping         | hb category classification           |
-| 10              | account_registry_status  | account class and status management  |
-| 11              | reconcile_dashboard      | variance review and actions          |
-| 12              | income_statement         | income statement review and approval |
-| 13              | balance_sheet            | balance sheet review and approval    |
-| 14              | bill_records             | bill lifecycle entry and review      |
-| 15              | shared_cost_entry        | shared-cost entry and validation     |
-| 16              | publish_control          | artifact confirmation and close      |
-| 17              | session_log              | append-only close history            |
-| 18              | ledger_explorer          | account ledger drill-down            |
-| 19              | transaction_review_queue | flagged transaction review queue     |
-
-| id              |                          |                                        |        |
-| --------------- | ------------------------ | -------------------------------------- | ------ |
-| page name       |                          |                                        |        |
-| primary purpose |                          |                                        |        |
-| source basis    |                          |                                        |        |
-| status          |                          |                                        |        |
-| 01              | session_dashboard        | closing-session workbook intent        | new    |
-| 02              | source_ingest_status     | no direct page today                   | new    |
-| 03              | forex_rates              | financial-statements forex_rates       | modify |
-| 04              | ibkr_input               | ibkr-iba worksheet regions             | modify |
-| 05              | cpf_input                | cpf worksheet regions                  | modify |
-| 06              | cash_txn_entry           | cash-expenses recent_txns              | copy   |
-| 07              | account_balance_input    | financial-statements balances plus gs  | modify |
-| 08              | investment_input         | closing-session manual input intent    | new    |
-| 09              | category_mapping         | homebudget-workbook cat_map            | modify |
-| 10              | account_registry_status  | financial-statements accounts          | modify |
-| 11              | reconcile_dashboard      | financial-statements reconcile regions | modify |
-| 12              | income_statement         | financial-statements income_statement  | copy   |
-| 13              | balance_sheet            | financial-statements balance_sheet     | copy   |
-| 14              | bill_records             | shared-expenses plus bill bridge needs | new    |
-| 15              | shared_cost_entry        | shared-expenses records                | modify |
-| 16              | publish_control          | no direct page today                   | new    |
-| 17              | session_log              | closing-session sessions               | modify |
-| 18              | ledger_explorer          | no direct page today                   | new    |
-| 19              | transaction_review_queue | no direct page today                   | new    |
+| id | page name                | primary purpose                        | source basis                           | status |
+| -- | ------------------------ | -------------------------------------- | -------------------------------------- | ------ |
+| 01 | session_dashboard        | period select, workflow checkpoints    | closing-session workbook intent        | new    |
+| 02 | source_ingest_status     | source readiness and file receipt      | no direct page today                   | new    |
+| 03 | forex_rates              | period forex review                    | financial-statements forex_rates       | modify |
+| 04 | ibkr_input               | ibkr period values                     | ibkr-iba worksheet regions             | modify |
+| 05 | cpf_input                | cpf period values                      | cpf worksheet regions                  | modify |
+| 06 | cash_txn_entry           | cash transaction entry                 | cash-expenses recent_txns              | copy   |
+| 07 | account_balance_input    | observed balances by account           | financial-statements balances plus gs  | modify |
+| 08 | investment_input         | qty and unit price inputs              | closing-session manual input intent    | new    |
+| 09 | category_mapping         | hb category classification             | homebudget-workbook cat_map            | modify |
+| 10 | account_registry_status  | account class and status management    | financial-statements accounts          | modify |
+| 11 | reconcile_dashboard      | variance review and actions            | financial-statements reconcile regions | modify |
+| 12 | income_statement         | income statement review and approval   | financial-statements income_statement  | copy   |
+| 13 | balance_sheet            | balance sheet review and approval      | financial-statements balance_sheet     | copy   |
+| 14 | bill_records             | bill lifecycle entry and review        | shared-expenses plus bill bridge needs | new    |
+| 15 | shared_cost_entry        | shared-cost entry and validation       | shared-expenses records                | modify |
+| 16 | publish_control          | artifact confirmation and close        | no direct page today                   | new    |
+| 17 | session_log              | append-only close history              | closing-session sessions               | modify |
+| 18 | ledger_explorer          | account ledger drill-down              | no direct page today                   | new    |
+| 19 | transaction_review_queue | flagged transaction review queue       | no direct page today                   | new    |
+| 20 | sync_review              | data sync mapping and evidence review  | no direct page today                   | new    |
 
 ## Reusable page patterns
 
 The consolidated workbook should use reusable page patterns so multiple workflows can share one page design with filters.
 
-| id             |                   |                                                            |
-| -------------- | ----------------- | ---------------------------------------------------------- |
-| reusable page  |                   |                                                            |
-| reuse strategy |                   |                                                            |
-| applies to     |                   |                                                            |
-| 01             | ledger_explorer   | one transaction table with account, period, source filters |
-| 02             | account_registry  | one account list with account-type and status filters      |
-| 03             | mapping_workspace | one mapping grid with category filters                     |
-| 04             | checkpoint_board  | one stage board with route and account-group filters       |
-| 05             | exception_inbox   | one exception queue with stage and severity filters        |
-
-| id             |                   |                            |
-| -------------- | ----------------- | -------------------------- |
-| reusable page  |                   |                            |
-| reuse strategy |                   |                            |
-| applies to     |                   |                            |
-| 01             | ledger_explorer   | bank, cash, bills, ibkr    |
-| 02             | account_registry  | bank, wallets, investments |
-| 03             | mapping_workspace | category_mapping           |
-| 04             | checkpoint_board  | all workflow stages        |
-| 05             | exception_inbox   | sync, reconcile, publish   |
+| id | reusable page     | reuse strategy                                               | applies to                 |
+| -- | ----------------- | ------------------------------------------------------------ | -------------------------- |
+| 01 | ledger_explorer   | one transaction table with account, period, source filters   | bank, cash, bills, ibkr    |
+| 02 | account_registry  | one account list with account-type and status filters        | bank, wallets, investments |
+| 03 | mapping_workspace | one mapping grid with category filters                       | category_mapping           |
+| 04 | checkpoint_board  | one stage board with route and account-group filters         | all workflow stages        |
+| 05 | exception_inbox   | one exception queue with stage and severity filters          | sync, reconcile, publish   |
 
 Reusable page requirements:
 
@@ -287,16 +206,47 @@ Category and account mapping is managed through the category data model CRUD int
 - The homebudget-workbook `cat_map` region is the current source for category classification data; the category management UI must replace ad hoc mapping file editing with a governed, service-backed update path.
 - Account asset type assignment is managed through the account management UI and drives balance sheet placement.
 - Mapping operations are event-driven and operate outside the monthly close run.
-- Field-level and layout requirements for these interfaces are a design-time deliverable. The requirement is that both the category management UI and the account management UI must support full lifecycle management of their respective records through a Google Sheets form without direct database access.
+- Both the category management UI and the account management UI must support full lifecycle management of their respective records through a Google Sheets form without direct database access.
+
+### category_mapping field contract
+
+| id | field              | type        | required | unique | notes                                          |
+| -- | ------------------ | ----------- | -------- | ------ | ---------------------------------------------- |
+| 01 | hb_subcategory     | text        | yes      | yes    | HB subcategory name; unique within active rows |
+| 02 | gl_code            | text (enum) | yes      | no     | expense line; FK to gl_code dimension          |
+| 03 | subcategory_gl     | text (enum) | no       | no     | subcategory GL override; null if unused        |
+| 04 | category_group_key | text (enum) | yes      | no     | cole_expenses, rental_expenses, discretionary  |
+| 05 | is_active          | boolean     | yes      | no     | false for deprecated mapping rows              |
+
+### account_registry_status field contract
+
+| id | field       | type        | required | unique | notes                                           |
+| -- | ----------- | ----------- | -------- | ------ | ----------------------------------------------- |
+| 01 | account_id  | text        | yes      | yes    | canonical account identifier                    |
+| 02 | asset_type  | text (enum) | yes      | no     | one of seven defined asset types                |
+| 03 | owner       | text        | yes      | no     | TWH or COM; COM accounts are deprecated         |
+| 04 | currency    | text        | yes      | no     | ISO 4217 currency code                          |
+| 05 | stm_account | text        | no       | no     | statement digital twin key; null if not in path |
+| 06 | is_active   | boolean     | yes      | no     | false for deprecated or out-of-scope accounts   |
 
 ## Session log surface
 
 The closing-session workbook sessions region records close session events for audit and review.
 
 - A session log entry must be written for each completed close session.
-- Each entry must record at minimum: session identifier, close period, user identity, session start and end times, and close outcome.
 - The sessions log must support review of prior period close history from the same workbook interface.
-- The sessions region schema must accommodate all required fields within the workbook layout.
+
+### session_log field contract
+
+| id | field            | type        | required | unique | notes                                      |
+| -- | ---------------- | ----------- | -------- | ------ | ------------------------------------------ |
+| 01 | session_id       | text        | yes      | yes    | system-generated unique session identifier |
+| 02 | close_period     | text        | yes      | no     | YYYY-MM format; one row per session        |
+| 03 | user_identity    | text        | yes      | no     | identifier of user who ran the session     |
+| 04 | session_start_at | timestamp   | yes      | no     | UTC ISO-8601                               |
+| 05 | session_end_at   | timestamp   | yes      | no     | UTC ISO-8601; set at session close commit  |
+| 06 | close_outcome    | text (enum) | yes      | no     | completed, abandoned, or error             |
+| 07 | notes            | text        | no       | no     | optional user notes recorded at close      |
 
 ## CLI as parallel surface
 

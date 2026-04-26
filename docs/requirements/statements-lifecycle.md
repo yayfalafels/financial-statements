@@ -63,15 +63,12 @@ This document defines statement lifecycle policy by close period.
 
 ## Lifecycle state model by period
 
-| id          |           |                                         |           |
-| ----------- | --------- | --------------------------------------- | --------- |
-| state       |           |                                         |           |
-| meaning     |           |                                         |           |
-| next states |           |                                         |           |
-| 01          | draft     | statement outputs generated for review  | reviewed  |
-| 02          | reviewed  | checkpoint review complete              | finalized |
-| 03          | finalized | period statement locked for publication | reopened  |
-| 04          | reopened  | controlled revision state after final   | finalized |
+| id | state     | meaning                                 | next states |
+| -- | --------- | --------------------------------------- | ----------- |
+| 01 | draft     | statement outputs generated for review  | reviewed    |
+| 02 | reviewed  | checkpoint review complete              | finalized   |
+| 03 | finalized | period statement locked for publication | reopened    |
+| 04 | reopened  | controlled revision state after final   | finalized   |
 
 ## Finalization criteria
 
@@ -81,8 +78,12 @@ This document defines statement lifecycle policy by close period.
 
 ## Reopen policy
 
-- Reopen is allowed 
-- Reopen action must be traceable to user and timestamp.
+- A finalized period may be reopened when the session user determines a correction is required after finalization.
+- Reopen is not subject to additional approval in the single-user POC model; the session user is the sole authority.
+- Reopen must be logged with user identity, timestamp, and stated reason before the session proceeds.
+- Reopen returns the period from the `finalized` state to the `reopened` state as defined in the lifecycle state model.
+- Corrections may be applied in the `reopened` state. Re-finalization closes the revision and creates a new version.
+- Both the reopen action and the re-finalization are retained in the session close record.
 
 ## Revision policy
 

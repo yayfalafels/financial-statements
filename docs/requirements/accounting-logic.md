@@ -110,6 +110,8 @@ Forex translation on balances is the unrealized gain or loss on the existing bal
 
 This translation effect is a financial-statement-level adjustment. It appears only in the financial statements layer and is not recorded as an account-level HomeBudget ledger transaction, because HomeBudget ledgers balance in a single currency and do not contain cross-currency translation entries.
 
+The translation effect is modeled in `close_book` and rolls up into net worth and net income totals using a constant-SGD basis for period comparison.
+
 >M2M forex on balances = currency balance * (rate(end of period) - rate(beginning of period))
 
 >transactions in currency * rate(beg of period) + M2M forex on balances = currency balance (end of period) * rate(end of period) - currency balance (beg of period) * rate(beg of period)
@@ -157,9 +159,9 @@ Transaction uniqueness is determined by a combination of the following attribute
 
 unique combination: account, transaction date, amount, description
 
-This definition is sufficient to address any potential duplicates in the system, as it is highly unlikely for two distinct transactions to share the same account, date, amount, and description. 
+This definition is sufficient to address potential duplicates in general ledger ingest.
 
-In the rare exception when two transactions share the same account, date, amount, and description from the statement source, then when importing these into the system, either to the statement digital twin, or into HomeBudget through the wrapper interface, simply append a sequential id `-01, -02, etc..` in the description field.
+If two transactions are fully identical on account, date, amount, and description, the system shall flag the case as an exception for user review rather than silently mutating the transaction description.
 
 ## Accounting periods
 

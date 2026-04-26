@@ -131,12 +131,22 @@ The following conditions each independently block period close:
 
 The user must resolve or explicitly accept each close-blocking exception before close can proceed. Explicit acceptance of an unresolvable exception must be recorded with a rationale.
 
+## Override and remediation policy
+
+Where a blocking condition is assessed as acceptable by the session user, the stage completion status may be overridden without requiring additional approval. The POC control model is single-user; no multi-party approval step is required.
+
+An override must record: stage identifier; prior blocking status; new status; user identity; timestamp; and a concise rationale. The override must explicitly acknowledge any unresolved checks or route-gate gaps for affected account groups.
+
+Override does not remove lineage requirements. The session record must retain both the original gate outcomes and the override decision. Exception records created before the override must not be modified or deleted after the override is committed.
+
+Where multiple blocking exceptions exist, all must be presented to the user simultaneously. The user must individually resolve or override each blocking exception before close can proceed.
+
 ## Auditability requirements
 
 - Every exception event must be recorded with the exception category, affected scope, timestamp of detection, and current status.
 - Every user resolution action must be recorded with the user identity, the resolution method, and a timestamp.
-- Exception event records must be retained for the closed period and must be accessible at a later point.
-- Exception event records must be stored in S3 
+- Exception event records must be retained indefinitely and must be accessible after the period is closed.
+- Exception event records must be stored in S3.
 - Exception records must not be deleted or modified after the user resolution action is recorded.
 
 ## Non-functional requirements

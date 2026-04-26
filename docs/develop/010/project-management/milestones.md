@@ -11,34 +11,31 @@ Cross-reference boundary:
 - [implementation-roadmap.md](../../../requirements/implementation-roadmap.md) is a requirements reference document and does not track project-management artifacts.
 - This milestone tracker translates roadmap intent into execution checkpoints and status progression.
 
-| seq       |     |         |                          |
-| --------- | --- | ------- | ------------------------ |
-| id        |     |         |                          |
-| status    |     |         |                          |
-| milestone |     |         |                          |
-| 01        | 01  | closed  | setup dev environment    |
-| 02        | 03  | closed  | implementation roadmap   |
-| 03        | 02  | open    | requirements             |
-| 04        | 04  | pending | design                   |
-| 05        | 05  | pending | test strategy            |
-| 06        | 06  | pending | test cases               |
-| 07        | 07  | pending | build                    |
-| 08        | 08  | pending | prerequisites and setup  |
-| 09        | 09  | pending | foundation modules       |
-| 10        | 10  | pending | connectors               |
-| 11        | 11  | pending | backend database         |
-| 12        | 12  | pending | front end ui             |
-| 13        | 13  | pending | accounting models        |
-| 14        | 14  | pending | bank statements          |
-| 15        | 15  | pending | cash                     |
-| 16        | 16  | pending | account reconcile        |
-| 17        | 17  | pending | financial statements     |
-| 18        | 18  | pending | ibkr                     |
-| 19        | 19  | pending | income                   |
-| 20        | 20  | pending | cpf                      |
-| 21        | 21  | pending | uat monthly closing      |
-| 22        | 22  | pending | uat financial statements |
-| 23        | 23  | pending | data migration           |
+| seq | id  | status  | milestone                |
+| --- | --- | ------- | ------------------------ |
+| 01  | 01  | closed  | setup dev environment    |
+| 02  | 03  | closed  | implementation roadmap   |
+| 03  | 02  | closed  | requirements             |
+| 04  | 04  | open    | design                   |
+| 05  | 05  | pending | test strategy            |
+| 06  | 06  | pending | test cases               |
+| 07  | 07  | pending | build                    |
+| 08  | 08  | pending | prerequisites and setup  |
+| 09  | 09  | pending | foundation modules       |
+| 10  | 10  | pending | connectors               |
+| 11  | 11  | pending | backend database         |
+| 12  | 12  | pending | front end ui             |
+| 13  | 13  | pending | accounting models        |
+| 14  | 14  | pending | bank statements          |
+| 15  | 15  | pending | cash                     |
+| 16  | 16  | pending | account reconcile        |
+| 17  | 17  | pending | financial statements     |
+| 18  | 18  | pending | ibkr                     |
+| 19  | 19  | pending | income                   |
+| 20  | 20  | pending | cpf                      |
+| 21  | 21  | pending | uat monthly closing      |
+| 22  | 22  | pending | uat financial statements |
+| 23  | 23  | pending | data migration           |
 
 _01 (closed) setup dev environment_
 

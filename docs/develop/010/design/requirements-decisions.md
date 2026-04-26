@@ -1,92 +1,79 @@
+---
+doc_type: design-analysis
+title: Requirements Decisions — Open Questions for User
+status: Updated with user decisions
+created: 2026-04-26
+phase: Design Phase 1 - Discovery and Analysis
+---
+
 # Requirements Decisions
 
 ## Table of contents
 
 - [Summary](#summary)
 - [Decision inventory](#decision-inventory)
-- [Topic index](#topic-index)
-- [Bill payment](#bill-payment)
+- [Resolved decisions](#resolved-decisions)
+- [CPF interest timing note](#cpf-interest-timing-note)
 
 ## Summary
 
-This document is the design-side tracker for requirement decisions and open requirement questions.
+This document records resolved requirement decisions using the established stable ID and status format.
 
-Requirements documents remain static and do not link to this tracker. This tracker links to requirement sources.
+Most design-audit items are now resolved from user direction. Items that were design implementation details, not requirement gaps, were removed.
 
 ## Decision inventory
 
-| id | status   | topic                    | description                                                       |
-| -- | -------- | ------------------------ | ----------------------------------------------------------------- |
-| 01 | accepted | bill payment             | splitwise usage, deprecated                                       |
-| 02 | accepted | bill payment             | commit mode, direct post to hb                                    |
-| 03 | accepted | bill payment             | singtel handling, incremental charges                             |
-| 04 | closed   | bill payment             | bridge field mapping for bills                                    |
-| 05 | closed   | bill payment             | per-payee variance tolerance policy                               |
-| 06 | accepted | exception-error-handling | remediation flow for missing category mapping at close time       |
-| 07 | accepted | exception-error-handling | remediation flow for source validation failure during ingest/sync |
-| 08 | open     | exception-error-handling | audit retention duration and storage format for exception events  |
-| 09 | accepted | transaction categories   | expense category groups: rental/COLE/discretionary model           |
+| seq | id | status   | topic                     | decision                          |
+| --- | -- | -------- | ------------------------- | --------------------------------- |
+| 01  | 01 | accepted | forex m2m                | accepted, see resolved section 01 |
+| 02  | 02 | accepted | ibkr posting             | accepted, see resolved section 02 |
+| 03  | 03 | accepted | ibkr m2m                 | accepted, see resolved section 02 |
+| 04  | 04 | accepted | cash rerun idempotency   | accepted, see resolved section 04 |
+| 05  | 05 | accepted | cash uniqueness key      | accepted, see resolved section 04 |
+| 06  | 06 | accepted | duplicate identity check | accepted, see resolved section 04 |
+| 07  | 07 | accepted | category sot transition  | accepted, see resolved section 07 |
+| 08  | 08 | accepted | requirement boundary     | accepted, see resolved section 07 |
+| 09  | 09 | accepted | cpf interest timing      | expected period is year-end through 1 Jan of following year |
 
-## Topic index
+---
 
-- Bill payment, source: [docs/requirements/bill-payment.md](../../../requirements/bill-payment.md)
-- Exception and error handling, source: [docs/requirements/exception-error-handling.md](../../../requirements/exception-error-handling.md)
-- Transaction categories, source: [docs/requirements/transaction-categories.md](../../../requirements/transaction-categories.md)
+## Resolved decisions
 
-## Bill payment
+### 01 forex m2m data model
 
-Source requirements document: [docs/requirements/bill-payment.md](../../../requirements/bill-payment.md)
+- Forex belongs in close_book design, not in single-currency account ledger posting.
+- Roll M2M into net worth and net income totals in constant SGD basis.
+- Keep implementation simple and aligned with personal-finance scope.
+- Use standard accounting-software patterns for unrealized FX and keep auditability.
 
-### Closed Decisions
+### 02 and 03 ibkr posting and m2m
 
-- 01 Splitwise usage, deprecated.
-- 02 Commit mode, direct post to hb.
-- 03 Singtel handling, incremental charges.
-- 04 Google Sheets UI field mapping. GS UI is a new feature; exact field mapping is designer responsibility at design time following variable naming and data model guidelines in design-guidelines.md.
-- 05 Variance tolerance policy. Bill-level tolerance is SGD 0.00 exact match per reconciliation check 01 in bill-payment.md. Escalation behavior is out-of-scope and is owned by interaction-approvals.md.
+- End-of-period aggregate entries are the default for IBKR.
+- Withdrawals are transaction-level because they are bank-linked and transaction-reconciled.
+- Create M2M transactions for IBKR.
 
-## Exception and error handling
+### 04, 05, and 06 cash dedup and uniqueness
 
-Source requirements document: [docs/requirements/exception-error-handling.md](../../../requirements/exception-error-handling.md)
+- GS cash is aggregated, then HB entries are created or updated.
+- Re-running reconciliation should be idempotent, no duplicate creation on unchanged records.
+- Use account, category, note, amount as uniqueness key for this flow.
+- If amount changes and other key fields remain stable, update the amount.
+- If two entries are fully identical on account, date, amount, description, raise a user exception instead of silent merge.
 
-| id    | status   | decision                                                                        | 
-| ----- | -------- | ------------------------------------------------------------------------------- |
-| EE-03 | accepted | remediation flow for missing category mapping at close time                     |
-| EE-04 | accepted | remediation flow for source validation failure during data ingest or sync       |
-| EE-05 | open     | audit retention duration and storage format for exception event records         |
+---
 
-## Transaction categories
+### 07 and 08 source of truth and requirement boundary
 
-Source requirements document: [docs/requirements/transaction-categories.md](../../../requirements/transaction-categories.md)
+- During transition, legacy source remains source of truth until SQLite is created and validated.
+- After validation, SQLite is source of truth and Google Sheets is UI only.
+- Data model and schema completion is a design-stage responsibility.
 
-| id    | status   | decision                                                                        | 
-| ----- | -------- | ------------------------------------------------------------------------------- |
-| TC-01 | accepted | expense category group model: rental/COLE/discretionary (replaces personal/household) |
+## CPF interest timing note
 
-### Decision TC-01: Expense category group model redesign
+### 09 cpf interest credit timing
 
-**Problem statement**: The legacy personal/household expense categorization model grouped expenses by origin (whether the transaction originated from personal spending patterns vs. household/shared patterns). This origin-based grouping did not align well with analytical and operational needs, which require grouping expenses by their financial characteristics and commitment level.
-
-**Solution**: Replace the personal/household two-group model with a three-group model based on expense characteristics:
-
-| Group | Description | Use Case |
-| ----- | ----------- | -------- |
-| Rental | Fixed monthly housing cost (always rental expense only) | Separate committed fixed cost from discretionary spending for cash flow analysis |
-| COLE | Cost of living expenses - essential committed spending on food, transport, insurance, utilities, healthcare, and personal services | Recurring baseline commitments for monthly budget forecasting and reconciliation |
-| Discretionary | Optional spending on travel, entertainment, education, durables, and other non-essential items | Separate variable spending from fixed commitments for expense control and lifestyle analysis |
-
-**Rationale**: 
-- The three-group model aligns expense categories with their financial commitment level: rental (non-negotiable fixed), COLE (recurring essential), and discretionary (variable optional).
-- This classification is more useful for financial planning (budgeting committed vs. optional spending), cash reconciliation (baseline expenses vs. anomalies), and close-cycle reporting (separating essential costs from lifestyle choices).
-- The model is stable across time periods and user behavior changes, unlike origin-based grouping which is harder to justify and maintain.
-
-**Impact**:
-- Expense categories are reassigned from personal_expenses and household_expenses groups to rental_expenses, cole_expenses, or discretionary_expenses groups.
-- Statement aggregation rules in financial-statements.md now group expenses into rental, COLE, and discretionary line items.
-- The transaction-categories.md document includes a new "Legacy vs new model" reference section explaining the mapping from old to new group assignments.
-- Design-phase translation documentation at docs/develop/010/design/category-account-model-translation.md provides the full mapping reference.
-
-**Acceptance**: This decision is reflected in:
-- docs/requirements/transaction-categories.md: Category groups table and expense category table assignments
-- docs/requirements/financial-statements.md: Expense breakdown layout showing three separate sections for rental, COLE, and discretionary
-- docs/develop/010/design/category-account-model-translation.md: Full mapping reference from legacy to new model (design artifact)
+- Working direction is year-end handling and after-the-fact booking accuracy.
+- CPF official FAQ confirms interest is computed monthly and credited by the following year with annual compounding.
+- Non-official Singapore finance references state practical credit timing as by 1 January of the following year, with observed year-end credit in some statements.
+- Expected annual credit period is year-end through 1 January of the following year.
+- Precision emphasis is booking correctness after credit posts, not high-precision forecast compounding.

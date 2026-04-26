@@ -47,27 +47,30 @@ This document defines requirements for user interaction and approval behavior du
 
 ## Review checkpoints by workflow stage
 
-| id               |             |                                                              |
-| ---------------- | ----------- | ------------------------------------------------------------ |
-| stage            |             |                                                              |
-| checkpoint focus |             |                                                              |
-| 01               | pre-flight  | source readiness and period selection                        |
-| 02               | forex       | exchange-rate source and period checks                       |
-| 03               | data ingest | source files received and GS UI entries confirmed            |
-| 04               | data sync   | mapping sanity and `hb_gl_txn` plus dimension refresh status |
-| 05               | reconcile   | variance review and close-blocking outcomes                  |
-| 06               | statements  | statement totals and classification review                   |
-| 07               | publish     | final artifact confirmation                                  |
+| id | stage       | checkpoint focus                                               |
+| -- | ----------- | -------------------------------------------------------------- |
+| 01 | pre-flight  | source readiness and period selection                          |
+| 02 | forex       | exchange-rate source and period checks                         |
+| 03 | data ingest | source files received and GS UI entries confirmed              |
+| 04 | data sync   | mapping sanity and `hb_gl_txn` plus dimension refresh status   |
+| 05 | reconcile   | variance review and close-blocking outcomes                    |
+| 06 | statements  | statement totals and classification review                     |
+| 07 | publish     | final artifact confirmation                                    |
 
 ## Checkpoint criteria by workflow stage
 
-- Each checkpoint must present required evidence for user review.
-- Each checkpoint must clearly show pass or fail conditions.
-- A failed checkpoint blocks downstream commit actions.
 
-## Required user confirmations before commit
+| id | stage       | pass criteria                                                                    |
+| -- | ----------- | -------------------------------------------------------------------------------- |
+| 01 | pre-flight  | target period set; env config valid; source readiness checklist confirmed        |
+| 02 | forex       | period rates loaded for all required pairs; values within expected range         |
+| 03 | data ingest | statement files received for all digital twin accounts; GS UI entries confirmed  |
+| 04 | data sync   | hb schema refreshed; route gates closed or overridden; mapping completeness pass |
+| 05 | reconcile   | all account-group variances within tolerance or user-approved; no blocking items |
+| 06 | statements  | statement totals reviewed; income and balance sheet alignment confirmed          |
+| 07 | publish     | artifacts generated; S3 upload complete; session close record committed          |
 
-- Confirmation is required before posting to persistent stores.
+A failed checkpoint blocks downstream commit actions until all pass criteria are met. Criteria are derived from stage exit conditions in workflow-orchestration.md, reconciliation engine Phase 1 input validation, and finalization criteria in statements-lifecycle.md.
 - Confirmation is required before publish and period close.
 - Confirmation records user identity and timestamp.
 

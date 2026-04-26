@@ -71,13 +71,22 @@ Asset type is the reporting classification used in financial statements. Example
 
 The term `statement` is overloaded in this project and must be qualified in design and implementation documents.
 
-- Use `raw statement file` for downloaded bank or provider source files such as CSV, XLSX, and PDF.
-- Use `statement digital twin` for parsed transactions and balances persisted in SQLite, currently `statements.db`.
-- Use `statement ingestion script` for the loader that parses raw statement files into the statement digital twin, currently `statements.py`.
+- Use `bill statement file` for provider bill files such as Singtel and SP Services statements.
+- Use `bank statement file` for bank and card account source files used in bank-account reconciliation.
+- Use `statement digital twin` only for parsed bank-account transactions and balances persisted in SQLite, currently `statements.db`.
+- Use `bank statement ingestion script` for the legacy bank parser loader, currently `statements.py`.
 - Use `financial statement` for curated reporting outputs, such as income statement and balance sheet.
 - Use `financial statements workbook` for the legacy Google Sheets workbook `gsheet/financial-statements.json`, which is planned for deprecation.
 
 Avoid using the unqualified word `statement` unless the surrounding sentence already names one of the five terms above.
+
+## Bill statement file
+
+Bill statement file is the downloaded source document from a bill provider, usually PDF and sometimes CSV or XLSX, parsed by app-native bill parsing logic into the `bills` schema.
+
+## Bank statement file
+
+Bank statement file is the downloaded source document from a bank or card provider, usually CSV, XLSX, or PDF, that is parsed and ingested for bank-account reconciliation.
 
 ## Raw statement file
 
@@ -91,9 +100,9 @@ Statement digital twin is the local SQLite representation of parsed raw statemen
 
 Statements digital twin (plural) refers to the collection of statement digital twins across all accounts and statement sources. Together they form the complete statement source of truth for all accounts being reconciled in a period.
 
-## Statement ingestion script
+## Bank statement ingestion script
 
-Statement ingestion script is the parser and loader that ingests raw statement files into the statement digital twin, currently `statements.py`.
+Bank statement ingestion script is the legacy parser and loader that ingests bank statement files into the statement digital twin, currently `statements.py`.
 
 ## Financial statement
 

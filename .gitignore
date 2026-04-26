@@ -227,3 +227,6 @@ reference
 
 # credentials
 .credentials
+
+# github copilot
+copilot-config.json

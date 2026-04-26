@@ -9,81 +9,67 @@ scope: poc
 
 This document defines the incremental development of the application in releases from the minimum viable product (MVP) to the full vision. Each release has defined scope, goals, and backlog items that build on the previous release. The roadmap is a living document that may be updated as the project evolves.
 
-| id          |                     |               |                  |                |              |
-| ----------- | ------------------- | ------------- | ---------------- | -------------- | ------------ |
-| feature     |                     |               |                  |                |              |
-| current     |                     |               |                  |                |              |
-| POC         |                     |               |                  |                |              |
-| MVP         |                     |               |                  |                |              |
-| incremental |                     |               |                  |                |              |
-| cloud       |                     |               |                  |                |              |
-| mobile app  |                     |               |                  |                |              |
-| 01          | version             | --            | 0.1.0            | 1.0.0          | 2.x          |
-| 02          | goals               | --            | quick win roi    | maintainable   | time savings |
-| 03          | cloud costs         | 0             | ~0               | ~0             | ***          |
-| 04          | users               | 1             | 1                | 1              | 1            |
-| 05          | deployment          | --            | local            | local          | ***          |
-| 06          | database            | sqlite + gs   | sqlite + hb      | sqlite + hb    | ***          |
-| 07          | ai agent            | no            | no               | no             | ***          |
-| 08          | ui                  | hb,gs         | gs primary + cli | browser,gs, hb | ***          |
-| 09          | session ui          | gsheet        | gsheet primary   | browser        | ***          |
-| 10          | forecasting models  | gsheet        | exist gsheet     | exist gsheet   | ***          |
-| 11          | ibkr import         | csv           | csv              | api            | api          |
-| 12          | cash input          | form + gsheet | form + gsheet    | form + gsheet  | ***          |
-| 13          | homebudget          | local         | local            | local          | ***          |
-| 14          | updates             | session       | session          | session        | ***          |
-| 15          | hb gsheet           | hb gsheet     | maintain         | maintain       | ***          |
-| 16          | bank stm gsheet     | maintain      | maintain         | ui page        | ***          |
-| 17          | fin stm gsheet      | maintain      | minimal          | ui page        | ui page      |
-| 18          | fin stm reconcile   | gsheet        | new gsheet       | ui page        | ui page      |
-| 19          | bank reconcile      | gsheet        | exist gsheet     | ui page        | ui page      |
-| 20          | category mapping    | hb + fin gs   | gs ui + crud     | ui page        | ui page      |
-| 21          | account             | hb + fin gs   | gs ui + crud     | ui page        | ****         |
-| 22          | bank txn rel        | no            | yes              | yes            | yes          |
-| 23          | exp-xfr rel         | no            | no               | yes            | yes          |
-| 24          | shared exp          | gsheet        | ui page          | ui page        | ui page      |
-| 25          | bills               | notion        | ui page          | ui page        | ui page      |
-| 26          | bank stm import     | dwnl to csv   | dwnl to csv      | ui embed frame | embed frame  |
-| 27          | hb recurring        | user hb       | user hb          | user hb        | ****         |
-| 28          | hb session txn crud | user          | app              | app            | app          |
+| id | feature             | current       | POC              | MVP            | incremental |
+| -- | ------------------- | ------------- | ---------------- | -------------- | ----------- |
+| 01 | version             | --            | 0.1.0            | 1.0.0          | 2.x         |
+| 02 | goals               | --            | quick win roi    | maintainable   | time savings|
+| 03 | cloud costs         | 0             | ~0               | ~0             | ***         |
+| 04 | users               | 1             | 1                | 1              | 1           |
+| 05 | deployment          | --            | local            | local          | ***         |
+| 06 | database            | sqlite + gs   | sqlite + hb      | sqlite + hb    | ***         |
+| 07 | ai agent            | no            | no               | no             | ***         |
+| 08 | ui                  | hb,gs         | gs primary + cli | browser,gs, hb | ***         |
+| 09 | session ui          | gsheet        | gsheet primary   | browser        | ***         |
+| 10 | forecasting models  | gsheet        | exist gsheet     | exist gsheet   | ***         |
+| 11 | ibkr import         | csv           | csv              | api            | api         |
+| 12 | cash input          | form + gsheet | form + gsheet    | form + gsheet  | ***         |
+| 13 | homebudget          | local         | local            | local          | ***         |
+| 14 | updates             | session       | session          | session        | ***         |
+| 15 | hb gsheet           | hb gsheet     | maintain         | maintain       | ***         |
+| 16 | bank stm gsheet     | maintain      | maintain         | ui page        | ***         |
+| 17 | fin stm gsheet      | maintain      | minimal          | ui page        | ui page     |
+| 18 | fin stm reconcile   | gsheet        | new gsheet       | ui page        | ui page     |
+| 19 | bank reconcile      | gsheet        | exist gsheet     | ui page        | ui page     |
+| 20 | category mapping    | hb + fin gs   | gs ui + crud     | ui page        | ui page     |
+| 21 | account             | hb + fin gs   | gs ui + crud     | ui page        | ****        |
+| 22 | bank txn rel        | no            | yes              | yes            | yes         |
+| 23 | exp-xfr rel         | no            | no               | yes            | yes         |
+| 24 | shared exp          | gsheet        | ui page          | ui page        | ui page     |
+| 25 | bills               | notion        | ui page          | ui page        | ui page     |
+| 26 | bank stm import     | dwnl to csv   | dwnl to csv      | ui embed frame | embed frame |
+| 27 | hb recurring        | user hb       | user hb          | user hb        | ****        |
+| 28 | hb session txn crud | user          | app              | app            | app         |
 
-| id          |                     |              |                    |
-| ----------- | ------------------- | ------------ | ------------------ |
-| feature     |                     |              |                    |
-| current     |                     |              |                    |
-| POC         |                     |              |                    |
-| MVP         |                     |              |                    |
-| incremental |                     |              |                    |
-| cloud       |                     |              |                    |
-| mobile app  |                     |              |                    |
-| 01          | version             | 3.x          | 4.x                |
-| 02          | goals               | automations  | deprecate hb app   |
-| 03          | cloud costs         | < $20/m      | < $30/m            |
-| 04          | users               | 1            | 1                  |
-| 05          | deployment          | full cloud   | mobile app + cloud |
-| 06          | database            | cloud db     | client + mobile db |
-| 07          | ai agent            | yes          | yes                |
-| 08          | ui                  | web app, hb  | mobile app         |
-| 09          | session ui          | web app      | mobile app         |
-| 10          | forecasting models  | ui page      | ui page            |
-| 11          | ibkr import         | api          | api                |
-| 12          | cash input          | web form     | mobile app         |
-| 13          | homebudget          | vm           | deprecated         |
-| 14          | updates             | event-driven | real-time          |
-| 15          | hb gsheet           | ui page      | deprecated         |
-| 16          | bank stm gsheet     | ui page      | ui page            |
-| 17          | fin stm gsheet      | ui page      | ui page            |
-| 18          | fin stm reconcile   | ui page      | ui page            |
-| 19          | bank reconcile      | ui page      | ui page            |
-| 20          | category mapping    | ui page      | ui page            |
-| 21          | account             | ui page      | ui page            |
-| 22          | bank txn rel        | yes          | yes                |
-| 23          | exp-xfr rel         | yes          | yes                |
-| 24          | shared exp          | ui page      | ui page            |
-| 25          | bills               | ui page      | ui page            |
-| 26          | bank stm import     | redirect     | redirect           |
-| 27          | hb recurring        | ui page      | embedded           |
-| 28          | hb session txn crud | app          | deprecated         |
+| id | feature             | cloud        | mobile app         |
+| -- | ------------------- | ------------ | ------------------ |
+| 01 | version             | 3.x          | 4.x                |
+| 02 | goals               | automations  | deprecate hb app   |
+| 03 | cloud costs         | < $20/m      | < $30/m            |
+| 04 | users               | 1            | 1                  |
+| 05 | deployment          | full cloud   | mobile app + cloud |
+| 06 | database            | cloud db     | client + mobile db |
+| 07 | ai agent            | yes          | yes                |
+| 08 | ui                  | web app, hb  | mobile app         |
+| 09 | session ui          | web app      | mobile app         |
+| 10 | forecasting models  | ui page      | ui page            |
+| 11 | ibkr import         | api          | api                |
+| 12 | cash input          | web form     | mobile app         |
+| 13 | homebudget          | vm           | deprecated         |
+| 14 | updates             | event-driven | real-time          |
+| 15 | hb gsheet           | ui page      | deprecated         |
+| 16 | bank stm gsheet     | ui page      | ui page            |
+| 17 | fin stm gsheet      | ui page      | ui page            |
+| 18 | fin stm reconcile   | ui page      | ui page            |
+| 19 | bank reconcile      | ui page      | ui page            |
+| 20 | category mapping    | ui page      | ui page            |
+| 21 | account             | ui page      | ui page            |
+| 22 | bank txn rel        | yes          | yes                |
+| 23 | exp-xfr rel         | yes          | yes                |
+| 24 | shared exp          | ui page      | ui page            |
+| 25 | bills               | ui page      | ui page            |
+| 26 | bank stm import     | redirect     | redirect           |
+| 27 | hb recurring        | ui page      | embedded           |
+| 28 | hb session txn crud | app          | deprecated         |
 
 ## POC
 

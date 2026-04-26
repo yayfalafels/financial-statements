@@ -30,7 +30,18 @@ scope: poc
 
 ## Overview
 
-The financial statements system produces a monthly income statement and balance sheet for the TWH household. The income statement covers all recognized income, investment activity, and expenses for the period. The balance sheet reflects the net worth position at the end of the period. Both statements are derived from the same underlying transaction and account data using the classification rules defined in the account and category models.
+The financial statements system produces a monthly income statement and balance sheet for the TWH household. The income statement covers all recognized income, investment activity, and expenses for the period. The balance sheet reflects the net worth position at the end of the period.
+
+The app database is the layer responsible for the complete set of statements.
+
+| id | layer            | function                                                         |
+| -- | ---------------- | ---------------------------------------------------------------- |
+| 01 | source systems   | HomeBudget, bank statements, IBKR, wallet cash, bills, forex     |
+| 02 | app database     | consolidate, reconcile to authoritative sources, map             |
+| 03 | `close_book`     | single exclusive source for all statement aggregates             |
+| 04 | output           | standard accounting-formatted income statement and balance sheet |
+
+Both statements are denominated in SGD. Foreign currency balances and transactions are translated at period-end rates before aggregation. Classification rules that determine how transactions and account balances map onto statement line items are defined in the account and category models.
 
 ## Reference documents
 
@@ -47,7 +58,7 @@ The system produces two statements per close period.
 | 01 | income statement  | income, investment activity, and expenses for period  |
 | 02 | balance sheet     | net worth position at end of period                   |
 
-Both statements are denominated in SGD. Foreign currency balances and transactions are translated at the period-end rate. Forex translation effects are shown as a separate income statement line. Translation methodology is defined in accounting-logic.md.
+Both statements are denominated in SGD. Forex translation effects are shown as a separate income statement line. Translation methodology is defined in accounting-logic.md.
 
 ## Statement layouts
 

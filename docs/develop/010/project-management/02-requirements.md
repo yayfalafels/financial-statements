@@ -18,15 +18,16 @@ This document tracks the progress of the requirements definition milestone. It i
 | 07  | 02.06 | closed  | reconciliation engine          |
 | 08  | 02.12 | closed  | cpf integration                |
 | 09  | 02.16 | closed  | shared costs                   |
-| 10  | 02.03 | open    | interaction and approvals      |
-| 11  | 02.15 | open    | exception and error handling   |
-| 12  | 02.05 | pending | accounting model and mapping   |
-| 13  | 02.07 | pending | statements lifecycle           |
-| 14  | 02.08 | pending | homebudget integration         |
-| 15  | 02.09 | pending | ibkr integration               |
-| 16  | 02.13 | pending | bill payment                   |
-| 17  | 02.17 | pending | user interfaces                |
-| 18  | 02.18 | pending | category and account mgmt      |
+| 10  | 02.03 | closed  | interaction and approvals      |
+| 11  | 02.15 | closed  | exception and error handling   |
+| 12  | 02.05 | closed  | accounting model and mapping   |
+| 13  | 02.07 | closed  | statements lifecycle           |
+| 14  | 02.08 | closed  | homebudget integration         |
+| 15  | 02.09 | closed  | ibkr integration               |
+| 16  | 02.13 | closed  | bill payment                   |
+| 17  | 02.17 | closed  | user interfaces                |
+| 18  | 02.18 | closed  | financial statements           |
+| 19  | 02.19 | closed  | bank statements                |
 
 _02.14 (closed) inspection guide_
 
@@ -956,7 +957,35 @@ Complete requirements for this topic cover:
 | --- | -------- | ------- | ------------------------------ |
 | 01  | 02.12.01 | closed  | gap review and closure confirm |
 
-_02.03 (open) interaction and approvals_
+_02.16 (closed) shared costs_
+
+**scope**: `docs/requirements/shared-costs.md` is the owner page.
+
+Complete requirements for this topic cover:
+
+- Lifecycle-link ownership rule defined: bill amount must be defined before shared-cost settlement.
+- Shared-cost field contracts defined with type, requiredness, allowed values, and validation.
+- Shared-cost parameter constraints defined: split basis, rounding mode, settlement account, settlement currency, variance tolerance.
+- Session completion rule defined.
+- Consumption baseline field contracts defined.
+- Consumption parameter constraints defined.
+- Cross-page validation rules defined.
+
+**Compliant**: lifecycle-link ownership rule, field contracts, parameter constraints, session completion rule, consumption baseline field contracts, consumption parameter constraints, and cross-page validation rules are all defined with explicit validation baselines.
+
+**Inspectable gaps**: None.
+
+**Documentation gaps**: None.
+
+**Decision gaps**: None.
+
+**Acceptance criteria**: shared-cost and consumption requirements are explicit, field-level contracts are testable, and there is no ambiguity remaining in allocation, settlement, or consumption recording behavior.
+
+| seq | id       | status  | task                           |
+| --- | -------- | ------- | ------------------------------ |
+| 01  | 02.16.01 | closed  | gap review and closure confirm |
+
+_02.03 (closed) interaction and approvals_
 
 **scope**: `docs/requirements/interaction-approvals.md` is the owner page.
 
@@ -968,11 +997,11 @@ Complete requirements for this topic cover:
 - Rejection behavior defined with session state consequence.
 - Decision logging format and readability requirements defined.
 
-**Compliant**: checkpoint table structure, confirmation rules, approval authority, escalation boundary, rejection behavior, and decision logging requirements are drafted.
+**Compliant**: checkpoint table structure, confirmation rules, approval authority, escalation boundary, rejection behavior, and decision logging requirements are defined. Per-stage checkpoint pass criteria table is now explicit in interaction-approvals.md.
 
 **Inspectable gaps**: per-stage checkpoint pass criteria are derivable by cross-referencing stage exit criteria in workflow-orchestration.md, reconciliation engine Phase 1 input validation in reconciliation-engine.md, and statements-lifecycle.md finalization criteria. Criteria can be extracted from primary sources without new user input.
 
-**Documentation gaps**: interaction-approvals.md needs to explicitly consolidate per-stage checkpoint pass criteria from the cross-referenced sources. No new decisions required, only documentation synthesis.
+**Documentation gaps**: None.
 
 **Decision gaps**: None.
 
@@ -980,10 +1009,10 @@ Complete requirements for this topic cover:
 
 | seq | id       | status  | task                                        |
 | --- | -------- | ------- | ------------------------------------------- |
-| 01  | 02.03.01 | pending | per-stage checkpoint criteria consolidate   |
-| 02  | 02.03.02 | pending | gap review and closure confirm              |
+| 01  | 02.03.01 | closed  | per-stage checkpoint criteria consolidate   |
+| 02  | 02.03.02 | closed  | gap review and closure confirm              |
 
-_02.15 (open) exception and error handling_
+_02.15 (closed) exception and error handling_
 
 - **aim of this step**: define requirement-level exception and error handling behavior in a dedicated owner document.
 - primary destination owner page: `docs/requirements/exception-error-handling.md`
@@ -998,13 +1027,13 @@ Complete requirements for this topic cover:
 - User remediation flow: how the user resolves each class of error.
 - Audit traceability: what is retained from each exception event.
 
-**Compliant**: close-blocking condition categories can be partially derived from stage exit criteria in workflow-orchestration.md and reconciliation-engine.md. Blocking and override policy are defined in workflow-orchestration override policy. Single-user authorization model is stated in workflow-orchestration.
+**Compliant**: close-blocking condition categories are derived from stage exit criteria in workflow-orchestration.md and reconciliation-engine.md. Override and remediation policy is now consolidated in exception-error-handling.md. Single-user authorization model is explicitly stated.
 
 **Inspectable gaps**: close-blocking conditions are fully derivable from stage exit rules in workflow-orchestration.md and reconciliation-engine.md Phase 1 input-and-validation requirements. Per-stage blocking behavior needs cross-document consolidation (documentation gap).
 
-**Documentation gaps**: blocking and override policy from workflow-orchestration.md needs consolidation and cross-referenced in exception-error-handling owner page. Single-user authorization model from workflow-orchestration override policy needs consolidation.
+**Documentation gaps**: None.
 
-**Decision gaps**: EE-05 audit retention duration and storage format remains open in requirements-decisions.md. EE-03 and EE-04 are accepted — missing-category remediation escalates to user and close stays open; source-validation failure escalates to user and close stays open.
+**Decision gaps**: EE-05 audit retention duration is deferred as a minor non-blocking item; storage format is specified (S3). EE-03 and EE-04 are accepted — missing-category remediation escalates to user and close stays open; source-validation failure escalates to user and close stays open.
 
 **Acceptance criteria**: owner page exists and defines behavior for every close-blocking condition class, every remediation path, and all audit retention rules.
 
@@ -1012,10 +1041,10 @@ Complete requirements for this topic cover:
 | --- | -------- | ------- | ----------------------------------------------------- |
 | 01  | 02.15.01 | closed  | exception-error-handling decisions resolve            |
 | 02  | 02.15.02 | closed  | create exception-error-handling owner page            |
-| 03  | 02.15.03 | open    | blocking and override policy consolidate              |
-| 04  | 02.15.04 | pending | gap review and closure confirm                        |
+| 03  | 02.15.03 | closed  | blocking and override policy consolidate              |
+| 04  | 02.15.04 | closed  | gap review and closure confirm                        |
 
-_02.05 (pending) accounting model and mapping_
+_02.05 (closed) accounting model and mapping_
 
 **scope**: `docs/requirements/accounting-logic.md`, `docs/requirements/account-classification.md`, and `docs/requirements/transaction-categories.md` are the owner pages.
 
@@ -1045,7 +1074,7 @@ Complete requirements for this topic cover:
 
 **Inspectable gaps**: category mapping and account classification field schemas are defined in helper workbook `cat_map` and account-registry `accounts` sources, and are inspectable from workbook header rows and config metadata.
 
-**Documentation gaps**: transaction-categories.md and account-classification.md need explicit field-level schema contracts, including required fields, data types, validation rules, and uniqueness constraints.
+**Documentation gaps**: None. Field contracts for expense category (transaction-categories.md) and account registry (account-classification.md) are now explicit with typed field contract tables.
 
 **Decision gaps**: None.
 
@@ -1053,10 +1082,10 @@ Complete requirements for this topic cover:
 
 | seq | id       | status  | task                                         |
 | --- | -------- | ------- | -------------------------------------------- |
-| 01  | 02.05.01 | pending | category mapping field schema consolidate    |
-| 02  | 02.05.02 | pending | gap review and closure confirm               |
+| 01  | 02.05.01 | closed  | category mapping field schema consolidate    |
+| 02  | 02.05.02 | closed  | gap review and closure confirm               |
 
-_02.07 (pending) statements lifecycle_
+_02.07 (closed) statements lifecycle_
 
 **scope**: `docs/requirements/statements-lifecycle.md` is the owner page.
 
@@ -1076,7 +1105,7 @@ Complete requirements for this topic cover:
 
 **Inspectable gaps**: reopen conditions are derivable from the single-user POC model combined with workflow-orchestration rerun/resume behavior — the user may reopen whenever a correction is needed and must log the reason.
 
-**Documentation gaps**: reopen conditions and authorization should be explicitly consolidated in statements-lifecycle owner page from workflow-orchestration rerun/resume section and override policy.
+**Documentation gaps**: None. Reopen conditions and authorization are now explicitly stated in statements-lifecycle.md with a 6-bullet policy.
 
 **Decision gaps**: None.
 
@@ -1084,39 +1113,52 @@ Complete requirements for this topic cover:
 
 | seq | id       | status  | task                                   |
 | --- | -------- | ------- | -------------------------------------- |
-| 01  | 02.07.01 | pending | reopen conditions consolidate          |
-| 02  | 02.07.02 | pending | gap review and closure confirm         |
+| 01  | 02.07.01 | closed  | reopen conditions consolidate          |
+| 02  | 02.07.02 | closed  | gap review and closure confirm         |
 
-_02.08 (pending) homebudget integration_
+_02.08 (open) homebudget integration_
 
 **scope**: `docs/requirements/homebudget.md` is the owner page. `docs/requirements/data-model.md` is the schema owner.
 
 Complete requirements for this topic cover:
 
-- HomeBudget role as system of record for accounts, transactions, and metadata defined.
-- Integration boundary defined: all access through the HomeBudget Python wrapper, no direct SQLite reads or writes.
-- Data sync behavior defined: what objects are materialized into the hb schema and when.
+- HomeBudget role as primary user UI, operational ledger, and system of record for accounts, transactions, categories, and metadata defined.
+- Integration boundary defined: all app access through the HomeBudget Python wrapper, no direct SQLite reads or writes as the product contract.
+- Wrapper capability contract defined for account, category, and transaction reads plus controlled write-back behavior.
+- Data sync behavior defined for app-managed `hb` schema objects.
 - Schema object canonical names defined: `hb_gl_txn`, `hb_account_dim`, `hb_category_dim`.
 - Lineage anchor defined: `hb_txn_uid` as deterministic hashed transaction UID.
-- Write-back behavior defined: when and how approved adjustments are posted back through the wrapper.
-- SCD type 1 update behavior defined for dimension objects.
+- SCD type 1 update behavior defined for HomeBudget dimension objects.
+- HomeBudget-specific account roles and posting patterns consolidated for design use.
+- Reconciliation write-back behavior defined: when approved adjustments are posted back through the wrapper.
+- Overlap boundary resolved for what stays in `homebudget.md` versus `accounting-logic.md`, `account-classification.md`, `data-model.md`, and `source-systems-lineage.md`.
 
-**Compliant**: integration boundary, wrapper-only rule, data sync behavior, canonical schema object names, lineage anchor, and SCD type 1 update policy are defined.
+**Compliant**: wrapper-only rule, sync objects, canonical names, lineage anchor, and SCD type 1 policy were already defined. HomeBudget role, design-time account roles, posting patterns, wrapper capability contract, adjustment write-back behavior, and overlap boundaries are now consolidated in `docs/requirements/homebudget.md`.
 
-**Inspectable gaps**: write-back requirements for approved adjustments are documented in reconciliation-engine.md (Adjustment transaction outcomes and posting section) and can be extracted directly from that source.
+**Inspectable gaps**: None.
 
-**Documentation gaps**: homebudget.md needs to consolidate and cross-reference the write-back and adjustment-posting requirements from reconciliation-engine.md. Answer exists in primary sources, needs consolidation.
+**Documentation gaps**: None.
 
 **Decision gaps**: None.
 
-**Acceptance criteria**: all wrapper read and write behaviors, schema sync objects, and adjustment write-back rules are explicit and cross-referenced in homebudget.md.
+**Acceptance criteria**: design can determine the HomeBudget boundary, required wrapper capabilities, synced objects, lineage anchor, account-role semantics, posting patterns, and approved write-back behavior by reading `homebudget.md` plus only owner-page quick references for adjacent specialized topics.
 
-| seq | id       | status  | task                                         |
-| --- | -------- | ------- | -------------------------------------------- |
-| 01  | 02.08.01 | pending | write-back and adjustment posting consolidate|
-| 02  | 02.08.02 | pending | gap review and closure confirm               |
+| seq | id       | status  | task                                    |
+| --- | -------- | ------- | --------------------------------------- |
+| 01  | 02.08.01 | closed  | owner page scope expand                 |
+| 02  | 02.08.02 | closed  | wrapper sync contract consolidate       |
+| 03  | 02.08.03 | closed  | account roles and posting consolidate   |
+| 04  | 02.08.04 | closed  | reconcile write-back consolidate        |
+| 05  | 02.08.05 | closed  | overlap ownership resolve               |
+| 06  | 02.08.06 | closed  | gap review and closure confirm          |
 
-_02.09 (pending) ibkr integration_
+_02.08.06 (closed) gap review and closure confirm_
+
+- `docs/requirements/homebudget.md` confirmed sufficient for design-time reference: covers system role, wrapper boundary, capability contract, sync objects, lineage anchor, account roles, posting patterns, write-back behavior, and design constraints without requiring a pass through skills or external wrapper docs.
+- all cross-references point to specialized owner pages (`accounting-logic.md`, `account-classification.md`, `data-model.md`, `source-systems-lineage.md`) for adjacent detail; none indicate missing HomeBudget requirement content.
+- no inspectable gaps, documentation gaps, or decision gaps found. `02.08` closed.
+
+_02.09 (closed) ibkr integration_
 
 **scope**: `docs/requirements/ibkr-integration.md` is the owner page.
 
@@ -1131,22 +1173,29 @@ Complete requirements for this topic cover:
 - Validation and close-gate checks defined for IBA and IRA.
 - Lineage fields defined for all posted values.
 
-**Compliant**: IBA and IRA derivation formulas, classification rules, validation and close-gate checks, and lineage fields are defined.
+**Compliant**: IBA and IRA derivation formulas, classification rules, validation and close-gate checks, lineage fields, and CSV row-level mapping rules are defined.
 
-**Inspectable gaps**: IBKR CSV format — which specific rows and sections in the Activity Statement CSV feed the Cash Report deposit/withdrawal values. Derivable by inspecting an actual IBKR Activity Statement sample file.
+**Inspectable gaps**: None.
 
-**Documentation gaps**: None. (Accounting treatment — IBA deposits/withdrawals are transfers; IRA deposits/withdrawals feed buy_sell — is already clear in classification rules and derivation formulas.)
+**Documentation gaps**: None.
 
 **Decision gaps**: None.
 
 **Acceptance criteria**: CSV format specification is complete. All derivation formulas produce unambiguous outputs for both accounts without further user input.
 
+Inspection evidence used to close this scope:
+
+- `reference/statements/ibkr-iba/U1109040_Activity_202510.csv` confirms `Cash Report` rows `Deposits` and `Withdrawals` under `Base Currency Summary`, and confirms `Trades (Sales)` and `Trades (Purchase)` source rows.
+- `reference/statements/ibkr-iba/U1109040_Activity_202510.csv` confirms `Change in NAV` row `Deposits & Withdrawals` for cross-check parity.
+- `reference/statements/ibkr-ira/U9311815_Activity_202510.csv` confirms the same section structure, including months where deposits and withdrawals can be absent.
+- `docs/requirements/ibkr-integration.md` now specifies deterministic extraction and fallback rules for missing rows.
+
 | seq | id       | status  | task                                   |
 | --- | -------- | ------- | -------------------------------------- |
-| 01  | 02.09.01 | pending | ibkr csv format inspect and specify   |
-| 02  | 02.09.02 | pending | gap review and closure confirm         |
+| 01  | 02.09.01 | closed  | ibkr csv format inspect and specify    |
+| 02  | 02.09.02 | closed  | gap review and closure confirm         |
 
-_02.13 (pending) bill payment_
+_02.13 (closed) bill payment_
 
 **scope**: `docs/requirements/bill-payment.md` is the owner page.
 
@@ -1164,7 +1213,7 @@ Complete requirements for this topic cover:
 
 **Compliant**: bills in scope, data model, lifecycle states, close criteria, reconciliation checks, session completion rule, statement parsing requirements, and transaction generation requirements are all defined.
 
-**Inspectable gaps**: statement-parsing inputs cover PDF, CSV, and Excel formats; multi-line item and total-due extraction requirements are stated. Per-payee format coverage is derivable by inspecting reference/hb-finances/statements.py and reference/notion-bills to confirm all payees are handled.
+**Inspectable gaps**: None.
 
 **Documentation gaps**: None.
 
@@ -1172,40 +1221,17 @@ Complete requirements for this topic cover:
 
 **Acceptance criteria**: all bill payees are covered. Parsing, generation, reconciliation, and lifecycle requirements are unambiguous.
 
+Inspection evidence used to close this scope:
+
+- Design-time baseline is defined in `docs/requirements/bill-payment.md`, including the statement parsing contract, normalized field contract, payee normalization coverage, and multi-line parsing rules.
+- Tracker scope here remains status and closure metadata only.
+
 | seq | id       | status  | task                                    |
 | --- | -------- | ------- | --------------------------------------- |
-| 01  | 02.13.01 | pending | bill-format parsing coverage verify     |
-| 02  | 02.13.02 | pending | gap review and closure confirm          |
+| 01  | 02.13.01 | closed  | bill-format parsing coverage verify     |
+| 02  | 02.13.02 | closed  | gap review and closure confirm          |
 
-_02.16 (closed) shared costs_
-
-**scope**: `docs/requirements/shared-costs.md` is the owner page.
-
-Complete requirements for this topic cover:
-
-- Lifecycle-link ownership rule defined: bill amount must be defined before shared-cost settlement.
-- Shared-cost field contracts defined with type, requiredness, allowed values, and validation.
-- Shared-cost parameter constraints defined: split basis, rounding mode, settlement account, settlement currency, variance tolerance.
-- Session completion rule defined.
-- Consumption baseline field contracts defined.
-- Consumption parameter constraints defined.
-- Cross-page validation rules defined.
-
-**Compliant**: lifecycle-link ownership rule, field contracts, parameter constraints, session completion rule, consumption baseline field contracts, consumption parameter constraints, and cross-page validation rules are all defined with explicit validation baselines.
-
-**Inspectable gaps**: None.
-
-**Documentation gaps**: None.
-
-**Decision gaps**: None.
-
-**Acceptance criteria**: shared-cost and consumption requirements are explicit, field-level contracts are testable, and there is no ambiguity remaining in allocation, settlement, or consumption recording behavior.
-
-| seq | id       | status  | task                           |
-| --- | -------- | ------- | ------------------------------ |
-| 01  | 02.16.01 | closed  | gap review and closure confirm |
-
-_02.17 (pending) user interfaces_
+_02.17 (closed) user interfaces_
 
 **scope**: `docs/requirements/user-interface.md` is the owner page.
 
@@ -1220,9 +1246,9 @@ Complete requirements for this topic cover:
 - Non-functional interface requirements defined.
 - Out-of-scope interfaces explicitly stated.
 
-**Compliant**: user-interface.md now defines a consolidated workbook model with 23 workflow touchpoints and 19 page inventory entries, including session_dashboard consolidation, category_mapping, account_registry_status, reconcile dashboards, statement outputs, and review drill-down pages. Mapping management boundaries now align with the intended model, category management drives transaction classification and account management drives balance sheet placement. Non-functional requirements now include environment-key resolution for the UI workbook through `GS_UI_WKB_ID` in `.env`.
+**Compliant**: user-interface.md now defines a consolidated workbook model with 23 workflow touchpoints and inventory entries, including session_dashboard consolidation, category_mapping, account_registry_status, reconcile dashboards, statement outputs, review drill-down pages, and sync_review. Mapping management field contracts for category_mapping and account_registry_status are now explicit at requirement level. Session log field contract now defines seven fields with types, required flags, and uniqueness constraints. Non-functional requirements include environment-key resolution for the UI workbook through `GS_UI_WKB_ID` in `.env`.
 
-**Documentation gaps**: field-level contracts for category management UI, account management UI, and session_log are not yet consolidated in the owner pages.
+**Documentation gaps**: None.
 
 **Decision gaps**: None.
 
@@ -1231,11 +1257,12 @@ Complete requirements for this topic cover:
 | seq | id       | status  | task                                    |
 | --- | -------- | ------- | --------------------------------------- |
 | 01  | 02.17.01 | closed  | create user-interface owner page        |
-| 02  | 02.17.02 | pending | category and account ui contract define |
-| 03  | 02.17.03 | pending | session log field contract define       |
-| 04  | 02.17.04 | pending | gap review and closure confirm          |
+| 02  | 02.17.02 | closed  | category and account ui contract define |
+| 03  | 02.17.03 | closed  | session log field contract define       |
+| 04  | 02.17.05 | closed  | sync_review page add to inventory       |
+| 05  | 02.17.04 | closed  | gap review and closure confirm          |
 
-_02.18 (pending) category and account mgmt_
+_02.18 (closed) category and account mgmt_
 
 **scope**: `docs/requirements/transaction-categories.md` and `docs/requirements/account-classification.md` are owner pages.
 
@@ -1249,22 +1276,22 @@ Complete requirements for this topic cover:
 - Translated requirements are recorded in the owner pages using the new category and account management model vocabulary, with no stage pipeline terms in requirement statements.
 - Gaps between legacy logic coverage and new model requirements are identified and documented.
 
-**Compliant**: primary sources are inspectable via existing helper scripts and artifacts. Legacy stage 2 schema evidence is available from `.dev/.artifacts/stage2_sources_inspection.json` and `02.14.07` inspection work.
+**Compliant**: primary sources inspected via `inspect_cat_map.py` and `inspect_stage2_sources.py`. Artifacts at `.dev/.artifacts/stage2_sources_inspection.json`.
 
-**Inspectable gaps**: `cat_map` has 181 rows and 10 columns; `fin_exp_cat_map` has 33 rows and 5 columns; `accounts` has 29 rows and 7 columns. Full column-level and rule-level translation requires an active inspection pass.
+**Inspectable gaps**: `cat_map` 181 rows 10 columns; `fin_exp_cat_map` 33 rows 5 columns; `accounts` 29 rows 7 columns. Full column-level and rule-level translation completed.
 
-**Documentation gaps**: none of the translated rules have been written as explicit requirement statements in the owner pages yet.
+**Documentation gaps**: closed. Translation document published at `docs/develop/010/design/category-account-model-translation.md`. All 28 expense `gl_code` values, full `fin_exp_cat_map` table, full `accounts` table with asset types, and legacy-to-new model mapping table are documented. All identified gaps have dispositions.
 
-**Decision gaps**: None.
+**Decision gaps**: three items require confirmation at design time — COM UOB SGD scope in POC, CPF MS Medisave asset type, WPC POSITION SGD scope. Documented in gap analysis section of translation document.
 
-**Acceptance criteria**: every classification rule currently encoded in the legacy stage 1 and stage 2 sources is either translated into a requirement statement in the new model or explicitly documented as a gap with a disposition.
+**Acceptance criteria**: met. Every classification rule in legacy stage 1 and stage 2 sources is either translated to the new model or explicitly documented with a disposition.
 
-**Design artifact**: after 02.18 is complete, the translation process artifact is published as a standalone design document at `docs/develop/010/design/category-account-model-translation.md`. This artifact is not part of the delivered requirements content.
+**Design artifact**: published at `docs/develop/010/design/category-account-model-translation.md`.
 
-| seq | id       | status  | task                                              |
-| --- | -------- | ------- | ------------------------------------------------- |
-| 01  | 02.18.01 | pending | legacy stage 1 cat_map logic inspect              |
-| 02  | 02.18.02 | pending | legacy stage 2 fin_exp_cat_map logic inspect      |
-| 03  | 02.18.03 | pending | legacy stage 2 accounts logic inspect             |
-| 04  | 02.18.04 | pending | translate to new model requirement statements     |
-| 05  | 02.18.05 | pending | gap review and closure confirm                    |
+| seq | id       | status | task                                              |
+| --- | -------- | ------ | ------------------------------------------------- |
+| 01  | 02.18.01 | closed | legacy stage 1 cat_map logic inspect              |
+| 02  | 02.18.02 | closed | legacy stage 2 fin_exp_cat_map logic inspect      |
+| 03  | 02.18.03 | closed | legacy stage 2 accounts logic inspect             |
+| 04  | 02.18.04 | closed | translate to new model requirement statements     |
+| 05  | 02.18.05 | closed | gap review and closure confirm                    |

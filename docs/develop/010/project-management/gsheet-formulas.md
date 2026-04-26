@@ -14,12 +14,8 @@ This document tracks delivery for `02.14.18` from requirements through SIT and U
 
 ## Milestone workflow
 
-| seq    |             |        |               |                      |
-| ------ | ----------- | ------ | ------------- | -------------------- |
-| id     |             |        |               |                      |
-| status |             |        |               |                      |
-| phase  |             |        |               |                      |
-| task   |             |        |               |                      |
+| seq | id         | status | phase         | task                 |
+| --- | ---------- | ------ | ------------- | -------------------- |
 | 01     | 02.14.18.08 | closed | dev docs      | tracker and workflow |
 | 02     | 02.14.18.01 | closed | requirements  | finalize criteria    |
 | 03     | 02.14.18.04 | closed | design        | design spec complete |
@@ -32,11 +28,8 @@ This document tracks delivery for `02.14.18` from requirements through SIT and U
 
 ## Initial target output files
 
-| id     |                   |        |                                                        |
-| ------ | ----------------- | ------ | ------------------------------------------------------ |
-| output |                   |        |                                                        |
-| status |                   |        |                                                        |
-| file   |                   |        |                                                        |
+| id | output            | status | file                                                   |
+| -- | ----------------- | ------ | ------------------------------------------------------ |
 | 01     | requirements doc  | closed | docs/tools/gsheet-formulas/requirements.md             |
 | 02     | user guide        | closed | docs/tools/gsheet-formulas/user-guide.md               |
 | 03     | design doc        | closed | docs/tools/gsheet-formulas/design.md                   |
@@ -74,11 +67,8 @@ _02.14.18.02 (closed) test strategy_
 
 Strategy coverage:
 
-| id       |             |                      |                  |
-| -------- | ----------- | -------------------- | ---------------- |
-| level    |             |                      |                  |
-| focus    |             |                      |                  |
-| evidence |             |                      |                  |
+| id | level       | focus                | evidence         |
+| -- | ----------- | -------------------- | ---------------- |
 | 01       | unit        | validation and model | local test pass  |
 | 02       | integration | api client behavior  | mocked responses |
 | 03       | SIT         | live workbook CRUD   | run report       |
@@ -86,10 +76,8 @@ Strategy coverage:
 
 Requirement verification map:
 
-| id                |                |                   |
-| ----------------- | -------------- | ----------------- |
-| req set           |                |                   |
-| verification path |                |                   |
+| id | req set      | verification path |
+| -- | ------------ | ----------------- |
 | 01                | AC-01, AC-02   | unit, SIT, UAT    |
 | 02                | AC-03, AC-04   | integration, SIT  |
 | 03                | AC-05          | integration, SIT  |
@@ -118,11 +106,8 @@ _02.14.18.03 (closed) initial target output files_
 
 Subtasks:
 
-| seq    |                |        |                        |
-| ------ | -------------- | ------ | ---------------------- |
-| id     |                |        |                        |
-| status |                |        |                        |
-| task   |                |        |                        |
+| seq | id             | status | task                   |
+| --- | -------------- | ------ | ---------------------- |
 | 01     | 02.14.18.03.01 | closed | docs baseline create   |
 | 02     | 02.14.18.03.02 | closed | strategy doc create    |
 | 03     | 02.14.18.03.03 | closed | source path scaffold   |
@@ -148,11 +133,8 @@ _02.14.18.04 (closed) design_
 
 Design subtasks:
 
-| seq    |                |        |                            |
-| ------ | -------------- | ------ | -------------------------- |
-| id     |                |        |                            |
-| status |                |        |                            |
-| task   |                |        |                            |
+| seq | id             | status | task                       |
+| --- | -------------- | ------ | -------------------------- |
 | 01     | 02.14.18.04.01 | closed | official docs scan         |
 | 02     | 02.14.18.04.02 | closed | module boundary draft      |
 | 03     | 02.14.18.04.03 | closed | api interaction contract   |
@@ -213,11 +195,8 @@ _02.14.18.05 (closed) development_
 
 Subtasks:
 
-| seq    |                |        |                        |
-| ------ | -------------- | ------ | ---------------------- |
-| id     |                |        |                        |
-| status |                |        |                        |
-| task   |                |        |                        |
+| seq | id             | status | task                   |
+| --- | -------------- | ------ | ---------------------- |
 | 01     | 02.14.18.05.01 | closed | env setup and deps     |
 | 02     | 02.14.18.05.02 | closed | module scaffold        |
 | 03     | 02.14.18.05.03 | closed | read and clear impl    |
@@ -255,11 +234,8 @@ _02.14.18.06 (closed) SIT_
 
 Subtasks:
 
-| seq    |                |        |                       |
-| ------ | -------------- | ------ | --------------------- |
-| id     |                |        |                       |
-| status |                |        |                       |
-| task   |                |        |                       |
+| seq | id             | status | task                  |
+| --- | -------------- | ------ | --------------------- |
 | 01     | 02.14.18.06.01 | closed | sit data prep         |
 | 02     | 02.14.18.06.02 | closed | sit CRUD execution    |
 | 03     | 02.14.18.06.03 | closed | sit result validation |
@@ -309,11 +285,8 @@ _02.14.18.09 (open) batch crud enhancement_
 
 Subtasks:
 
-| seq    |                |        |                       |
-| ------ | -------------- | ------ | --------------------- |
-| id     |                |        |                       |
-| status |                |        |                       |
-| task   |                |        |                       |
+| seq | id             | status | task                  |
+| --- | -------------- | ------ | --------------------- |
 | 01     | 02.14.18.09.01 | closed | requirements baseline |
 | 02     | 02.14.18.09.02 | closed | design                |
 | 03     | 02.14.18.09.03 | closed | development           |
@@ -322,11 +295,8 @@ Subtasks:
 
 Design gate subtasks:
 
-| seq    |                   |        |                       |
-| ------ | ----------------- | ------ | --------------------- |
-| id     |                   |        |                       |
-| status |                   |        |                       |
-| task   |                   |        |                       |
+| seq | id                | status | task                  |
+| --- | ----------------- | ------ | --------------------- |
 | 01     | 02.14.18.09.02.01 | closed | api support research  |
 | 02     | 02.14.18.09.02.02 | closed | batch contract design |
 
@@ -372,13 +342,8 @@ Batch SIT evidence:
 
 ## Dependency and risk log
 
-| seq        |            |                       |                    |        |                     |
-| ---------- | ---------- | --------------------- | ------------------ | ------ | ------------------- |
-| type       |            |                       |                    |        |                     |
-| item       |            |                       |                    |        |                     |
-| impact     |            |                       |                    |        |                     |
-| status     |            |                       |                    |        |                     |
-| mitigation |            |                       |                    |        |                     |
+| seq | type       | item                 | impact             | status | mitigation          |
+| --- | ---------- | -------------------- | ------------------ | ------ | ------------------- |
 | 01         | dependency | service acct access   | blocks sit and uat | closed | validated in sit    |
 | 02         | dependency | sheets api access     | blocks runtime     | closed | validated in sit    |
 | 03         | risk       | overwrite by default  | data integrity     | open   | add safety control  |

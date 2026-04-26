@@ -64,38 +64,32 @@ The source systems listed below contribute to the monthly close:
 
 **Source inputs and usage**
 
-| id            |        |              |      |               |                                |     |
-| ------------- | ------ | ------------ | ---- | ------------- | ------------------------------ | --- |
-| format        |        |              |      |               |                                |     |
-| usage         |        |              |      |               |                                |     |
-| vol           |        |              |      |               |                                |     |
-| account group |        |              |      |               |                                |     |
-| account       |        |              |      |               |                                |     |
-| stmt_process  |        |              |      |               |                                |     |
-| 01            | csv    | txn          | high | bank accounts | TWH DBS Multi SGD              | yes |
-| 02            | pdf    | archive      | high | bank accounts | TWH DBS Multi SGD              | yes |
-| 03            | csv    | txn          | high | bank accounts | TWH Visa USD                   | yes |
-| 04            | pdf    | archive      | high | bank accounts | TWH Visa USD                   | yes |
-| 05            | csv    | txn          | high | bank accounts | TWH CITI USD                   | yes |
-| 06            | pdf    | archive      | high | bank accounts | TWH CITI USD                   | yes |
-| 07            | excel  | txn          | high | bank accounts | TWH UOB One SGD                | yes |
-| 08            | pdf    | archive      | high | bank accounts | TWH UOB One SGD                | yes |
-| 09            | pdf    | txn, archive | low  | bank accounts | Wells Fargo USD                | no  |
-| 10            | gs     | txn          | high | cash          | TWH Cash SGD                   | no  |
-| 11            | gs[1]  | balance      | low  | wallets       | TWH Cash USD                   | no  |
-| 12            | gs[1]  | balance      | low  | wallets       | others - EZLink, Amazon, etc.. | no  |
-| 13            | csv[2] | txn          | low  | ibkr          | IBKR IBA                       | no  |
-| 14            | csv[2] | txn          | low  | ibkr          | IBKR IRA                       | no  |
-| 15            | gs[1]  | qty          | low  | investments   | Silver Bullions                | no  |
-| 16            | api    | unit price   | low  | investments   | Silver Bullions                | no  |
-| 17            | api    | forex rates  | low  | forex         | --                             | no  |
-| 18            | pdf    | txn          | high | bills         | Singtel                        | no  |
-| 19            | pdf    | txn          | high | bills         | PUB SP Services                | no  |
-| 20            | gs[1]  | balance      | high | bank accounts | TWH DBS Multi SGD              | no  |
-| 21            | gs[1]  | balance      | high | bank accounts | TWH Visa USD                   | no  |
-| 22            | gs[1]  | balance      | high | bank accounts | TWH CITI USD                   | no  |
-| 23            | gs[1]  | balance      | high | bank accounts | TWH UOB One SGD                | no  |
-| 24            | gs[1]  | balance      | low  | bank accounts | Wells Fargo USD                | no  |
+| id | format | usage        | vol  | account group  | account                        | stmt_process |
+| -- | ------ | ------------ | ---- | -------------- | ------------------------------ | ------------ |
+| 01 | csv    | txn          | high | bank accounts  | TWH DBS Multi SGD              | yes          |
+| 02 | pdf    | archive      | high | bank accounts  | TWH DBS Multi SGD              | yes          |
+| 03 | csv    | txn          | high | bank accounts  | TWH Visa USD                   | yes          |
+| 04 | pdf    | archive      | high | bank accounts  | TWH Visa USD                   | yes          |
+| 05 | csv    | txn          | high | bank accounts  | TWH CITI USD                   | yes          |
+| 06 | pdf    | archive      | high | bank accounts  | TWH CITI USD                   | yes          |
+| 07 | excel  | txn          | high | bank accounts  | TWH UOB One SGD                | yes          |
+| 08 | pdf    | archive      | high | bank accounts  | TWH UOB One SGD                | yes          |
+| 09 | pdf    | txn, archive | low  | bank accounts  | Wells Fargo USD                | no           |
+| 10 | gs     | txn          | high | cash           | TWH Cash SGD                   | no           |
+| 11 | gs[1]  | balance      | low  | wallets        | TWH Cash USD                   | no           |
+| 12 | gs[1]  | balance      | low  | wallets        | others - EZLink, Amazon, etc.. | no           |
+| 13 | csv[2] | txn          | low  | ibkr           | IBKR IBA                       | no           |
+| 14 | csv[2] | txn          | low  | ibkr           | IBKR IRA                       | no           |
+| 15 | gs[1]  | qty          | low  | investments    | Silver Bullions                | no           |
+| 16 | api    | unit price   | low  | investments    | Silver Bullions                | no           |
+| 17 | api    | forex rates  | low  | forex          | --                             | no           |
+| 18 | pdf    | txn          | high | bills          | Singtel                        | no           |
+| 19 | pdf    | txn          | high | bills          | PUB SP Services                | no           |
+| 20 | gs[1]  | balance      | high | bank accounts  | TWH DBS Multi SGD              | no           |
+| 21 | gs[1]  | balance      | high | bank accounts  | TWH Visa USD                   | no           |
+| 22 | gs[1]  | balance      | high | bank accounts  | TWH CITI USD                   | no           |
+| 23 | gs[1]  | balance      | high | bank accounts  | TWH UOB One SGD                | no           |
+| 24 | gs[1]  | balance      | low  | bank accounts  | Wells Fargo USD                | no           |
 
 1. user-entered via closing-session Google Sheets workbook
 2. in later version MVP will use direct api
@@ -349,19 +343,16 @@ This section defines the minimum balance metadata required for traceability, der
 
 ### Minimum traceability metadata per balance
 
-| id       |                       |                          |                |
-| -------- | --------------------- | ------------------------ | -------------- |
-| property |                       |                          |                |
-| example  |                       |                          |                |
-| notes    |                       |                          |                |
-| 01       | period_date           | 2026-02-28               | close date     |
-| 02       | source_system         | bank_statement_path      | source label   |
-| 03       | account               | 1010                     | cash account   |
-| 04       | amount                | 5000.00 SGD              | reported value |
-| 05       | source_date           | 2026-02-28               | statement date |
-| 06       | extraction_timestamp  | 2026-03-01 11:30:00 UTC  | load timestamp |
-| 07       | source_reference      | app DB statements row ID | lineage key    |
-| 08       | reconciliation_status | closed                   | workflow state |
+| id | property              | example                  | notes          |
+| -- | --------------------- | ------------------------ | -------------- |
+| 01 | period_date           | 2026-02-28               | close date     |
+| 02 | source_system         | bank_statement_path      | source label   |
+| 03 | account               | 1010                     | cash account   |
+| 04 | amount                | 5000.00 SGD              | reported value |
+| 05 | source_date           | 2026-02-28               | statement date |
+| 06 | extraction_timestamp  | 2026-03-01 11:30:00 UTC  | load timestamp |
+| 07 | source_reference      | app DB statements row ID | lineage key    |
+| 08 | reconciliation_status | closed                   | workflow state |
 
 ### Aggregation and derivation requirements
 

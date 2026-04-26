@@ -96,6 +96,13 @@ Use the `wkbid` value from `gsheet/cash-expenses.json` at runtime. Do not publis
 - Create one staged aggregate row for each period and transaction category key
 - Write staged aggregate rows to the `cash_staging` schema
 
+Rerun and idempotency policy for GS cash ingest:
+
+- GS cash inputs are treated as aggregated source input that drives HomeBudget create or update behavior.
+- Re-running the same reconciliation window must be idempotent and must not create duplicate HomeBudget entries for unchanged rows.
+- Flow-specific dedup key for generated HomeBudget entries is account, category, note, amount.
+- If only amount changes for the same account, category, and note key, update the amount instead of creating a new entry.
+
 #### 2. HomeBudget Wrapper Interface
 **Purpose:** Source of truth for HB recorded cash transactions not recorded via the form
 **Relevant resources:**
@@ -182,14 +189,11 @@ Where:
 
 Different reconciliation gap values indicate different balance states and require different actions:
 
-| id               |          |                                 |                           |
-| ---------------- | -------- | ------------------------------- | ------------------------- |
-| gap_value        |          |                                 |                           |
-| tolerance_status |          |                                 |                           |
-| system_action    |          |                                 |                           |
-| 01               | â‰ˆ 0    | within cash tolerance threshold | auto-create adjustment    |
-| 02               | exceeds  | > cash tolerance threshold      | flag for user review      |
-| 03               | approved | user-approved                   | create adjustment if ok'd |
+| id | gap_value | tolerance_status                | system_action             |
+| -- | --------- | ------------------------------- | ------------------------- |
+| 01 | â‰ˆ 0     | within cash tolerance threshold | auto-create adjustment    |
+| 02 | exceeds   | > cash tolerance threshold      | flag for user review      |
+| 03 | approved  | user-approved                   | create adjustment if ok'd |
 
 **Adjustment behavior by gap value and tolerance:**
 
