@@ -34,8 +34,8 @@ for detailed release scope and features, refer to the [requirements](requirement
 
 ## Related resources
 
-- [Current Workflow](requirements/current-workflow.md) - description of the existing manual financial statements workflow, including sequential steps and time estimates.
-- [App Workflows Design](develop/010/design/app-workflows.md) - intended automated workflow design for the MVP application.
+- [Current Workflow](../../reference/current-workflow.md) - description of the existing manual financial statements workflow, including sequential steps and time estimates.
+- [App Workflows Design](requirements/workflow-orchestration.md) - intended automated workflow design for the MVP application.
 - [HomeBudget](requirements/homebudget.md) - guide to interfacing with the HomeBudget App, including reference to the `hb-finances` repository for code examples on how to read and update expenses in the HomeBudget local sqlite database.
 - [Google Sheets](requirements/google-sheets.md) - guide to interfacing with Google Sheets via the Google Sheets API and the `sqlite-gsheet` utility for using pandas with Google Sheets and SQL Alchemy supported database connections.
 - [Dependencies](requirements/dependencies.md) - list of dependencies, including `sqlite-gsheet`, a Python library for using pandas with Google Sheets and SQL Alchemy supported database connections.

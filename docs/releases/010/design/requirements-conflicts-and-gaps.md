@@ -24,7 +24,7 @@ This document captures substantive specification gaps, ambiguities, and contradi
 
 | finding | details |
 | --- | --- |
-| **scope** | [data-model.md](../../../requirements/data-model.md), [financial-statements.md](../../../requirements/financial-statements.md) |
+| **scope** | [data-model.md](../requirements/data-model.md), [financial-statements.md](../requirements/financial-statements.md) |
 | **gap** | `close_book` is cited as "single exclusive source for all statement aggregates" but no table definitions, column contracts, or lineage keys are specified. |
 | **impact** | Cannot design statement aggregation logic, reconciliation write-back targets, or lineage tracking without knowing close_book schema structure. |
 | **blocker** | **yes** |
@@ -34,7 +34,7 @@ This document captures substantive specification gaps, ambiguities, and contradi
 
 | finding | details |
 | --- | --- |
-| **scope** | [data-model.md](../../../requirements/data-model.md), [bank-statements.md](../../../requirements/bank-statements.md), [bill-payment.md](../../../requirements/bill-payment.md) |
+| **scope** | [data-model.md](../requirements/data-model.md), [bank-statements.md](../requirements/bank-statements.md), [bill-payment.md](../requirements/bill-payment.md) |
 | **gap** | Data-model.md defines `statements` schema as "bank statement transaction staging." Bill-payment.md defines bill statement parsing with similar contract detail. No clarity on whether bill statements also output to `statements` schema or if there is a separate `bills_staging` layer. |
 | **impact** | Schema design must clarify whether `statements` holds both bank and bill data, or if billing belongs exclusively in `bills` schema. Affects reconciliation join paths and lineage. |
 | **blocker** | **yes** |
@@ -44,7 +44,7 @@ This document captures substantive specification gaps, ambiguities, and contradi
 
 | finding | details |
 | --- | --- |
-| **scope** | [data-model.md](../../../requirements/data-model.md), [transaction-categories.md](../../../requirements/transaction-categories.md) |
+| **scope** | [data-model.md](../requirements/data-model.md), [transaction-categories.md](../requirements/transaction-categories.md) |
 | **gap** | `mapping` schema provides mapping outputs consumed by close_book. No specification for how mapping versions are tracked if mappings change mid-period, whether there are point-in-time snapshots, or whether mapping is current state only. |
 | **impact** | If a mapping is corrected after transactions have been classified, unclear whether recalculation is automatic, manual, or not supported. Affects state management and data recovery design. |
 | **blocker** | no, but design risk |
@@ -62,7 +62,7 @@ This document captures substantive specification gaps, ambiguities, and contradi
 
 | finding | details |
 | --- | --- |
-| **scope** | [accounting-logic.md](../../../requirements/accounting-logic.md#forex-m2m-on-balances), [transaction-categories.md](../../../requirements/transaction-categories.md) |
+| **scope** | [accounting-logic.md](../requirements/accounting-logic.md#forex-m2m-on-balances), [transaction-categories.md](../requirements/transaction-categories.md) |
 | **conflict** | Accounting-logic.md explicitly states: "It is not recorded as an account-level HomeBudget ledger transaction, because HomeBudget ledgers balance in a single currency." Yet transaction-categories.md lists "M2M USD forex on balances" as a component type for income statement placement. |
 | **ambiguity** | - Is the M2M computed only at statement aggregation time (not persisted separately)? <br>- Does it flow through close_book or remain purely derivational? <br>- Are only USD-denominated accounts affected, or all non-SGD balances? |
 | **impact** | Affects whether M2M is staged as a transaction, computed at aggregation, or computed at statement-render time. Changes data-layer design, reconciliation scope, and close_book schema. |
@@ -165,7 +165,7 @@ Primary sources and what each provides:
 
 | finding | details |
 | --- | --- |
-| **scope** | [cpf-integration.md](../../../requirements/cpf-integration.md#interest-income-requirements) |
+| **scope** | [cpf-integration.md](../requirements/cpf-integration.md#interest-income-requirements) |
 | **gap** | Specification says "interest is credited annually" and "the system shall flag interest entries greater than zero outside of the expected annual credit period for user confirmation." But doesn't specify:  - What is the "expected annual credit period"? (A specific calendar month, e.g., March?) <br> - If CPF interest is credited in Month N but for contribution period ending Month M, which period is it booked to? <br> - Is the transaction posted via HomeBudget wrapper or as a statement-level adjustment? |
 | **impact** | Affects CPF reconciliation procedure, HomeBudget posting logic, and income statement categorization. |
 | **blocker** | **yes** |
@@ -175,7 +175,7 @@ Primary sources and what each provides:
 
 | finding | details |
 | --- | --- |
-| **scope** | [ibkr-integration.md](../../../requirements/ibkr-integration.md) |
+| **scope** | [ibkr-integration.md](../requirements/ibkr-integration.md) |
 | **gap** | Specification defines top-down derivation for position change and capital gains, but doesn't specify:  - What HomeBudget transactions are created? Only end-of-period M2M? Individual trade records? Neither? <br> - Is intramonth trading activity recorded at transaction level, or only aggregated as end-of-month position delta? <br> - What schema holds intermediate derivation before validation? |
 | **impact** | Affects IBKR reconciliation procedure, HomeBudget posting design, and close_book structure for investment accounts. |
 | **blocker** | **yes** |
@@ -185,7 +185,7 @@ Primary sources and what each provides:
 
 | finding | details |
 | --- | --- |
-| **scope** | [bill-payment.md](../../../requirements/bill-payment.md) |
+| **scope** | [bill-payment.md](../requirements/bill-payment.md) |
 | **gap** | Bill-payment.md sections 1A through 1D define bill statement parsing contracts, but Section 2 (Transaction Generation) and the complete deterministic pipeline are cut off or partially visible. Missing specifications:  - What are the complete required output transaction fields from Section 2A? <br> - How are parsed bill records transformed into HomeBudget transactions? <br> - What is the complete 8-stage pipeline as promised in Section 1C? |
 | **impact** | Cannot design bill parsing module or bill transaction posting without complete contract. |
 | **blocker** | **yes** |
@@ -195,7 +195,7 @@ Primary sources and what each provides:
 
 | finding | details |
 | --- | --- |
-| **scope** | [bank-statements.md](../../../requirements/bank-statements.md#validation-and-error-policy) |
+| **scope** | [bank-statements.md](../requirements/bank-statements.md#validation-and-error-policy) |
 | **gap** | Bank-statements.md requires lineage assignment with fields like `statement_ref` and `statement_line_ref`, but doesn't specify:  - What is the lineage "parent" — the physical statement file, the download session, or something else? <br> - How is file identity captured if user renames the file between runs? <br> - If the same file is re-parsed, is the prior parsed output updated or replaced? <br> - Is file integrity checked (hash, timestamp) to detect re-parse of same file? |
 | **impact** | Affects reconciliation traceability, duplicate-detection logic, and audit-trail design. |
 | **blocker** | no, but design risk |
@@ -205,7 +205,7 @@ Primary sources and what each provides:
 
 | finding | details |
 | --- | --- |
-| **scope** | [accounting-logic.md](../../../requirements/accounting-logic.md#unique-transaction-and-de-duplication-logic) |
+| **scope** | [accounting-logic.md](../requirements/accounting-logic.md#unique-transaction-and-de-duplication-logic) |
 | **gap** | Uniqueness is defined as: "account, transaction date, amount, description." But doesn't specify:  - Is uniqueness scoped per-day, per-session, or across the entire database? <br> - If two identical transactions legitimately occur on the same day (e.g., two identical purchases), how is the duplicate system prevented from merging them incorrectly? <br> - At what point is uniqueness checked: source-ingest time, close_book consolidation, or both? <br> - What is the remediation if a true duplicate is found after posting to HomeBudget? |
 | **impact** | Affects de-duplication logic, transaction identity design, and reconciliation procedure. Risk of incorrect duplicate elimination or undetected actual duplicates. |
 | **blocker** | **yes** |

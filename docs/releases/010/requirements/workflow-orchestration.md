@@ -34,7 +34,7 @@ This document defines requirements for monthly-close workflow orchestration.
 
 ## Reference documents
 
-- [current workflow](../reference/current-workflow.md)	
+- [current workflow](../../../reference/current-workflow.md)	
 - [interaction and approvals](interaction-approvals.md)
 - [statements lifecycle](statements-lifecycle.md)
 - [source systems and lineage](source-systems-lineage.md)

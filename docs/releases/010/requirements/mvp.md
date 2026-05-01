@@ -22,7 +22,7 @@ scope: poc
 
 ## Overview
 
-This document defines the scope of the MVP release, version `1.0.0`. The MVP builds on the POC close cycle and adds a local browser UI as the primary session surface, replacing the Google Sheets-first operational workflow. Deployment remains local, one-user, and zero-cloud-cost. It automates the workflow requirements defined in [workflow-orchestration.md](workflow-orchestration.md), [interaction-approvals.md](interaction-approvals.md), and [statements-lifecycle.md](statements-lifecycle.md), following the design in [docs/develop/010/design/app-workflows.md](../develop/010/design/app-workflows.md) and supporting the project goals in [docs/about.md](../about.md).
+This document defines the scope of the MVP release, version `1.0.0`. The MVP builds on the POC close cycle and adds a local browser UI as the primary session surface, replacing the Google Sheets-first operational workflow. Deployment remains local, one-user, and zero-cloud-cost. It automates the workflow requirements defined in [workflow-orchestration.md](workflow-orchestration.md), [interaction-approvals.md](interaction-approvals.md), and [statements-lifecycle.md](statements-lifecycle.md), following the design in [docs/develop/010/design/app-workflows.md](workflow-orchestration.md) and supporting the project goals in [docs/about.md](../about.md).
 
 ## Goals
 
@@ -99,9 +99,9 @@ Outputs
 
 Storage locations
 
-- Workspace data and logs under [data/](../../data/).
-- Configuration under [gsheet/](../../gsheet/).
-- Reference content under [reference/](../../reference/).
+- Workspace data and logs under [data/](../../../../data/).
+- Configuration under [gsheet/](../../../../gsheet/).
+- Reference content under [reference/](../../../../reference/).
 
 ## Automation design
 

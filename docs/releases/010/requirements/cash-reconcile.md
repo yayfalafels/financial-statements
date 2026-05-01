@@ -5,7 +5,7 @@ topic_type: owner
 owner: cash-reconcile
 scope: poc
 reference_docs:
-  - ../reference/cash-reconcile-current-workflow.md
+  - ../../../reference/cash-reconcile-current-workflow.md
 ---
 
 # Cash Reconciliation
@@ -21,7 +21,7 @@ reference_docs:
 
 The POC cash reconciliation system automates the monthly process of verifying recorded cash transactions in HomeBudget against actual physical cash on hand. The system accepts a physical cash count from the user, queries HomeBudget for recorded transactions, aggregates unrecorded expenses from a Google Form, computes a reconciliation gap, and generates adjustment transactions for unexplained discrepancies with user approval.
 
-For operational context and timing details of the current manual workflow, see [Cash Reconciliation Current Workflow](../reference/cash-reconcile-current-workflow.md).
+For operational context and timing details of the current manual workflow, see [Cash Reconciliation Current Workflow](../../../reference/cash-reconcile-current-workflow.md).
 
 ## Purpose and Context
 

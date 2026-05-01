@@ -51,16 +51,16 @@ The subagent trial methodology provides a controlled, evidence-based protocol fo
 
 ## Reference documents
 
-- [docs/about.md](../../../about.md)
-- [docs/requirements/poc.md](../../../requirements/poc.md)
-- [docs/requirements/mvp.md](../../../requirements/mvp.md)
-- [docs/requirements/workflow-orchestration.md](../../../requirements/workflow-orchestration.md)
-- [docs/requirements/financial-statements.md](../../../requirements/financial-statements.md)
-- [docs/requirements/reconciliation-engine.md](../../../requirements/reconciliation-engine.md)
-- [docs/requirements/accounting-logic.md](../../../requirements/accounting-logic.md)
-- [docs/requirements/data-model.md](../../../requirements/data-model.md)
-- [docs/requirements/exception-error-handling.md](../../../requirements/exception-error-handling.md)
-- [docs/requirements/interaction-approvals.md](../../../requirements/interaction-approvals.md)
+- [docs/about.md](../about.md)
+- [docs/requirements/poc.md](../requirements/poc.md)
+- [docs/requirements/mvp.md](../requirements/mvp.md)
+- [docs/requirements/workflow-orchestration.md](../requirements/workflow-orchestration.md)
+- [docs/requirements/financial-statements.md](../requirements/financial-statements.md)
+- [docs/requirements/reconciliation-engine.md](../requirements/reconciliation-engine.md)
+- [docs/requirements/accounting-logic.md](../requirements/accounting-logic.md)
+- [docs/requirements/data-model.md](../requirements/data-model.md)
+- [docs/requirements/exception-error-handling.md](../requirements/exception-error-handling.md)
+- [docs/requirements/interaction-approvals.md](../requirements/interaction-approvals.md)
 - [.github/agents/](../../../../.github/agents/)
 
 ---

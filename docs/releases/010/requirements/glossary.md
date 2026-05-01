@@ -46,8 +46,8 @@ scope: poc
 
 - [Account classification](account-classification.md), account types, mapping rules, and reporting classifications
 - [Accounting logic](accounting-logic.md), booking rules, reconciliation rules, and transaction uniqueness
-- [Current workflow reference](../reference/current-workflow.md), existing manual monthly closing sequence
-- [App Workflows Design](../develop/010/design/app-workflows.md), intended automated workflow design
+- [Current workflow reference](../../../reference/current-workflow.md), existing manual monthly closing sequence
+- [App Workflows Design](workflow-orchestration.md), intended automated workflow design
 - [Bill payment](bill-payment.md), shared cost allocation and bill processing context
 - [Data model](data-model.md), schema ownership and canonical schema object naming
 

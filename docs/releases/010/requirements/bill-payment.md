@@ -27,7 +27,7 @@ status: Procedure documented, design completed, implementation planning ready
 - [shared costs](shared-costs.md)
 - [workflow orchestration](workflow-orchestration.md)
 - [reconciliation engine](reconciliation-engine.md)
-- [bill payment current workflow](../reference/bill-payment-current-workflow.md)
+- [bill payment current workflow](../../../reference/bill-payment-current-workflow.md)
 
 ## Overview
 
@@ -35,7 +35,7 @@ This page defines POC bill-payment and bill-lifecycle requirements for app behav
 
 ## Current workflow
 
-Current-state operational workflow, manual timings, and baseline process evidence are documented in [bill payment current workflow](../reference/bill-payment-current-workflow.md). Expenses are recorded directly via the HomeBudget app UI.  Additionally, the bill lifecycle is maintained using Notion. 
+Current-state operational workflow, manual timings, and baseline process evidence are documented in [bill payment current workflow](../../../reference/bill-payment-current-workflow.md). Expenses are recorded directly via the HomeBudget app UI.  Additionally, the bill lifecycle is maintained using Notion. 
 
 
 ## App requirements
@@ -231,7 +231,7 @@ Posting behavior requirements:
 
 ## Accounts in Scope
 
-Based on [Monthly closing documentation](../../reference/notion/Optimize monthly closing/Monthly closing 20bc378f707580f99849e024db8f12fb.md):
+Based on [Monthly closing documentation](../../../../reference/notion/Optimize monthly closing/Monthly closing 20bc378f707580f99849e024db8f12fb.md):
 
 | id | account           | type     | ccy | bank            | description                                  |
 | -- | ----------------- | -------- | --- | --------------- | -------------------------------------------- |

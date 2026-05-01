@@ -7,8 +7,8 @@ This document is a project-tracking artifact for milestone status.
 Cross-reference boundary:
 
 - Current active requirements work is tracked in [02-requirements.md](02-requirements.md).
-- Release intent, scope boundaries, and phase sequencing are defined in [implementation-roadmap.md](../../../requirements/implementation-roadmap.md).
-- [implementation-roadmap.md](../../../requirements/implementation-roadmap.md) is a requirements reference document and does not track project-management artifacts.
+- Release intent, scope boundaries, and phase sequencing are defined in [implementation-roadmap.md](../requirements/implementation-roadmap.md).
+- [implementation-roadmap.md](../requirements/implementation-roadmap.md) is a requirements reference document and does not track project-management artifacts.
 - This milestone tracker translates roadmap intent into execution checkpoints and status progression.
 
 | seq | id  | status  | milestone                |

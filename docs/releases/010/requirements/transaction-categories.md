@@ -1,4 +1,4 @@
-ï»¿---
+---
 title: Transaction Categories
 doc_type: requirements
 topic_type: owner
@@ -44,12 +44,12 @@ This document defines the requirements for the transaction category model and ho
 
 ## Out of scope
 
-- One-time translation from the legacy two-stage category pipeline to the new transaction-account model â€” documented separately in the category-account-model-translation design artifact
-- User interface for managing transaction category and account updates â€” owned by user-interface.md
-- Account asset type assignment and balance sheet placement â€” owned by account-classification.md
-- Exception policy for missing or invalid category classifications â€” owned by exception-error-handling.md
-- Mapping completeness gates at close time â€” owned by workflow-orchestration.md
-- Statement lifecycle publication policy â€” owned by statements-lifecycle.md
+- One-time translation from the legacy two-stage category pipeline to the new transaction-account model — documented separately in the category-account-model-translation design artifact
+- User interface for managing transaction category and account updates — owned by user-interface.md
+- Account asset type assignment and balance sheet placement — owned by account-classification.md
+- Exception policy for missing or invalid category classifications — owned by exception-error-handling.md
+- Mapping completeness gates at close time — owned by workflow-orchestration.md
+- Statement lifecycle publication policy — owned by statements-lifecycle.md
 
 ## Source of truth and ownership
 
@@ -98,9 +98,9 @@ The income statement is organized into sections, each driven by a different clas
 | 02 | CPF contributions tracking    | balance-movement subsection; transfer class               |
 | 03 | investment P and L            | P and L component type (mark-to-market, cash, forex)      |
 | 04 | forex M2M on balances         | financial-statement-level derivation only                 |
-| 05 | rental expenses               | expense category â€” rental expense group                   |
-| 06 | COLE expenses                 | expense category â€” COLE expense group                     |
-| 07 | discretionary expenses        | expense category â€” discretionary expense group            |
+| 05 | rental expenses               | expense category — rental expense group                   |
+| 06 | COLE expenses                 | expense category — COLE expense group                     |
+| 07 | discretionary expenses        | expense category — discretionary expense group            |
 
 CPF employer contribution is additional income credited directly to CPF sub-accounts and aggregates into the personal income section. CPF employee contributions are transfers from the cash salary account into CPF sub-accounts; they affect balance sheet account balances only and have no net income statement effect. The CPF contributions tracking subsection is a cash-flow-like informational section that appears in both the income statement and the balance sheet, recording how salary was split between cash received and CPF sub-account credits. It does not add to or reduce net income.
 
@@ -235,7 +235,7 @@ Statement completeness:
 
 ## Legacy vs new model
 
-The requirements were updated to use a three-group expense category model (rental, COLE, discretionary) to replace the legacy two-group model (personal, household) based on expense financial characteristics rather than transaction origin. This transition was captured as design decision TC-01 in the [requirements decisions](../develop/010/design/requirements-decisions.md#decision-tc-01-expense-category-group-model-redesign) document.
+The requirements were updated to use a three-group expense category model (rental, COLE, discretionary) to replace the legacy two-group model (personal, household) based on expense financial characteristics rather than transaction origin. This transition was captured as design decision TC-01 in the [requirements decisions](../design/requirements-decisions.md#decision-tc-01-expense-category-group-model-redesign) document.
 
 **Legacy model** (prior to this requirement change):
 
@@ -245,7 +245,7 @@ The requirements were updated to use a three-group expense category model (renta
 **New model** (current requirement):
 
 - **Rental expenses**: fixed monthly housing cost (committed/non-negotiable)
-- **COLE expenses**: cost-of-living expenses â€” essential recurring spending on food, transport, healthcare, insurance, utilities, and personal services (committed baseline)
+- **COLE expenses**: cost-of-living expenses — essential recurring spending on food, transport, healthcare, insurance, utilities, and personal services (committed baseline)
 - **Discretionary expenses**: optional spending on entertainment, travel, education, durables, and lifestyle choices (variable optional)
 
-**Mapping from legacy to new model**: The full mapping of legacy categories to new groups is documented in the design artifact [category-account-model-translation](../develop/010/design/category-account-model-translation.md), which serves as the reference for data migration activities. For requirements purposes, the current expense category table in the "Expense category requirements" section reflects the final new model assignments.
+**Mapping from legacy to new model**: The full mapping of legacy categories to new groups is documented in the design artifact [category-account-model-translation](../design/category-account-model-translation.md), which serves as the reference for data migration activities. For requirements purposes, the current expense category table in the "Expense category requirements" section reflects the final new model assignments.
