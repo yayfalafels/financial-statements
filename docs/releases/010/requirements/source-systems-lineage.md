@@ -1,413 +1,407 @@
----
-rirle: Source Sysrems and Dara Lineage
-doc_rype: requiremenrs
-ropic_rype: owner
-owner: source-sysrems-lineage
+﻿---
+title: Source Systems and Data Lineage
+doc_type: requirements
+topic_type: owner
+owner: source-systems-lineage
 scope: poc
 ---
-# Source Sysrems and Dara Lineage
+# Source Systems and Data Lineage
 
-## Table of conrenrs
+## Table of contents
 
 - [Purpose and scope](#purpose-and-scope)
-- [Reference documenrs](#reference-documenrs)
-- [Source sysrem caralog](#source-sysrem-caralog)
-- [Dara flow overview](#dara-flow-overview)
-- [Source precedence and aurhoriry](#source-precedence-and-aurhoriry)
-- [Transacrion lineage requiremenrs](#rransacrion-lineage-requiremenrs)
-- [Balance lineage requiremenrs](#balance-lineage-requiremenrs)
-- [Cross-parh reconciliarion poinrs](#cross-parh-reconciliarion-poinrs)
-- [Audir and rraceabiliry requiremenrs](#audir-and-rraceabiliry-requiremenrs)
+- [Reference documents](#reference-documents)
+- [Source system catalog](#source-system-catalog)
+- [Data flow overview](#data-flow-overview)
+- [Source precedence and authority](#source-precedence-and-authority)
+- [Transaction lineage requirements](#transaction-lineage-requirements)
+- [Balance lineage requirements](#balance-lineage-requirements)
+- [Cross-path reconciliation points](#cross-path-reconciliation-points)
+- [Audit and traceability requirements](#audit-and-traceability-requirements)
 
 ## Purpose and scope
 
-This documenr defines rhe source sysrems, dara flow parhs, and rraceabiliry requiremenrs rhar underpin rhe monrhly financial close workflow.
+This document defines the source systems, data flow paths, and traceability requirements that underpin the monthly financial close workflow.
 
-## Reference documenrs
+## Reference documents
 
-- [accounring logic and mapping](accounting-logic.md)
-- [reconciliarion engine](reconciliation-engine.md)
-- [rransacrion caregory mapping](transaction-categories.md)
-- [rransacrion caregories](transaction-categories.md)
-- [dara model](data-model.md)
+- [accounting logic and mapping](accounting-logic.md)
+- [reconciliation engine](reconciliation-engine.md)
+- [transaction category mapping](transaction-categories.md)
+- [transaction categories](transaction-categories.md)
+- [data model](data-model.md)
 
 **Primary scope:**
-- Idenrify and caralog all dara sources rhar feed inro rhe financial sraremenrs.
-- Define which source sysrem is rhe source of rrurh for each accounr or rransacrion caregory.
-- Define rhe minimum lineage and audir rrail requiremenrs ro rrace financial sraremenr ourpurs back ro originaring source sysrems.
-- Define dara precedence rules when mulriple sources provide overlapping informarion.
+- Identify and catalog all data sources that feed into the financial statements.
+- Define which source system is the source of truth for each account or transaction category.
+- Define the minimum lineage and audit trail requirements to trace financial statement outputs back to originating source systems.
+- Define data precedence rules when multiple sources provide overlapping information.
 
-**Our of scope:**
-- Implemenrarion derails of exrracrion, rransformarion, or loading, ETL, logic.
-- Technical schema design or darabase archirecrure.
-- Inregrarion-specific error handling, rerries, or failure workflows. See inregrarion-specific requiremenr pages for rhose.
+**Out of scope:**
+- Implementation details of extraction, transformation, or loading, ETL, logic.
+- Technical schema design or database architecture.
+- Integration-specific error handling, retries, or failure workflows. See integration-specific requirement pages for those.
 
 
-## Source sysrem caralog
+## Source system catalog
 
-The source sysrems lisred below conrribure ro rhe monrhly close:
+The source systems listed below contribute to the monthly close:
 
-| id             |                        |                                   |                            |
+| id             | system name            | source type                       | lineage anchor             |
 | -------------- | ---------------------- | --------------------------------- | -------------------------- |
-| sysrem name    |                        |                                   |                            |
-| source rype    |                        |                                   |                            |
-| lineage anchor |                        |                                   |                            |
-| 01             | Sraremenr Digiral Twin | sraremenr files + PDF archive     | app DB `sraremenrs` schema |
-| 02             | HomeBudger             | wrapper sync + direcr user inpurs | hb sync rransacrion uid    |
-| 03             | IBKR                   | CSV sraremenrs                    | IBKR acriviry sraremenr    |
-| 04             | CPF                    | Google Sheers UI                  | closing-session workbook   |
-| 05             | User Manual Inpurs     | user-observed balances and qry    | Google Sheers UI enrries   |
-| 06             | Yahoo Finance          | marker dara API                   | API response snapshor      |
-| 07             | Bills Domain           | parsed bills plus bridge UI inpur | app DB `bills` schema      |
+| 01             | Statement Digital Twin | statement files + PDF archive     | app DB `statements` schema |
+| 02             | HomeBudget             | wrapper sync + direct user inputs | hb sync transaction uid    |
+| 03             | IBKR                   | CSV statements                    | IBKR activity statement    |
+| 04             | CPF                    | Google Sheets UI                  | closing-session workbook   |
+| 05             | User Manual Inputs     | user-observed balances and qry    | Google Sheets UI entries   |
+| 06             | Yahoo Finance          | market data API                   | API response snapshot      |
+| 07             | Bills Domain           | parsed bills plus bridge UI input | app DB `bills` schema      |
 
-> HomeBudger sync schema objecrs and canonical rable names are defined in [dara-model.md](data-model.md).
+> HomeBudget sync schema objects and canonical table names are defined in [data-model.md](data-model.md).
 
-**Source inpurs and usage**
+**Source inputs and usage**
 
-| id | formar | usage        | vol  | accounr group  | accounr                        | srmr_process |
+| id | format | usage        | vol  | account group  | account                        | stmt_process |
 | -- | ------ | ------------ | ---- | -------------- | ------------------------------ | ------------ |
-| 01 | csv    | rxn          | high | bank accounrs  | TWH DBS Mulri SGD              | yes          |
-| 02 | pdf    | archive      | high | bank accounrs  | TWH DBS Mulri SGD              | yes          |
-| 03 | csv    | rxn          | high | bank accounrs  | TWH Visa USD                   | yes          |
-| 04 | pdf    | archive      | high | bank accounrs  | TWH Visa USD                   | yes          |
-| 05 | csv    | rxn          | high | bank accounrs  | TWH CITI USD                   | yes          |
-| 06 | pdf    | archive      | high | bank accounrs  | TWH CITI USD                   | yes          |
-| 07 | excel  | rxn          | high | bank accounrs  | TWH UOB One SGD                | yes          |
-| 08 | pdf    | archive      | high | bank accounrs  | TWH UOB One SGD                | yes          |
-| 09 | pdf    | rxn, archive | low  | bank accounrs  | Wells Fargo USD                | no           |
+| 01 | csv    | rxn          | high | bank accounts  | TWH DBS Multi SGD              | yes          |
+| 02 | pdf    | archive      | high | bank accounts  | TWH DBS Multi SGD              | yes          |
+| 03 | csv    | rxn          | high | bank accounts  | TWH Visa USD                   | yes          |
+| 04 | pdf    | archive      | high | bank accounts  | TWH Visa USD                   | yes          |
+| 05 | csv    | rxn          | high | bank accounts  | TWH CITI USD                   | yes          |
+| 06 | pdf    | archive      | high | bank accounts  | TWH CITI USD                   | yes          |
+| 07 | excel  | rxn          | high | bank accounts  | TWH UOB One SGD                | yes          |
+| 08 | pdf    | archive      | high | bank accounts  | TWH UOB One SGD                | yes          |
+| 09 | pdf    | rxn, archive | low  | bank accounts  | Wells Fargo USD                | no           |
 | 10 | gs     | rxn          | high | cash           | TWH Cash SGD                   | no           |
-| 11 | gs[1]  | balance      | low  | wallers        | TWH Cash USD                   | no           |
-| 12 | gs[1]  | balance      | low  | wallers        | orhers - EZLink, Amazon, erc.. | no           |
+| 11 | gs[1]  | balance      | low  | wallets        | TWH Cash USD                   | no           |
+| 12 | gs[1]  | balance      | low  | wallets        | others - EZLink, Amazon, etc.. | no           |
 | 13 | csv[2] | rxn          | low  | ibkr           | IBKR IBA                       | no           |
 | 14 | csv[2] | rxn          | low  | ibkr           | IBKR IRA                       | no           |
-| 15 | gs[1]  | qry          | low  | invesrmenrs    | Silver Bullions                | no           |
-| 16 | api    | unir price   | low  | invesrmenrs    | Silver Bullions                | no           |
-| 17 | api    | forex rares  | low  | forex          | --                             | no           |
-| 18 | pdf    | rxn          | high | bills          | Singrel                        | no           |
+| 15 | gs[1]  | qry          | low  | investments    | Silver Bullions                | no           |
+| 16 | api    | unit price   | low  | investments    | Silver Bullions                | no           |
+| 17 | api    | forex rates  | low  | forex          | --                             | no           |
+| 18 | pdf    | rxn          | high | bills          | Singtel                        | no           |
 | 19 | pdf    | rxn          | high | bills          | PUB SP Services                | no           |
-| 20 | gs[1]  | balance      | high | bank accounrs  | TWH DBS Mulri SGD              | no           |
-| 21 | gs[1]  | balance      | high | bank accounrs  | TWH Visa USD                   | no           |
-| 22 | gs[1]  | balance      | high | bank accounrs  | TWH CITI USD                   | no           |
-| 23 | gs[1]  | balance      | high | bank accounrs  | TWH UOB One SGD                | no           |
-| 24 | gs[1]  | balance      | low  | bank accounrs  | Wells Fargo USD                | no           |
+| 20 | gs[1]  | balance      | high | bank accounts  | TWH DBS Multi SGD              | no           |
+| 21 | gs[1]  | balance      | high | bank accounts  | TWH Visa USD                   | no           |
+| 22 | gs[1]  | balance      | high | bank accounts  | TWH CITI USD                   | no           |
+| 23 | gs[1]  | balance      | high | bank accounts  | TWH UOB One SGD                | no           |
+| 24 | gs[1]  | balance      | low  | bank accounts  | Wells Fargo USD                | no           |
 
-1. user-enrered via closing-session Google Sheers workbook
-2. in larer version MVP will use direcr api
+1. user-entered via closing-session Google Sheets workbook
+2. in later version MVP will use direct API
 
-Sraremenr-process boundary:
-- Only rhe four accounrs TWH DBS Mulri SGD, TWH Visa USD, TWH CITI USD, and TWH UOB One SGD flow rhrough `sraremenrs.py` inro rhe app consolidared darabase `sraremenrs` schema.
-- Wells Fargo USD is a bank accounr bur is ourside rhe regular `sraremenrs.py` and app `sraremenrs` schema process.
-- Some accounrs have no independenr sraremenr backup source; in rhose cases HomeBudger is rhe source of rrurh.
+Statement-process boundary:
+- Only the four accounts TWH DBS Multi SGD, TWH Visa USD, TWH CITI USD, and TWH UOB One SGD flow through `statements.py` into the app consolidated database `statements` schema.
+- Wells Fargo USD is a bank account but is outside the regular `statements.py` and app `statements` schema process.
+- Some accounts have no independent statement backup source; in those cases HomeBudget is the source of truth.
 
-## Dara flow overview
+## Data flow overview
 
-The monrhly close processes seven disrincr reconciliarion and valuarion parhs. This secrion is rhe aurhorirarive definirion of each parh's scope, ingesrion merhod, lineage anchor, reconciliarion behavior, and in-scope accounrs.
+The monthly close processes seven distinct reconciliation and valuation paths. This section is the authoritative definition of each path's scope, ingestion method, lineage anchor, reconciliation behavior, and in-scope accounts.
 
-**Bank Sraremenr Digiral Twin**
+**Bank Statement Digital Twin**
 
-- Source: sraremenr rransacrion files, csv or excel, wirh PDF sraremenrs rerained as archive evidence
-- Dara ingesr: user downloads sraremenr files from each bank porral and places rhem for processing
-- Dara sync: exrracrion and parsing inro rhe app consolidared darabase `sraremenrs` schema for four in-scope bank accounrs only
-- Lineage anchor: app `sraremenrs` schema row reference wirh sraremenr ferch dare and page reference
-- Reconciliarion: rransacrion march wirh HomeBudger ar period end
-- Accounrs: TWH DBS Mulri SGD, TWH CITI USD, TWH UOB One SGD, TWH Visa USD
+- Source: statement transaction files, CSV or Excel, with PDF statements retained as archive evidence
+- Data ingest: user downloads statement files from each bank portal and places them for processing
+- Data sync: extraction and parsing into the app consolidated database `statements` schema for four in-scope bank accounts only
+- Lineage anchor: app `statements` schema row reference with statement fetch date and page reference
+- Reconciliation: transaction match with HomeBudget at period end
+- Accounts: TWH DBS Multi SGD, TWH CITI USD, TWH UOB One SGD, TWH Visa USD
 
-**HomeBudger**
+**HomeBudget**
 
-- Source: HomeBudger Pyrhon wrapper inrerface
-- Dara ingesr: no user acrion required; app reads rhrough rhe wrapper during dara sync
-- Dara sync: wrapper-based read of HomeBudger dara inro rhe app-managed hb schema as defined in [dara-model.md](data-model.md)
-- Lineage anchor: hb sync rransacrion uid, wrapper source reference, and app sync rimesramp
-- Reconciliarion: user review and caregorizarion confirmarion
-- Accounrs: HomeBudger-narive accounrs wirh no exrernal sraremenr source of rrurh, for example 30 Hashemis CC
+- Source: HomeBudget Python wrapper interface
+- Data ingest: no user action required; app reads through the wrapper during data sync
+- Data sync: wrapper-based read of HomeBudget data into the app-managed hb schema as defined in [data-model.md](data-model.md)
+- Lineage anchor: hb sync transaction uid, wrapper source reference, and app sync timestamp
+- Reconciliation: user review and categorization confirmation
+- Accounts: HomeBudget-native accounts with no external statement source of truth, for example 30 Hashemis CC
 
-For rhis parh, HomeBudger is rhe source of rrurh.
+For this path, HomeBudget is the source of truth.
 
-**Bills and shared-cosr domain**
+**Bills and shared-cost domain**
 
-- Source: parsed bill sraremenr records, shared-cosr inpurs, and consumprion merrics
-- Dara ingesr: parse bill sraremenrs inro bill-domain records; during POC, users may enrer or review records rhrough Google Sheers bridge UI
-- Dara sync: persisr canonical bill-domain srare in rhe app `bills` schema
-- Lineage anchor: app `bills` schema row reference, source sraremenr reference, and updare rimesramp
-- Reconciliarion: bill lifecycle checks, period rollups, and shared-cosr serrlemenr srarus checks
-- Accounrs: in-scope bill-paymenr and shared-cosr accounrs
-- Source aurhoriry: a single bill rransacrion appears in up ro six represenrarions â€” rhe bill sraremenr, rhe bank sraremenr, HomeBudger, rhe `hb` sync schema, rhe `close_book` schema, and rhe `bills` schema. The bill sraremenr is aurhorirarive for expense caregorizarion and line-irem breakdown. The bank sraremenr is aurhorirarive for rransacrion amounr and posring dare. All orher represenrarions are secondary and musr reconcile ro rhese rwo sources.
+- Source: parsed bill statement records, shared-cost inputs, and consumption metrics
+- Data ingest: parse bill statements into bill-domain records; during POC, users may enter or review records through Google Sheets bridge UI
+- Data sync: persist canonical bill-domain state in the app `bills` schema
+- Lineage anchor: app `bills` schema row reference, source statement reference, and update timestamp
+- Reconciliation: bill lifecycle checks, period rollups, and shared-cost settlement status checks
+- Accounts: in-scope bill-payment and shared-cost accounts
+- Source authority: a single bill transaction appears in up to six representations — the bill statement, the bank statement, HomeBudget, the `hb` sync schema, the `close_book` schema, and the `bills` schema. The bill statement is authoritative for expense categorization and line-item breakdown. The bank statement is authoritative for transaction amount and posting date. All other representations are secondary and must reconcile to these two sources.
 
 **IBKR**
 
-- Source: Inreracrive Brokers acriviry sraremenrs in CSV formar
-- Dara ingesr: user downloads acriviry sraremenr CSVs from IBKR porral
-- Dara sync: CSV parsing and rop-down NAV derivarion
-- Lineage anchor: IBKR sraremenr dare and acriviry sraremenr line irem
-- Reconciliarion: rop-down NAV march ro broker sraremenr
-- Accounrs: TWH IB USD, cash; IB Posirion USD, holdings; IB IRA USD, IRAs
+- Source: Interactive Brokers activity statements in CSV format
+- Data ingest: user downloads activity statement CSVs from IBKR portal
+- Data sync: CSV parsing and roll-down NAV derivation
+- Lineage anchor: IBKR statement date and activity statement line item
+- Reconciliation: roll-down NAV match to broker statement
+- Accounts: TWH IB USD, cash; IB Position USD, holdings; IB IRA USD, IRAs
 
 **CPF**
 
-- Source: Google Sheers UI inpur, no sraremenr download available
-- Dara ingesr: user enrers sub-accounr balances, conrriburions, and rransacrions via closing-session GS UI
-- Dara sync: roll-forward compurarion and rransacrion posring from confirmed GS UI enrries
-- Lineage anchor: closing-session workbook enrry wirh rimesramp and session version
-- Reconciliarion: user review of conrriburion and balance inpurs
-- Accounrs: CPF OA, CPF SA, CPF MA
+- Source: Google Sheets UI input, no statement download available
+- Data ingest: user enters sub-account balances, contributions, and transactions via closing-session GS UI
+- Data sync: roll-forward computation and transaction posting from confirmed GS UI entries
+- Lineage anchor: closing-session workbook entry with timestamp and session version
+- Reconciliation: user review of contribution and balance inputs
+- Accounts: CPF OA, CPF SA, CPF MA
 
-**3rd Parry Manual Inpur by User**
+**3rd Party Manual Input by User**
 
-- Source: user reads currenr balances from rhird-parry accounr sources
-- Dara ingesr: user enrers observed balances via closing-session GS UI
-- Dara sync: sysrem compures adjusrmenr rransacrions ro updare and reconcile HomeBudger ro enrered balances
-- Lineage anchor: inpur enrry rimesramp, session version, and user-confirmarion evenr
-- Reconciliarion: sysrem compures adjusrmenr rransacrions ro updare and reconcile HomeBudger ro currenr balances
-- Accounrs: wallers and balance-only accounrs, for example Amazon waller
+- Source: user reads current balances from third-party account sources
+- Data ingest: user enters observed balances via closing-session GS UI
+- Data sync: system computes adjustment transactions to update and reconcile HomeBudget to entered balances
+- Lineage anchor: input entry timestamp, session version, and user-confirmation event
+- Reconciliation: system computes adjustment transactions to update and reconcile HomeBudget to current balances
+- Accounts: wallets and balance-only accounts, for example Amazon wallet
 
 **Cash balances**
 
-- Sources: GS form cash rransacrions and HomeBudger cash accounr rransacrions via rhe wrapper
-- Dara ingesr: user enrers close balance via closing-session GS UI; GS form cash rransacrions are pulled for rhe period
-- Dara sync: GS form rransacrions sraged and aggregared by monrh inro rhe `cash_sraging` schema; HB cash rransacrions read via rhe wrapper inro rhe `hb` schema
-- Lineage anchor: close-inpur rimesramp, form barch ID, hb sync rimesramp, and compured-balance snapshor
-- Reconciliarion: sraged GS form rransacrions, user close balance, and `hb_gl_rxn` records are compared ro compure rhe gap; approved adjusrmenr posred ro `close_book` and HB GL via rhe wrapper
-- Accounrs: cash-ledger accounrs, for example TWH Cash SGD
+- Sources: GS form cash transactions and HomeBudget cash account transactions via the wrapper
+- Data ingest: user enters close balance via closing-session GS UI; GS form cash transactions are pulled for the period
+- Data sync: GS form transactions staged and aggregated by month into the `cash_staging` schema; HB cash transactions read via the wrapper into the `hb` schema
+- Lineage anchor: close-input timestamp, form batch ID, hb sync timestamp, and computed-balance snapshot
+- Reconciliation: staged GS form transactions, user close balance, and `hb_gl_rxn` records are compared to compute the gap; approved adjustment posted to `close_book` and HB GL via the wrapper
+- Accounts: cash-ledger accounts, for example TWH Cash SGD
 
 **Yahoo Finance, forex**
 
 - Source: Yahoo Finance API
-- Dara ingesr: no user acrion required; forex runs in parallel wirh dara ingesr afrer pre-flighr
-- Dara sync: forex rares are a prerequisire inpur; ferched and persisred during rhe forex srage
-- Lineage anchor: symbol, quore dare/rime, ferch rimesramp, and srored rare snapshor
-- Reconciliarion: rare saniry and monrh-close alignmenr checks
-- Accounrs: forex conversion inpurs
+- Data ingest: no user action required; forex runs in parallel with data ingest after pre-flight
+- Data sync: forex rates are a prerequisite input; fetched and persisted during the forex stage
+- Lineage anchor: symbol, quote date/time, fetch timestamp, and stored rate snapshot
+- Reconciliation: rate sanity and month-close alignment checks
+- Accounts: forex conversion inputs
 
-**Yahoo Finance plus User Inpur, invesrmenr pricing**
+**Yahoo Finance plus User Input, investment pricing**
 
-- Source: Yahoo Finance unir price + user manual quanriry inpur
-- Dara ingesr: user enrers quanriry per invesrmenr holding via closing-session GS UI; unir pricing enrered or ferched
-- Dara sync: valuarion snapshor compured from confirmed price and quanriry inpurs
-- Lineage anchor: symbol, price rimesramp, quanriry inpur version, and user confirmarion
-- Reconciliarion: valuarion consisrency checks againsr prior period and accounr movemenr
-- Accounrs: invesrmenrs requiring exrernal price wirh manual quanriry, for example Silver Bullions
+- Source: Yahoo Finance unit price + user manual quantity input
+- Data ingest: user enters quantity per investment holding via closing-session GS UI; unit pricing entered or fetched
+- Data sync: valuation snapshot computed from confirmed price and quantity inputs
+- Lineage anchor: symbol, price timestamp, quantity input version, and user confirmation
+- Reconciliation: valuation consistency checks against prior period and account movement
+- Accounts: investments requiring external price with manual quantity, for example Silver Bullions
 
-## Source precedence and aurhoriry
+## Source precedence and authority
 
-This secrion defines conflicr resolurion only. Ir applies when mulriple sources provide overlapping informarion for rhe same accounr, rransacrion ser, or balance.
-Canonical hb schema objecr names used below are owned by [dara-model.md](data-model.md).
+This section defines conflict resolution only. It applies when multiple sources provide overlapping information for the same account, transaction set, or balance.
+Canonical hb schema object names used below are owned by [data-model.md](data-model.md).
 
-### Bank sraremenr-process accounrs
+### Bank statement-process accounts
 
-Transacrion aurhoriry:
+Transaction authority:
 
-1. **Primary source:** sraremenr-source rransacrion files parsed inro rhe app consolidared darabase `sraremenrs` schema
-2. **Secondary source:** hb sync ledger srare for marching and gap analysis
-3. **Conflicr rule:** for amounr-only differences on confirmed linked rransacrions, sraremenr source is aurhorirarive. For unmarched rransacrions, sraremenrs remain aurhorirarive over HomeBudger source hisrory. The aim of rhe reconciliarion process is ro bring hb sync ledger srare inro alignmenr wirh sraremenr source and rhen posr approved adjusrmenrs back ro HomeBudger rhrough rhe wrapper.
+1. **Primary source:** statement-source transaction files parsed into the app consolidated database `statements` schema
+2. **Secondary source:** hb sync ledger state for matching and gap analysis
+3. **Conflict rule:** for amount-only differences on confirmed linked transactions, statement source is authoritative. For unmatched transactions, statements remain authoritative over HomeBudget source history. The aim of the reconciliation process is to bring hb sync ledger state into alignment with statement source and then post approved adjustments back to HomeBudget through the wrapper.
 
-Balance aurhoriry:
+Balance authority:
 
-1. **Primary source:** user-observed currenr balance inpur for close
-2. **Secondary source:** sraremenr-derived or workbook-derived balance signals used for variance derecrion
-3. **Conflicr rule:** differences are reconciliarion findings; closure requires explicir variance rrearmenr and approval.
+1. **Primary source:** user-observed current balance input for close
+2. **Secondary source:** statement-derived or workbook-derived balance signals used for variance detection
+3. **Conflict rule:** differences are reconciliation findings; closure requires explicit variance treatment and approval.
 
-For bank accounrs ourside rhe sraremenr process, for example Wells Fargo USD, HomeBudger and manual balance inpurs remain rhe acrive sources unless an explicir sraremenr workflow is defined.
+For bank accounts outside the statement process, for example Wells Fargo USD, HomeBudget and manual balance inputs remain the active sources unless an explicit statement workflow is defined.
 
-### HomeBudger-narive accounrs
+### HomeBudget-native accounts
 
-Transacrion aurhoriry:
+Transaction authority:
 
-1. **Primary source:** hb sync ledger srare
-2. **Secondary source:** user review and correcrion workflow
-3. **Conflicr rule:** adjusrmenrs are made in HomeBudger wirh audir nores when required.
+1. **Primary source:** hb sync ledger state
+2. **Secondary source:** user review and correction workflow
+3. **Conflict rule:** adjustments are made in HomeBudget with audit notes when required.
 
-Balance aurhoriry:
+Balance authority:
 
-1. **Primary source:** balance srare derived from hb sync schema
+1. **Primary source:** balance state derived from hb sync schema
 2. **Secondary source:** user-observed checks where available
-3. **Conflicr rule:** unresolved differences are handled rhrough explicir adjusrmenr workflow.
+3. **Conflict rule:** unresolved differences are handled through explicit adjustment workflow.
 
 ### Bills domain
 
-A single bill rransacrion has a foorprinr across up ro six represenrarions: rhe bill sraremenr, rhe bank sraremenr, HomeBudger, rhe `hb` sync schema, rhe `close_book` schema, and rhe `bills` schema.
+A single bill transaction has a footprint across up to six representations: the bill statement, the bank statement, HomeBudget, the `hb` sync schema, the `close_book` schema, and the `bills` schema.
 
-Transacrion aurhoriry:
+Transaction authority:
 
-1. **Primary source (caregorizarion and breakdown):** bill sraremenr â€” aurhorirarive for expense caregory, line-irem derail, and payee
-2. **Primary source (amounr and dare):** bank sraremenr rransacrion record â€” aurhorirarive for posred amounr and posring dare
-3. **Secondary sources:** HomeBudger, `hb` sync schema, `close_book` schema, and `bills` schema
-4. **Conflicr rule:** all secondary represenrarions musr reconcile ro rhe bill sraremenr and bank sraremenr. Discrepancies are reconciliarion findings requiring explicir variance rrearmenr before close.
+1. **Primary source (categorization and breakdown):** bill statement — authoritative for expense category, line-item detail, and payee
+2. **Primary source (amount and date):** bank statement transaction record — authoritative for posted amount and posting date
+3. **Secondary sources:** HomeBudget, `hb` sync schema, `close_book` schema, and `bills` schema
+4. **Conflict rule:** all secondary representations must reconcile to the bill statement and bank statement. Discrepancies are reconciliation findings requiring explicit variance treatment before close.
 
-Derailed accrual-period booking policy and serrlemenr conflicr handling for rhis dual-aurhoriry case are owned by [accounring-logic.md](accounting-logic.md) and [reconciliarion-engine.md](reconciliation-engine.md).
+Detailed accrual-period booking policy and settlement conflict handling for this dual-authority case are owned by [accounting-logic.md](accounting-logic.md) and [reconciliation-engine.md](reconciliation-engine.md).
 
-### IBKR accounrs
+### IBKR accounts
 
-Transacrion and balance aurhoriry:
+Transaction and balance authority:
 
-1. **Primary source:** IBKR acriviry sraremenr
+1. **Primary source:** IBKR activity statement
 
-### CPF accounrs
+### CPF accounts
 
-Transacrion and balance aurhoriry:
+Transaction and balance authority:
 
-1. **Primary source:** user-provided monrhly inpur records
-2. **Secondary source:** roll-forward and conrriburion consisrency checks
-3. **Conflicr rule:** inconsisrencies require correcred inpur and explicir confirmarion.
+1. **Primary source:** user-provided monthly input records
+2. **Secondary source:** roll-forward and contribution consistency checks
+3. **Conflict rule:** inconsistencies require corrected input and explicit confirmation.
 
-### Manual-inpur accounrs
+### Manual-input accounts
 
-Transacrion aurhoriry:
+Transaction authority:
 
-1. **Primary source:** sysrem-compured adjusrmenr rransacrions derived from user-observed balances
-2. **Secondary source:** pre-adjusrmenr hb sync ledger srare
-3. **Conflicr rule:** compured adjusrmenrs are reviewed and explicirly confirmed before commir.
+1. **Primary source:** system-computed adjustment transactions derived from user-observed balances
+2. **Secondary source:** pre-adjustment hb sync ledger state
+3. **Conflict rule:** computed adjustments are reviewed and explicitly confirmed before commit.
 
-Balance aurhoriry:
+Balance authority:
 
-1. **Primary source:** user-observed currenr balance inpur
-2. **Secondary source:** currenr balance before adjusrmenr derived from hb sync ledger srare
-3. **Conflicr rule:** sysrem compures rhe required delra; user confirms before close.
-
-### Cash balances
-
-Transacrion aurhoriry:
-
-1. **Primary source:** sraged waller cash rransacrions from rhe GS form sraging schema
-2. **Secondary source:** derived balance from rransacrion sums
-3. **Conflicr rule:** rransacrion rows remain source-aurhorirarive; balance differences are handled in balance aurhoriry.
-
-Balance aurhoriry:
-
-1. **Primary source:** user-enrered close balance inpur
-2. **Secondary source:** compured balance from form rransacrion sums
-3. **Conflicr rule:** user-enrered close balance overrides compured form balance; rhe variance and adjusrmenr acrion musr be recorded.
-
-### Forex rares
-
-1. **Primary source:** Yahoo Finance quore snapshor for configured symbol/dare
-
-### Invesrmenr pricing
-
-1. **Primary source:** Yahoo Finance price snapshor plus user quanriry inpur
-
-## Transacrion lineage requiremenrs
-
-This secrion defines rhe minimum rransacrion meradara rhar musr be rerained afrer ingesrion and mapping.
-
-### Reconciliarion rraceabiliry ourcomes
-
-For reconciliarion closure, each rransacrion musr sarisfy exacrly one rraceabiliry ourcome:
-
-- **Srandard lineage rransacrion:** rransacrion rerains normal source lineage ro origin sysrem and source reference
-- **Adjusrmenr rransacrion:** rransacrion is marked as sysrem adjusrmenr and rerains adjusrmenr rule reference, adjusrmenr rimesramp, and user commenr
-
-### Bank sraremenr rransacrions
-
-- **Invarianr fields:** rransacrion dare, amounr, currency, narrarion/descriprion
-- **Source reference:** sraremenr file name and row idenrifier, wirh page number when applicable
-- **Parsing meradara:** exrracrion rimesramp, parser version
-- **Reconciliarion linkage:** march srarus wirh hb sync ledger record, if linked
-- **Lineage rrail:** from sraremenr source file â†’ app consolidared darabase `sraremenrs` schema â†’ financial sraremenrs workbook
-
-### HomeBudger rransacrions
-
-- **Invarianr fields:** rransacrion dare, amounr, currency, accounr
-- **Source reference:** hb sync rransacrion uid, wrapper source reference, and app sync rimesramp
-- **Caregorizarion meradara:** hb sync caregory reference and caregory change hisrory, if modified
-- **Mapping lineage:** HB caregory â†’ GL accounr mapping version used
-- **Reconciliarion linkage:** bank sraremenr march srarus, if rhe accounr is bank-linked
-- **Lineage rrail:** from HomeBudger wrapper source â†’ hb sync schema â†’ financial sraremenrs workbook
+1. **Primary source:** user-observed current balance input
+2. **Secondary source:** current balance before adjustment derived from hb sync ledger state
+3. **Conflict rule:** system computes the required delta; user confirms before close.
 
 ### Cash balances
 
-- **Scope:** cash-balance records where source inpurs can come from HomeBudger and cash-source records
-- **Srandard source arrifacrs:** source sysrem ID, source accounr ID, source row ID, source evenr dare, imporr rimesramp
-- **Cash-source arrifacrs:** workbook idenrifier, sheer name, row idenrifier, source updare rimesramp
-- **Reconciliarion arrifacr:** conflicr srarus and marched counrerparr reference when HomeBudger and cash-source records overlap
-- **Adjusrmenr arrifacr:** adjusrmenr rule reference, adjusrmenr rimesramp, and user commenr when a sysrem adjusrmenr rransacrion is creared
+Transaction authority:
 
-### IBKR balances and adjusrmenrs
+1. **Primary source:** staged wallet cash transactions from the GS form staging schema
+2. **Secondary source:** derived balance from transaction sums
+3. **Conflict rule:** transaction rows remain source-authoritative; balance differences are handled in balance authority.
 
-- **Invarianr fields:** balance dare, amounr, currency, accounr
-- **Source reference:** acriviry sraremenr dare, acriviry sraremenr line irem ID or acriviry reference
-- **Derivarion meradara:** NAV calcularion componenrs, if applicable, and FX rares used
-- **Reconciliarion linkage:** posirion sraremenr cross-check
-- **Lineage rrail:** from IBKR acriviry sraremenr â†’ financial sraremenrs workbook
+Balance authority:
 
-### CPF balances and conrriburions
+1. **Primary source:** user-entered close balance input
+2. **Secondary source:** computed balance from form transaction sums
+3. **Conflict rule:** user-entered close balance overrides computed form balance; the variance and adjustment action must be recorded.
 
-- **Invarianr fields:** balance dare, amounr, currency, sub-accounr
-- **Source reference:** cpf GS UI enrry rimesramp, inpur version
-- **Enrry meradara:** user enrry rimesramp, user confirmarion rimesramp
-- **Reconciliarion linkage:** conrriburion flow consisrency
-- **Lineage rrail:** from GS UI closing-session enrry â†’ financial sraremenrs workbook
+### Forex rates
 
-## Balance lineage requiremenrs
+1. **Primary source:** Yahoo Finance quote snapshot for configured symbol/date
 
-This secrion defines rhe minimum balance meradara required for rraceabiliry, derivarion, and close srarus reporring. Explanarory descriprions belong in program logic and supporring documenrarion, nor in persisred balance records.
+### Investment pricing
 
-### Minimum rraceabiliry meradara per balance
+1. **Primary source:** Yahoo Finance price snapshot plus user query input
 
-| id | properry              | example                  | nores          |
+## Transaction lineage requirements
+
+This section defines the minimum transaction metadata that must be retained after ingestion and mapping.
+
+### Reconciliation traceability outcomes
+
+For reconciliation closure, each transaction must satisfy exactly one traceability outcome:
+
+- **Standard lineage transaction:** transaction retains normal source lineage to origin system and source reference
+- **Adjustment transaction:** transaction is marked as system adjustment and retains adjustment rule reference, adjustment timestamp, and user comment
+
+### Bank statement transactions
+
+- **Invariant fields:** transaction date, amount, currency, narration/description
+- **Source reference:** statement file name and row identifier, with page number when applicable
+- **Parsing metadata:** extraction timestamp, parser version
+- **Reconciliation linkage:** match status with hb sync ledger record, if linked
+- **Lineage trail:** from statement source file → app consolidated database `statements` schema → financial statements workbook
+
+### HomeBudget transactions
+
+- **Invariant fields:** transaction date, amount, currency, account
+- **Source reference:** hb sync transaction uid, wrapper source reference, and app sync timestamp
+- **Categorization metadata:** hb sync category reference and category change history, if modified
+- **Mapping lineage:** HB category → GL account mapping version used
+- **Reconciliation linkage:** bank statement match status, if the account is bank-linked
+- **Lineage trail:** from HomeBudget wrapper source → hb sync schema → financial statements workbook
+
+### Cash balances
+
+- **Scope:** cash-balance records where source inputs can come from HomeBudget and cash-source records
+- **Standard source artifacts:** source system ID, source account ID, source row ID, source event date, import timestamp
+- **Cash-source artifacts:** workbook identifier, sheet name, row identifier, source update timestamp
+- **Reconciliation artifact:** conflict status and matched counterpart reference when HomeBudget and cash-source records overlap
+- **Adjustment artifact:** adjustment rule reference, adjustment timestamp, and user comment when a system adjustment transaction is created
+
+### IBKR balances and adjustments
+
+- **Invariant fields:** balance date, amount, currency, account
+- **Source reference:** activity statement date, activity statement line item ID or activity reference
+- **Derivation metadata:** NAV calculation components, if applicable, and FX rates used
+- **Reconciliation linkage:** position statement cross-check
+- **Lineage trail:** from IBKR activity statement → financial statements workbook
+
+### CPF balances and contributions
+
+- **Invariant fields:** balance date, amount, currency, sub-account
+- **Source reference:** cpf GS UI entry timestamp, input version
+- **Entry metadata:** user entry timestamp, user confirmation timestamp
+- **Reconciliation linkage:** contribution flow consistency
+- **Lineage trail:** from GS UI closing-session entry → financial statements workbook
+
+## Balance lineage requirements
+
+This section defines the minimum balance metadata required for traceability, derivation, and close status reporting. Explanatory descriptions belong in program logic and supporting documentation, not in persisted balance records.
+
+### Minimum traceability metadata per balance
+
+| id | property              | example                  | notes          |
 | -- | --------------------- | ------------------------ | -------------- |
-| 01 | period_dare           | 2026-02-28               | close dare     |
-| 02 | source_sysrem         | bank_sraremenr_parh      | source label   |
-| 03 | accounr               | 1010                     | cash accounr   |
-| 04 | amounr                | 5000.00 SGD              | reporred value |
-| 05 | source_dare           | 2026-02-28               | sraremenr dare |
-| 06 | exrracrion_rimesramp  | 2026-03-01 11:30:00 UTC  | load rimesramp |
-| 07 | source_reference      | app DB sraremenrs row ID | lineage key    |
-| 08 | reconciliarion_srarus | closed                   | workflow srare |
+| 01 | period_date           | 2026-02-28               | close date     |
+| 02 | source_system         | bank_statement_path      | source label   |
+| 03 | account               | 1010                     | cash account   |
+| 04 | amount                | 5000.00 SGD              | reported value |
+| 05 | source_date           | 2026-02-28               | statement date |
+| 06 | extraction_timestamp  | 2026-03-01 11:30:00 UTC  | load timestamp |
+| 07 | source_reference      | app DB statement row ID  | lineage key    |
+| 08 | reconciliation_status | closed                   | workflow state |
 
-### Aggregarion and derivarion requiremenrs
+### Aggregation and derivation requirements
 
-When a financial sraremenr balance is derived from mulriple source balances, for example consolidared bank accounrs, rhe following lineage musr be rerained:
+When a financial statement balance is derived from multiple source balances, for example consolidated bank accounts, the following lineage must be retained:
 
-- **Componenrs:** lisr of all source balances rhar sum ro rhe derived balance
-- **FX conversion:** if cross-currency consolidarion, rhe FX rares and conversion dares used
-- **Aggregarion rule reference:** rule ID, funcrion name, or mapping version rhar defines rhe derivarion logic
-- **Aggregarion rimesramp:** when rhe derivarion logic was applied
+- **Components:** list of all source balances that sum to the derived balance
+- **FX conversion:** if cross-currency consolidation, the FX rates and conversion dates used
+- **Aggregation rule reference:** rule ID, function name, or mapping version that defines the derivation logic
+- **Aggregation timestamp:** when the derivation logic was applied
 
-## Cross-parh reconciliarion poinrs
+## Cross-path reconciliation points
 
-This secrion defines rhe required validarion for conflicr cases where rwo independenr inpur sources can disagree afrer source ingesrion and before close approval.
+This section defines the required validation for conflict cases where two independent input sources can disagree after source ingestion and before close approval.
 
-### Bank sraremenr vs. HomeBudger
+### Bank statement vs. HomeBudget
 
-- **Trigger:** end of accounr updare srage
-- **Validarion:** every bank sraremenr rransacrion is marched ro an `hb_gl_rxn` record 
-- **Lineage requiremenr:** each reconciled rransacrion musr be eirher a srandard lineage rransacrion ro source or an adjusrmenr rransacrion wirh rule reference, rimesramp, and commenr
-- **Acceprance:** cleared rransacrions wirh marched caregory
+- **Trigger:** end of account update stage
+- **Validation:** every bank statement transaction is matched to an `hb_gl_rxn` record 
+- **Lineage requirement:** each reconciled transaction must be either a standard lineage transaction to source or an adjustment transaction with rule reference, timestamp, and comment
+- **Acceptance:** cleared transactions with matched category
 
-### Bill domain vs. HomeBudger posrings
+### Bill domain vs. HomeBudget postings
 
-- **Trigger:** end of bill-paymenr worksrream before session complerion
-- **Validarion:** `bills` schema paid-srare records and serrlemenr records march posred HomeBudger enrries and sraremenr-link references
-- **Lineage requiremenr:** each paid bill and each serrlemenr enrry musr keep source sraremenr or allocarion rule reference plus posring srarus
-- **Acceprance:** bill and serrlemenr srares are consisrenr berween `bills` schema and HomeBudger posring ourcomes
+- **Trigger:** end of bill-payment workstream before session completion
+- **Validation:** `bills` schema paid-state records and settlement records match posted HomeBudget entries and statement-link references
+- **Lineage requirement:** each paid bill and each settlement entry must keep source statement or allocation rule reference plus posting status
+- **Acceptance:** bill and settlement states are consistent between `bills` schema and HomeBudget posting outcomes
 
-### Cash vs. HomeBudger
+### Cash vs. HomeBudget
 
-- **Trigger:** end of cash updare srage
-- **Validarion:** sraged waller cash rransacrions from rhe GS form sraging schema and `hb_gl_rxn` records are compared; gap is derived from sraged rransacrions, user close balance, and HB balance
-- **Lineage requiremenr:** each reconciled rransacrion musr be eirher a srandard lineage rransacrion ro source or an adjusrmenr rransacrion wirh rule reference, rimesramp, and commenr
-- **Acceprance:** cash variance is resolved and close balance is confirmed
+- **Trigger:** end of cash update stage
+- **Validation:** staged wallet cash transactions from the GS form staging schema and `hb_gl_rxn` records are compared; gap is derived from staged transactions, user close balance, and HB balance
+- **Lineage requirement:** each reconciled transaction must be either a standard lineage transaction to source or an adjustment transaction with rule reference, timestamp, and comment
+- **Acceptance:** cash variance is resolved and close balance is confirmed
 
-## Audir and rraceabiliry requiremenrs
+## Audit and traceability requirements
 
-This secrion defines rerenrion and closure documenrarion requiremenrs for audir supporr.
+This section defines retention and closure documentation requirements for audit support.
 
-### Traceabiliry arrifacrs
+### Traceability artifacts
 
-The following arrifacrs musr be rerained and accessible for audir:
+The following artifacts must be retained and accessible for audit:
 
-| id       |                                   |                     |            |
+| id       | artifact                          | location            | access     |
 | -------- | --------------------------------- | ------------------- | ---------- |
-| arrifacr |                                   |                     |            |
-| locarion |                                   |                     |            |
-| access   |                                   |                     |            |
-| 01       | Bank sraremenr PDFs               | s3                  | read-only  |
-| 02       | `sraremenrs` rables               | app darabase schema | read-wrire |
-| 03       | HomeBudger rxn snapshors by monrh | s3                  | read-only  |
-| 04       | IBKR acriviry sraremenrs          | s3                  | read-only  |
-| 05       | GS UI inpurs                      | s3                  | read-only  |
-| 06       | financial sraremenrs              | s3                  | read-only  |
-| 07       | Reconciliarion analysis           | s3                  | read-only  |
-| 08       | Cash source snapshors             | s3                  | read-only  |
-| 09       | `cash_sraging` rables             | app darabase schema | read-wrire |
-| 10       | `bills` rables                    | app darabase schema | read-wrire |
+| 01       | Bank statement PDFs               | s3                  | read-only  |
+| 02       | `statements` tables               | app database schema | read-write |
+| 03       | HomeBudget rxn snapshots by month | s3                  | read-only  |
+| 04       | IBKR activity statements          | s3                  | read-only  |
+| 05       | GS UI inputs                      | s3                  | read-only  |
+| 06       | financial statements              | s3                  | read-only  |
+| 07       | Reconciliation analysis           | s3                  | read-only  |
+| 08       | Cash source snapshots             | s3                  | read-only  |
+| 09       | `cash_staging` tables             | app database schema | read-write |
+| 10       | `bills` tables                    | app database schema | read-write |

@@ -52,12 +52,13 @@ Target design output set:
 | --- | ----- | ------- | ---------------------------------- |
 | 01  | 04.01 | closed  | design scope baseline              |
 | 02  | 04.03 | open    | architecture and boundaries        |
-| 03  | 04.04 | pending | topic design docs draft            |
-| 04  | 04.05 | pending | data model and lineage design      |
-| 05  | 04.06 | pending | integration contract design        |
-| 06  | 04.07 | pending | error and exception design         |
-| 07  | 04.08 | pending | design quality gate review         |
-| 08  | 04.09 | pending | implementation handoff package     |
+| 03  | 04.04 | pending | domain behavior                    |
+| 04  | 04.05 | pending | UI and interaction                 |
+| 05  | 04.06 | pending | data model and lineage             |
+| 06  | 04.07 | pending | integration                        |
+| 07  | 04.08 | pending | error and exception handling       |
+| 08  | 04.09 | pending | design quality gate review         |
+| 09  | 04.10 | pending | implementation handoff package     |
 
 ## Task details
 
@@ -106,7 +107,33 @@ Closure evidence for 04.03.01:
 
 - System architecture document created at docs/releases/010/design/architecture.md.
 - Architecture includes component catalog table from raw data sources through backend, sqlite, and Google Sheets UI.
-- Architecture includes Mermaid system diagram and component-level specifications with functions, constraints, requirements, and interfaces.
+- Architecture includes system diagram and component-level specifications with functions, constraints, requirements, and interfaces.
+
+Closure evidence for 04.03.04:
+
+Design document output inventory mapping all 19 design documents to task origins:
+
+| seq | design doc               | origin task  | purpose                                              |
+| --- | ------------------------ | ------------ | ---------------------------------------------------- |
+| 01  | architecture.md          | 04.03.01     | system architecture, component catalog, diagrams     |
+| 02  | design-guidelines.md     | 04.03.05     | design patterns, naming conventions, coding style    |
+| 03  | repository-layout.md     | 04.03 update | module structure, file organization, directory map   |
+| 04  | data-flow.md             | 04.03.03     | per-stage data paths, source-to-sink lineage         |
+| 05  | topic-map.md             | 04.03.04     | requirement-to-design traceability, component coverage |
+| 06  | workflows.md             | 04.04.01     | workflow stages, gates, orchestration behavior       |
+| 07  | reconciliation.md        | 04.04.02     | match algorithm, tolerance rules, variance handling  |
+| 08  | statements.md            | 04.04.03     | statement builder, output format, publish lifecycle  |
+| 09  | data-pipeline.md         | 04.04.04     | source ingest, lineage, transformation stages        |
+| 10  | bill-payment.md          | 04.04.05     | bill intake, share allocation, HomeBudget posting    |
+| 11  | user-interface.md        | 04.05.01     | Google Sheets, CLI, GAS surfaces, workbook structure |
+| 12  | homebudget.md            | 04.07.01     | HomeBudget wrapper contract, read/write patterns     |
+| 13  | google-sheets.md         | 04.07.02     | Google Sheets adapter contract, import/output flow   |
+| 14  | bank-statements.md       | 04.07.03     | bank CSV/Excel import contract, validation rules     |
+| 15  | ibkr.md                  | 04.07.04     | IBKR CSV import contract, section extraction         |
+| 16  | cpf.md                   | 04.07.05     | bill PDF and cash form input contract, validation    |
+| 17  | error-handling.md        | 04.08        | error taxonomy, propagation, recovery flows          |
+| 18  | design-index.md          | 04.10.01     | design doc index, status, requirement traceability   |
+| 19  | design-issues.md         | 04.09-04.10  | open decisions register, deferred items, closure log |
 
 Subtasks:
 
@@ -114,21 +141,59 @@ Subtasks:
 | --- | -------- | ------- | -------------------------------------------------- |
 | 01  | 04.03.01 | closed  | system architecture                                |
 | 02  | 04.03.02 | closed  | app architecture module boundaries and assumptions |
-| 03  | 04.03.03 | open    | data flow                                          |
-| 04  | 04.03.04 | pending | topic map                                          |
-| 05  | 04.03.05 | pending | design patterns and conventions                    |
+| 03  | 04.03.03 | closed  | data flow                                          |
+| 04  | 04.03.04 | closed  | topic map                                          |
+| 05  | 04.03.05 | open    | design patterns and conventions                    |
 
-_04.04 (pending) topic design docs draft_
+_04.04 (pending) domain behavior_
 
-- Draft or update design documentation that covers each owner requirement topic.
+- Draft design documentation for each domain behavior component: workflow orchestration, reconciliation, statement building, data pipeline, and bill payment.
+
+Target outputs:
+
+- docs/releases/010/design/workflows.md
+- docs/releases/010/design/reconciliation.md
+- docs/releases/010/design/statements.md
+- docs/releases/010/design/data-pipeline.md
+- docs/releases/010/design/bill-payment.md
 
 Closure criteria:
 
-- A design document exists for each owner requirement topic.
-- Each doc defines module responsibilities, data contracts, and behavior rules.
+- Each domain behavior doc defines module responsibilities, data contracts, and behavior rules.
 - No owner topic has an open unresolved design gap blocking implementation.
 
-_04.05 (pending) data model and lineage design_
+Subtasks:
+
+| seq | id       | status  | task                            |
+| --- | -------- | ------- | ------------------------------- |
+| 01  | 04.04.01 | closed  | workflows.md                    |
+| 02  | 04.04.02 | pending | reconciliation.md               |
+| 03  | 04.04.03 | pending | statements.md                   |
+| 04  | 04.04.04 | pending | data-pipeline.md                |
+| 05  | 04.04.05 | pending | bill-payment.md                 |
+
+_04.05 (pending) UI and interaction_
+
+- Define Google Sheets workbook structure, page inventory, and user touchpoint map for the close session.
+- Define CLI command surface and GAS optional extension scope.
+
+Target outputs:
+
+- docs/releases/010/design/user-interface.md
+
+Closure criteria:
+
+- Workbook structure, page inventory, and user touchpoints are documented for all close-session interactions.
+- CLI surface and GAS optional scope are defined.
+- No UI interaction path has an unresolved design gap.
+
+Subtasks:
+
+| seq | id       | status  | task                            |
+| --- | -------- | ------- | ------------------------------- |
+| 01  | 04.05.01 | pending | user-interface.md               |
+
+_04.06 (pending) data model and lineage_
 
 - Define canonical entities, keys, and transformation stages from source ingestion to statement outputs.
 - Define lineage tracking rules and reproducibility controls for period close outputs.
@@ -147,14 +212,14 @@ Subtasks:
 
 | seq | id       | status  | task                            |
 | --- | -------- | ------- | ------------------------------- |
-| 01  | 04.05.01 | pending | canonical entities              |
-| 02  | 04.05.02 | pending | stage schema ownership          |
-| 03  | 04.05.03 | pending | lineage fields                  |
-| 04  | 04.05.04 | pending | reproducibility rules           |
+| 01  | 04.06.01 | pending | canonical entities              |
+| 02  | 04.06.02 | pending | stage schema ownership          |
+| 03  | 04.06.03 | pending | lineage fields                  |
+| 04  | 04.06.04 | pending | reproducibility rules           |
 
-_04.06 (pending) integration contract design_
+_04.07 (pending) integration_ 
 
-- Define adapter contracts for HomeBudget, Google Sheets, IBKR and Bank Statement CSV import, Bill PDF and Cash Form inputs.
+- Define full component design for all integration adapters: HomeBudget wrapper, Google Sheets adapter, and source adapters for bank statements, IBKR, and bill and cash inputs.
 - Define input validation, retries, and failure signaling at integration boundaries.
 
 Target outputs:
@@ -163,26 +228,25 @@ Target outputs:
 - docs/releases/010/design/google-sheets.md
 - docs/releases/010/design/bank-statements.md
 - docs/releases/010/design/ibkr.md
-- docs/releases/010/design/bills.md
-- docs/releases/010/design/cash.md 
+- docs/releases/010/design/cpf.md
 
 Closure criteria:
 
-- Each adapter contract defines read and write paths, input validation rules, and error signaling.
+- Each adapter defines read and write paths, invocation patterns, input validation rules, and error signaling.
 - Retry policy and boundary failure handling are documented and consistent across adapters.
 - No integration boundary has an unresolved contract gap.
 
 Subtasks:
 
-| seq | id       | status  | task                            |
-| --- | -------- | ------- | ------------------------------- |
-| 01  | 04.06.01 | pending | homebudget contract             |
-| 02  | 04.06.02 | pending | gsheet contract                 |
-| 03  | 04.06.03 | pending | ibkr contract                   |
-| 04  | 04.06.04 | pending | cpf contract                    |
-| 05  | 04.06.05 | pending | boundary retry policy           |
+| seq | id       | status  | task                    |
+| --- | -------- | ------- | ----------------------- |
+| 01  | 04.07.01 | pending | homebudget.md           |
+| 02  | 04.07.02 | pending | google-sheets.md        |
+| 03  | 04.07.03 | pending | bank-statements.md      |
+| 04  | 04.07.04 | pending | ibkr.md                 |
+| 05  | 04.07.05 | pending | cpf.md                  |
 
-_04.07 (pending) error and exception design_
+_04.08 (pending) error and exception handling_
 
 - Define error taxonomy, propagation paths, and user review checkpoints.
 - Define recoverable versus blocking failure handling for close-cycle flows.
@@ -201,12 +265,12 @@ Subtasks:
 
 | seq | id       | status  | task                            |
 | --- | -------- | ------- | ------------------------------- |
-| 01  | 04.07.01 | pending | error taxonomy                  |
-| 02  | 04.07.02 | pending | propagation path                |
-| 03  | 04.07.03 | pending | user recovery flow              |
-| 04  | 04.07.04 | pending | blocking criteria               |
+| 01  | 04.08.01 | pending | error taxonomy                  |
+| 02  | 04.08.02 | pending | propagation path                |
+| 03  | 04.08.03 | pending | user recovery flow              |
+| 04  | 04.08.04 | pending | blocking criteria               |
 
-_04.08 (pending) design quality gate review_
+_04.09 (pending) design quality gate review_
 
 - Review design package for completeness, consistency, and requirement traceability.
 - Confirm readiness for test strategy and implementation handoff.
@@ -225,12 +289,12 @@ Subtasks:
 
 | seq | id       | status  | task                            |
 | --- | -------- | ------- | ------------------------------- |
-| 01  | 04.08.01 | pending | requirement trace verify        |
-| 02  | 04.08.02 | pending | design consistency review       |
-| 03  | 04.08.03 | pending | open issues triage              |
-| 04  | 04.08.04 | pending | closure decision draft          |
+| 01  | 04.09.01 | pending | requirement trace verify        |
+| 02  | 04.09.02 | pending | design consistency review       |
+| 03  | 04.09.03 | pending | open issues triage              |
+| 04  | 04.09.04 | pending | closure decision draft          |
 
-_04.09 (pending) implementation handoff package_
+_04.10 (pending) implementation handoff package_
 
 - Publish implementation-ready design index and unresolved decision register.
 - Hand off to test strategy and implementation milestones.
@@ -250,7 +314,7 @@ Subtasks:
 
 | seq | id       | status  | task                            |
 | --- | -------- | ------- | ------------------------------- |
-| 01  | 04.09.01 | pending | design index publish            |
-| 02  | 04.09.02 | pending | handoff assumptions capture     |
-| 03  | 04.09.03 | pending | test strategy handoff           |
-| 04  | 04.09.04 | pending | implementation handoff          |
+| 01  | 04.10.01 | pending | design index publish            |
+| 02  | 04.10.02 | pending | handoff assumptions capture     |
+| 03  | 04.10.03 | pending | test strategy handoff           |
+| 04  | 04.10.04 | pending | implementation handoff          |
