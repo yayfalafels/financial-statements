@@ -2,7 +2,7 @@
 title: System Architecture
 version: 1.0
 status: draft
-last_updated: 2026-05-01
+last_updated: 2026-05-02
 ---
 
 # System Architecture
@@ -13,6 +13,7 @@ This document defines the POC system architecture for release 0.1.0 and describe
 
 The architecture is local-first, single-user, and session-based. Google Sheets is the primary session UI, HomeBudget remains the operational ledger UI, and local SQLite is the canonical application persistence layer for close-cycle state and outputs.
 S3 is an external artifact and archive integration for publish and lineage evidence handling.
+Google Sheets adapter is the primary app-owned integration boundary for sheet read and write operations, while GAS is an optional UI enhancement limited to a small set of user-triggered click events.
 
 ## Table of contents
 
@@ -28,6 +29,7 @@ S3 is an external artifact and archive integration for publish and lineage evide
   - [4. Yahoo Finance API](#4-yahoo-finance-api)
   - [5. AWS S3 artifact storage](#5-aws-s3-artifact-storage)
   - [6. Google Sheets session UI](#6-google-sheets-session-ui)
+    - [6A. GAS for Sheets UI (optional)](#6a-gas-for-sheets-ui-optional)
   - [7. HomeBudget app](#7-homebudget-app)
   - [8. CLI](#8-cli)
   - [9. Backend API](#9-backend-api)
@@ -39,6 +41,7 @@ S3 is an external artifact and archive integration for publish and lineage evide
   - [15. HomeBudget wrapper adapter](#15-homebudget-wrapper-adapter)
   - [16. Mapping CRUD module in backend API](#16-mapping-crud-module-in-backend-api)
   - [17. SQLite adapter](#17-sqlite-adapter)
+    - [17A. Google Sheets adapter](#17a-google-sheets-adapter)
   - [18. Reconciliation engine](#18-reconciliation-engine)
   - [19. Statement builder](#19-statement-builder)
   - [21. SQLite app database and schemas](#21-sqlite-app-database-and-schemas)
@@ -66,6 +69,10 @@ Out of scope:
 - Deterministic close outputs from a controlled stage model and canonical close_book schema.
 - Wrapper-boundary integration for HomeBudget reads and writes.
 - Google Sheets as session UI, not canonical storage.
+- Google Sheets adapter is the primary integration boundary for application-driven sheet updates and event write-back.
+- GAS is optional and limited to select user-triggered click events; core close orchestration does not require GAS.
+- Dual reachability is allowed: direct Google Sheets to backend API contracts and GAS-mediated event calls may coexist.
+- IMPORTRANGE-based data imports remain a sheet-native mechanism and are outside GAS trigger scope.
 - S3 is used for artifact storage and archive integration without changing local deployment boundaries.
 
 ## Workflow runtime placement
@@ -74,6 +81,8 @@ Out of scope:
 - Workflow-specific execution logic runs in runtime modules hosted inside the Backend API boundary.
 - Account ingest and reconcile logic runs in the account close runtime.
 - Bill payment and shared-cost logic runs in the bill and shared-cost runtime.
+- Google Sheets adapter handles app-initiated sheet read and write operations, including workflow event write-back.
+- GAS, when enabled, handles only selected click-driven event triggers and routes them through backend API contracts.
 - Runtime modules never read or write SQLite directly; all persistence goes through Backend API SQL interfaces.
 
 ## System component catalog
@@ -87,6 +96,7 @@ Out of scope:
 | 05 | yahoo finance api             | external source     | forex and market pricing input              |
 | 06 | aws s3 artifact storage       | external source     | artifact archive and publish storage        |
 | 07 | google sheets session UI      | user interface      | primary close-session input and review      |
+| 07A | gas for sheets ui            | user interface      | optional click-event trigger bridge for sheets workflows |
 | 08 | homebudget app                | user interface      | operational ledger UI and review surface    |
 | 09 | CLI                           | user interface      | parallel automation and review interface    |
 | 10 | backend api                   | backend service     | service contract for UI and automation      |
@@ -98,6 +108,7 @@ Out of scope:
 | 16 | homebudget wrapper adapter    | api internal module | HomeBudget read and write integration     |
 | 17 | mapping CRUD module           | api internal module | governed mapping lifecycle management     |
 | 18 | sqlite adapter                | api internal module | single SQL gateway for sqlite schemas     |
+| 18A | google sheets adapter        | api internal module | primary sheet read/write and UI write-back boundary |
 | 19 | reconciliation engine         | api internal module | matching, variance, tolerance, adjustment |
 | 20 | statement builder             | api internal module | income statement, balance sheet, and artifact publish |
 | 21 | logging module                | api internal module | shared runtime logging and audit events   |
@@ -144,6 +155,7 @@ flowchart LR
 
     subgraph CLOUD
         S3["AWS S3 artifact storage"]
+        GAS["GAS for Sheets UI"]
     end
 
     subgraph UI
@@ -161,6 +173,7 @@ flowchart LR
         HBA["HomeBudget wrapper adapter"]
         MAPMOD["Mapping CRUD module"]
         SQLA["SQLite adapter"]
+        GSADAPT["Google Sheets adapter"]
         RECON["Reconciliation engine"]
         STMT["Statement builder"]
         LOG["Logging module"]
@@ -180,9 +193,13 @@ flowchart LR
     SQLA --> SQLITE
     AWSA --> S3
 
-    GS --> APP
     CLI --> APP
+    GAS --> APP
+    GS --> APP
+    GSADAPT --> GS
+    GS --> GAS
 
+    ORCH --> GSADAPT
     ORCH --> MAPMOD
     ORCH --> ACRUN
     ORCH --> BSRUN
@@ -322,6 +339,8 @@ Constraints:
 
 - UI workbook is a session surface only and not canonical app persistence.
 - Workbook IDs must be configured by key and file path, not hardcoded in design text.
+- Google Sheets may call backend API contracts directly for supported operations, and may also call through GAS for selected user-triggered actions.
+- Sheet-native IMPORTRANGE data imports remain in-sheet operations and are not delegated to GAS.
 
 Requirement alignment:
 
@@ -330,8 +349,30 @@ Requirement alignment:
 
 Interfaces:
 
-- Inbound: workflow status and statement outputs from backend API.
-- Outbound: user-entered inputs to backend API for ingest, mapping, and approvals.
+- Inbound: workflow status, app-initiated write-back events, and statement outputs from backend API through Google Sheets adapter.
+- Outbound: user-entered inputs to backend API for ingest, mapping, and approvals, either directly or via optional GAS click-event routing.
+
+### 6A. GAS for Sheets UI
+
+Functional specification:
+
+- Provide an optional event bridge for a small set of user-triggered click actions in Google Sheets UI.
+- Operate as a UI integration runtime hosted in the cloud block of the architecture diagram.
+
+Constraints:
+
+- GAS scope is intentionally minimal and limited to selected click-driven actions.
+- GAS is an enhancement path and not a required dependency for the main Google Sheets adapter interaction model.
+
+Requirement alignment:
+
+- requirements/user-interface.md
+- requirements/google-sheets.md
+
+Interfaces:
+
+- Inbound: selected user-triggered events from Google Sheets UI.
+- Outbound: backend API contract calls for approved click-event actions.
 
 ### 7. HomeBudget app
 
@@ -381,7 +422,7 @@ Functional specification:
 - Expose service contracts for UI and CLI operations including workflow stage actions, mapping CRUD, read models, and direct module access within the API boundary.
 - Host mapping CRUD as an internal API module, not as a standalone backend service boundary.
 - Host workflow runtimes for account-close and bill/shared-cost execution as internal modules.
-- Provide one backend API runtime boundary as the only external backend contract for Google Sheets UI and CLI; Google Sheets and CLI may reach multiple internal modules through this boundary.
+- Provide one backend API runtime boundary as the only external backend contract for Google Sheets UI, optional GAS bridge calls, and CLI; these callers may reach multiple internal modules through this boundary.
 
 Constraints:
 
@@ -395,8 +436,8 @@ Requirement alignment:
 
 Interfaces:
 
-- Inbound: Google Sheets session UI and CLI.
-- Outbound: AWS storage adapter, workflow orchestrator, account close runtime, bill and shared-cost runtime, source adapters, HomeBudget wrapper adapter, mapping CRUD module, SQLite adapter, reconciliation engine, and statement builder.
+- Inbound: Google Sheets session UI direct calls, optional GAS-triggered calls, and CLI.
+- Outbound: AWS storage adapter, workflow orchestrator, account close runtime, bill and shared-cost runtime, source adapters, HomeBudget wrapper adapter, mapping CRUD module, SQLite adapter, Google Sheets adapter, reconciliation engine, and statement builder.
 
 SQL interface boundary:
 
@@ -446,7 +487,7 @@ Requirement alignment:
 Interfaces:
 
 - Inbound: Google Sheets and CLI workflow actions through Backend API boundary routing.
-- Outbound: mapping CRUD module for mapping completeness gate checks, account close runtime, bill and shared-cost runtime, and statement builder.
+- Outbound: Google Sheets adapter for app-initiated event write-back, mapping CRUD module for mapping completeness gate checks, account close runtime, bill and shared-cost runtime, and statement builder.
 
 ### 12. Account close runtime
 
@@ -578,6 +619,29 @@ Interfaces:
 
 - Inbound: Backend API internal modules.
 - Outbound: statements, hb, cash_staging, bills, mapping, close_book, and session and audit schemas.
+
+### 17A. Google Sheets adapter
+
+Functional specification:
+
+- Serve as the primary backend boundary for Google Sheets read and write interactions required by workflow status publishing and app-initiated UI write-back.
+
+Constraints:
+
+- Adapter behavior must be deterministic and idempotent for stage reruns and repeat event publication.
+- Adapter implementation must preserve workbook-level governance, including configured workbook key usage and controlled sheet and range access.
+- Adapter handles the main bulk of Google Sheets interface operations; GAS remains optional and limited to selected click-event triggering.
+
+Requirement alignment:
+
+- requirements/google-sheets.md
+- requirements/user-interface.md
+- requirements/workflow-orchestration.md
+
+Interfaces:
+
+- Inbound: workflow orchestrator and backend API internal modules requiring app-driven sheet read/write operations.
+- Outbound: Google Sheets session UI updates, status publishing, and event write-back payloads.
 
 ### 18. Reconciliation engine
 

@@ -15,9 +15,10 @@ scope: poc
 - [Out of scope](#out-of-scope)
 - [Stage model for monthly close](#stage-model-for-monthly-close)
 - [Workflow orchestration diagram](#workflow-orchestration-diagram)
+- [Account-level orchestration model](#account-level-orchestration-model)
 - [Account-group workflow routes](#account-group-workflow-routes)
 - [Parallel workstreams](#parallel-workstreams)
-- [Account-group dependency rules](#account-group-dependency-rules)
+- [Account-level dependency rules by group](#account-level-dependency-rules-by-group)
 - [Stage entry criteria](#stage-entry-criteria)
 - [Mapping completeness gates](#mapping-completeness-gates)
 - [Stage exit criteria](#stage-exit-criteria)
@@ -61,30 +62,51 @@ This document defines requirements for monthly-close workflow orchestration.
 
 ## Stage model for monthly close
 
-| id | stage       | objective                                                       |
-| -- | ----------- | --------------------------------------------------------------- |
-| 01 | pre-flight  | validate inputs, environment, and sources                       |
-| 02 | forex       | load and validate period exchange rates                         |
-| 03 | data ingest | user authenticates sources, downloads files, enters GS UI       |
-| 04 | data sync   | process ingested inputs and refresh app-managed source tables   |
-| 05 | reconcile   | execute reconcile checks and close gaps                         |
-| 06 | statements  | update and validate statement outputs                           |
-| 07 | publish     | produce period artifacts and close session                      |
+| id | stage          | objective                                                         |
+| -- | -------------- | ----------------------------------------------------------------- |
+| 01 | pre-flight     | validate inputs, environment, and sources                         |
+| 02 | forex          | load and validate period exchange rates                           |
+| 03 | data download  | user downloads files to Downloads/ and enters GS UI data          |
+| 04 | data ingest    | system detects, stages, validates, and provides per-account feedback |
+| 05 | data sync      | process staged inputs and refresh app-managed source tables       |
+| 06 | reconcile      | execute reconcile checks and close gaps                           |
+| 07 | statements     | update and validate statement outputs                             |
+| 08 | publish        | produce period artifacts and close session                        |
+
+## Account-level orchestration model
+
+The monthly close executes at the account level. Each account in scope maintains its own workflow state through phase 2 (data download, data ingest, data sync, and reconcile). Accounts within the same group execute the same workflow template but progress independently.
+
+Account groups serve as structural and routing classifications. A group defines the data source type and access method, the parsing profile applied during data sync, the reconcile method applied during reconcile, and the route gate entry criteria for each stage.
+
+The orchestrator tracks workflow state at the account level. The aggregate session status for each phase 2 stage is the composite of all in-scope account statuses. A stage is session-complete only when all in-scope accounts have reached that stage's exit criteria.
+
+The merge gate before statements evaluates individual account-level reconcile outcomes. All accounts must be reconcile-closed or explicitly overridden with logged rationale before statements may begin.
 
 ## Workflow orchestration diagram
 
 ```mermaid
 flowchart TD
 		A[Pre-flight] --> B[Forex]
-		A --> DI1
-		A --> DI2
-		A --> DI3
-		A --> DI4
-		A --> DI5
-		A --> DI6
-		A --> DI7
+		A --> DD1
+		A --> DD2
+		A --> DD3
+		A --> DD4
+		A --> DD5
+		A --> DD6
+		A --> DD7
 
-		subgraph DI[Data ingest]
+		subgraph DD["Data download (user)"]
+			DD1[Bank]
+			DD2[IBKR]
+			DD3[CPF]
+			DD4[Cash]
+			DD5[Wallets]
+			DD6[Investments]
+			DD7[Others]
+		end
+
+		subgraph DI["Data ingest (system)"]
 			DI1[Bank]
 			DI2[IBKR]
 			DI3[CPF]
@@ -105,6 +127,14 @@ flowchart TD
 		end
 
 		B --> DS
+
+		DD1 --> DI1
+		DD2 --> DI2
+		DD3 --> DI3
+		DD4 --> DI4
+		DD5 --> DI5
+		DD6 --> DI6
+		DD7 --> DI7
 
 		DI1 --> DS1
 		DI2 --> DS2
@@ -132,7 +162,7 @@ flowchart TD
 		DS6 --> RC6
 		DS7 --> RC7
 
-		RC1 --> MG{Merge gate\nall required account-group\nreconcile outcomes complete\nor overridden with rationale}
+		RC1 --> MG{Merge gate\nall required account\nreconcile outcomes complete\nor overridden with rationale}
 		RC2 --> MG
 		RC3 --> MG
 		RC4 --> MG
@@ -156,20 +186,24 @@ flowchart TD
 		BP1 --> BP2 --> BP3 --> BP4
 ```
 
+Each node in the per-group subgraphs represents all accounts of that type running in parallel. Account groups provide the workflow template; individual accounts are the execution unit.
+
 ## Account-group workflow routes
 
-| id | account group            | stage route                              | reconcile gate                                  |
-| -- | ------------------------ | ---------------------------------------- | ----------------------------------------------- |
-| 01 | bank statement accounts  | pf > (fx or di) > ds > rc > st > pb      | statement ingestion and bridge complete         |
-| 02 | ibkr accounts            | pf > (fx or di) > ds > rc > st > pb      | csv parse and nav derivation complete           |
-| 03 | cpf accounts             | pf > (fx or di) > ds > rc > st > pb      | GS UI entry confirmed and roll-forward pass     |
-| 04 | cash accounts            | pf > (fx or di) > ds > rc > st > pb      | close balance and gap decision logged           |
-| 05 | wallets                  | pf > (fx or di) > ds > rc > st > pb      | observed balance and delta review complete      |
-| 06 | investments              | pf > (fx or di) > ds > rc > st > pb      | pricing input and valuation reconcile complete  |
-| 07 | others                   | pf > (fx or di) > ds > rc > st > pb      | source-specific checks and reconcile complete   |
+Each row defines the stage route and reconcile gate for accounts of that group type. Routes apply at the account level; accounts within the same group progress independently.
 
-- Route token legend: `pf` pre-flight, `fx` forex, `di` data ingest, `ds` data sync, `rc` reconcile, `st` statements, `pb` publish.
-- `(fx | di)` means forex and data ingest run in parallel after pre-flight; both must complete before data sync can begin.
+| id | account group           | stage route                              | reconcile gate                                 |
+| -- | ----------------------- | ---------------------------------------- | ---------------------------------------------- |
+| 01 | bank statement accounts | pf > (fx \| dd > di) > ds > rc > st > pb | statement ingest and bridge complete           |
+| 02 | ibkr accounts           | pf > (fx \| dd > di) > ds > rc > st > pb | csv parse and nav derivation complete          |
+| 03 | cpf accounts            | pf > (fx \| dd > di) > ds > rc > st > pb | GS UI entry confirmed and roll-forward pass    |
+| 04 | cash accounts           | pf > (fx \| dd > di) > ds > rc > st > pb | close balance and gap decision logged          |
+| 05 | wallets                 | pf > (fx \| dd > di) > ds > rc > st > pb | observed balance and delta review complete     |
+| 06 | investments             | pf > (fx \| dd > di) > ds > rc > st > pb | pricing input and valuation reconcile complete |
+| 07 | others                  | pf > (fx \| dd > di) > ds > rc > st > pb | source-specific checks and reconcile complete  |
+
+- Route token legend: `pf` pre-flight, `fx` forex, `dd` data download, `di` data ingest, `ds` data sync, `rc` reconcile, `st` statements, `pb` publish.
+- `(fx | dd > di)` means forex and data download run in parallel after pre-flight. Data ingest follows data download for each account. Both forex and data ingest must complete before data sync can begin for an account.
 
 ## Parallel workstreams
 
@@ -187,18 +221,21 @@ flowchart TD
 - During POC, Google Sheets is used only as a bridge UI for user input and review in this workstream.
 - Detailed settlement and allocation policy remains owned by docs/requirements/bill-payment.md and docs/requirements/shared-costs.md.
 
-## Account-group dependency rules
+## Account-level dependency rules by group
 
-- Bank statement-process accounts require statement file download during data ingest and statement-file processing into the statement digital twin during data sync. See [bank-statements.md](bank-statements.md) for input format and parsing requirements.
-- IBKR accounts require activity-statement CSV download during data ingest and CSV parsing with top-down NAV derivation during data sync.
-- CPF accounts require GS UI sub-account entry during data ingest and roll-forward computation during data sync.
-- Cash accounts require GS UI close-balance entry and cash-form transaction pull during data ingest, and cash-form transaction aggregation during data sync.
-- Wallet accounts require GS UI observed-balance entry during data ingest and computed adjustment preview during data sync.
-- Investment accounts require GS UI pricing input and quantity input during data ingest and valuation snapshot computation during data sync.
-- Other accounts require their declared source-specific inputs during data ingest and source-specific checks during data sync.
-- Forex stage is required before data sync for all in-scope account groups.
-- Data ingest runs in parallel with forex after pre-flight and does not depend on forex success.
-- Reconcile may proceed only when every in-scope account group has satisfied its route gate.
+The following rules define the data download and data ingest requirements for each account group. Each rule applies per account — an account's data sync may begin once its own data download and data ingest are complete and forex is complete, regardless of the status of other accounts.
+
+- Bank accounts require statement file download to Downloads/ during data download, and system file detection, staging, and format validation during data ingest. See [bank-statements.md](bank-statements.md) for input format and parsing requirements.
+- IBKR accounts require activity-statement CSV download to Downloads/ during data download, and system CSV detection, staging, and section validation during data ingest.
+- CPF accounts require GS UI sub-account balance entry during data download, and GS adapter read of confirmed entries during data ingest.
+- Cash accounts require GS UI close-balance entry during data download, and GS adapter read plus cash-form transaction pull during data ingest.
+- Wallet accounts require GS UI observed-balance entry during data download, and GS adapter read of confirmed entries during data ingest.
+- Investment accounts require GS UI pricing and quantity entry during data download, and GS adapter read of confirmed entries during data ingest.
+- Other accounts require their declared source-specific inputs during data download and source-specific staging and validation during data ingest.
+- Forex stage is required before data sync for all in-scope accounts.
+- Data download runs in parallel with forex after pre-flight and does not depend on forex success.
+- Data ingest runs per account after its data download is complete and does not depend on forex success.
+- Reconcile may proceed only when every in-scope account has satisfied its data sync route gate.
 
 ## Stage entry criteria
 
@@ -206,17 +243,18 @@ Global sequencing gates:
 
 - Pre-flight entry requires selected target period.
 - Forex entry requires pre-flight success.
-- Data ingest entry requires pre-flight success.
-- Data sync entry requires both forex completion and data ingest completion.
-- Statements entry requires reconcile success for all required in-scope account groups.
+- Data download entry requires pre-flight success.
+- Data ingest entry requires data download completion for the account.
+- Data sync entry requires both forex completion and data ingest completion for the account.
+- Statements entry requires reconcile success for all required in-scope accounts.
 - Publish entry requires statements success.
-- During data ingest, data sync, and reconcile, account-level progression is independent. Different accounts may be at different internal stages in parallel.
-- Statements is the convergence point where account-specific workstreams merge into one statement-publication path.
+- During data download, data ingest, data sync, and reconcile, account-level progression is independent. Different accounts may be at different internal stages in parallel.
+- Statements is the convergence point where all per-account workstreams merge into one statement-publication path.
 
-Account-group route gates:
+Account-level route gates:
 
-- Reconcile entry requires route-gate completion for each in-scope account group.
-- Reconcile stage remains open while in-scope accounts continue progressing. It closes only when all required account-group route gates are satisfied.
+- Reconcile entry requires route-gate completion for each in-scope account.
+- Reconcile stage remains open while in-scope accounts continue progressing. It closes only when all required account-level route gates are satisfied.
 
 ## Mapping completeness gates
 
@@ -232,14 +270,17 @@ Global stage exits:
 - A stage exits only when required conditions are satisfied.
 - A stage exit records status, timestamp, and key artifacts.
 - A stage with unresolved blocking checks cannot exit.
-- Data ingest, data sync, and reconcile are all tracked at account-group level. Session-level stage status is the aggregate across all in-scope account groups.
+- Data download, data ingest, data sync, and reconcile are all tracked at the account level. Session-level stage status is the aggregate across all in-scope accounts.
 
-Account-group stage exits:
+Account-level stage exits:
 
-- Each account group progresses through data ingest independently. An account group's data sync may begin once its own ingest is complete and forex is complete, regardless of other account groups' ingest status.
-- Data ingest exits when all required statement files are downloaded and all required GS UI entries are confirmed for in-scope account groups.
-- Data sync exits only when each in-scope account group has completed its route gate or has an approved explicit skip state.
-- Reconcile exits only when all account-group route gates are closed and group-level unresolved blocking variance is not present.
+- Each account progresses through data download independently. An account's data ingest may begin once its own download-ready status is set, regardless of other accounts' download status.
+- Data download exits per account when required files are available in Downloads/ or GS UI entries are confirmed for that account.
+- Data ingest exits per account when staged files are validated and lineage anchors are recorded, or GS UI entries are confirmed via GS adapter.
+- Data sync exits per account only when route gate conditions are met or an approved explicit skip state is recorded.
+- Reconcile exits per account only when the account route gate is closed and unresolved blocking variance is not present.
+- Session-level data download is complete when all in-scope accounts have reached download-ready status.
+- Session-level reconcile is complete when all in-scope accounts are reconcile-closed or overridden.
 
 ## Stage inputs
 
@@ -265,23 +306,26 @@ Data sync is fully app-driven once data ingest is complete. For HomeBudget-sourc
 
 ## Stage outputs
 
-| id | stage       | produced outputs                                                       |
-| -- | ----------- | --------------------------------------------------------------------- |
-| 01 | pre-flight  | validated period selection, environment readiness confirmation        |
-| 02 | forex       | period exchange rates loaded into the forex rates store               |
-| 03 | data ingest | downloaded statement files, confirmed GS UI entries per account       |
-| 04 | data sync   | refreshed hb schema sync state, stm twin records, route-gate statuses |
-| 05 | reconcile   | reconcile gate status per account group, variance log                 |
-| 06 | statements  | draft income statement and balance sheet for review                   |
-| 07 | publish     | finalized PDF statements, S3 upload, session close record             |
+| id | stage         | produced outputs                                                            |
+| -- | ------------- | --------------------------------------------------------------------------- |
+| 01 | pre-flight    | validated period selection, environment readiness confirmation               |
+| 02 | forex         | period exchange rates loaded into the forex rates store                     |
+| 03 | data download | download-ready status per account, recorded GS UI entries                   |
+| 04 | data ingest   | staged files in ingest dir, lineage anchors, per-account feedback           |
+| 05 | data sync     | refreshed hb schema sync state, stm twin records, route-gate statuses       |
+| 06 | reconcile     | reconcile closure status per account, variance log                          |
+| 07 | statements    | draft income statement and balance sheet for review                         |
+| 08 | publish       | finalized PDF statements, S3 upload, session close record                   |
 
 ## Stage invariants
 
 - One active top-level stage at a time for a session.
 - Stage order is forward-only unless explicit rerun is triggered.
 - Each stage must produce deterministic outputs for the same inputs.
-- Data ingest is user-driven and cannot run autonomously. Data sync is app-driven and proceeds without user action once data ingest is complete.
-- Within data sync and reconcile, account-level state progression may run in parallel and does not require lockstep advancement across accounts.
+- Data download is user-driven and cannot run autonomously.
+- Data ingest is app-driven; it begins per account as soon as download-ready status is set and proceeds without user action.
+- Data sync is app-driven and proceeds without user action once data ingest is complete per account.
+- Within data download, data ingest, data sync, and reconcile, account-level state progression runs in parallel and does not require lockstep advancement across accounts or account groups.
 
 ## Stage completion override policy
 
@@ -302,9 +346,10 @@ Data sync is fully app-driven once data ingest is complete. For HomeBudget-sourc
 - Stage outputs are contractual inputs for the next stage.
 - Handoff must include success status and lineage reference.
 - Failed handoff blocks the next stage from starting.
-- Data ingest handoff records statement-file completeness and GS UI entry confirmation per in-scope account group.
-- Reconcile-stage handoff includes data sync completion status and account-group route-gate status.
-- Reconcile-stage handoff must include account-group route-gate status for bank statement accounts, ibkr accounts, cpf accounts, cash accounts, wallets, investments, and others.
-- Mixed account progression states inside data sync and reconcile are expected. For example, one account may already be in reconcile while another account is still in data sync or not started.
-- Merge gate before statements: all required account-group reconcile outcomes must be complete, or explicitly overridden with logged rationale.
+- Data download handoff records download-ready status per in-scope account.
+- Data ingest handoff records staged file completeness, lineage anchors, and GS UI entry confirmation per in-scope account.
+- Reconcile-stage handoff includes data sync completion status and account-level route-gate status.
+- Reconcile-stage handoff must include account-level route-gate status for accounts in: bank statement accounts, ibkr accounts, cpf accounts, cash accounts, wallets, investments, and others.
+- Mixed account progression states inside data download, data ingest, data sync, and reconcile are expected. For example, one account may already be in reconcile while another is still in data download.
+- Merge gate before statements: all required account-level reconcile outcomes must be complete, or explicitly overridden with logged rationale.
 
