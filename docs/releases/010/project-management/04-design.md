@@ -51,8 +51,8 @@ Target design output set:
 | seq | id    | status  | task                               |
 | --- | ----- | ------- | ---------------------------------- |
 | 01  | 04.01 | closed  | design scope baseline              |
-| 02  | 04.03 | open    | architecture and boundaries        |
-| 03  | 04.04 | pending | domain behavior                    |
+| 02  | 04.03 | closed  | architecture and boundaries        |
+| 03  | 04.04 | open    | domain behavior                    |
 | 04  | 04.05 | pending | UI and interaction                 |
 | 05  | 04.06 | pending | data model and lineage             |
 | 06  | 04.07 | pending | integration                        |
@@ -90,6 +90,7 @@ _04.03 (open) architecture and boundaries_
 Target outputs:
 
 - docs/releases/010/design/architecture.md
+- docs/releases/010/design/tech-stack.md
 - docs/releases/010/design/design-guidelines.md
 - docs/releases/010/design/repository-layout.md (update)
 
@@ -98,42 +99,10 @@ Closure criteria:
 - System architecture, data sources, user interface, compute, storage components laid out and defined.
 - App layers, module boundaries, and data flow paths are documented.
 - Read and write boundaries for each source system are explicit.
-- design patterns and conventions, variable naming, coding style, coding patterns, code organization layout, and documentation standards are defined and documented.
+- Design patterns and conventions, variable naming, coding style, coding patterns, code organization layout, and documentation standards are defined and documented.
 - Repository layout reflects final module structure.
-- scope and list of topics for detailed design documentation is defined and mapped to requirement topics.
-    design topics should not map trivially one-to-one with requirements topics. for example, the account classification does not need a design equivalent, it is already sufficient and can be referenced by the design. design will also include new topics not covered in requirements, such as architecture, api and data-pipeline.
-
-Closure evidence for 04.03.01:
-
-- System architecture document created at docs/releases/010/design/architecture.md.
-- Architecture includes component catalog table from raw data sources through backend, sqlite, and Google Sheets UI.
-- Architecture includes system diagram and component-level specifications with functions, constraints, requirements, and interfaces.
-
-Closure evidence for 04.03.04:
-
-Design document output inventory mapping all 19 design documents to task origins:
-
-| seq | design doc               | origin task  | purpose                                              |
-| --- | ------------------------ | ------------ | ---------------------------------------------------- |
-| 01  | architecture.md          | 04.03.01     | system architecture, component catalog, diagrams     |
-| 02  | design-guidelines.md     | 04.03.05     | design patterns, naming conventions, coding style    |
-| 03  | repository-layout.md     | 04.03 update | module structure, file organization, directory map   |
-| 04  | data-flow.md             | 04.03.03     | per-stage data paths, source-to-sink lineage         |
-| 05  | topic-map.md             | 04.03.04     | requirement-to-design traceability, component coverage |
-| 06  | workflows.md             | 04.04.01     | workflow stages, gates, orchestration behavior       |
-| 07  | reconciliation.md        | 04.04.02     | match algorithm, tolerance rules, variance handling  |
-| 08  | statements.md            | 04.04.03     | statement builder, output format, publish lifecycle  |
-| 09  | data-pipeline.md         | 04.04.04     | source ingest, lineage, transformation stages        |
-| 10  | bill-payment.md          | 04.04.05     | bill intake, share allocation, HomeBudget posting    |
-| 11  | user-interface.md        | 04.05.01     | Google Sheets, CLI, GAS surfaces, workbook structure |
-| 12  | homebudget.md            | 04.07.01     | HomeBudget wrapper contract, read/write patterns     |
-| 13  | google-sheets.md         | 04.07.02     | Google Sheets adapter contract, import/output flow   |
-| 14  | bank-statements.md       | 04.07.03     | bank CSV/Excel import contract, validation rules     |
-| 15  | ibkr.md                  | 04.07.04     | IBKR CSV import contract, section extraction         |
-| 16  | cpf.md                   | 04.07.05     | bill PDF and cash form input contract, validation    |
-| 17  | error-handling.md        | 04.08        | error taxonomy, propagation, recovery flows          |
-| 18  | design-index.md          | 04.10.01     | design doc index, status, requirement traceability   |
-| 19  | design-issues.md         | 04.09-04.10  | open decisions register, deferred items, closure log |
+- Scope and list of topics for detailed design documentation is defined and mapped to requirement topics.
+    Design topics should not map trivially one-to-one with requirements topics. For example, the account classification does not need a design equivalent, it is already sufficient and can be referenced by the design. Design will also include new topics not covered in requirements, such as architecture, API, and data-pipeline.
 
 Subtasks:
 
@@ -143,7 +112,63 @@ Subtasks:
 | 02  | 04.03.02 | closed  | app architecture module boundaries and assumptions |
 | 03  | 04.03.03 | closed  | data flow                                          |
 | 04  | 04.03.04 | closed  | topic map                                          |
-| 05  | 04.03.05 | open    | design patterns and conventions                    |
+| 05  | 04.03.05 | closed  | tech stack runtime and dependencies                |
+| 06  | 04.03.06 | closed  | design patterns and conventions                    |
+
+_04.03.01 (closed) system architecture_
+
+Closure evidence:
+
+- System architecture document created at docs/releases/010/design/architecture.md.
+- Architecture includes component catalog table from raw data sources through backend, sqlite, and Google Sheets UI.
+- Architecture includes system diagram and component-level specifications with functions, constraints, requirements, and interfaces.
+
+_04.03.04 (closed) topic map_
+
+Design document output inventory mapping all 20 design documents to task origins:
+
+| seq | design doc               | origin task  | purpose                                              |
+| --- | ------------------------ | ------------ | ---------------------------------------------------- |
+| 01  | architecture.md          | 04.03.01     | system architecture, component catalog, diagrams     |
+| 02  | design-guidelines.md     | 04.03.06     | design patterns, naming conventions, coding style    |
+| 03  | tech-stack.md            | 04.03.05     | tech stack, runtime profiles, dependencies, libraries |
+| 04  | repository-layout.md     | 04.03 update | module structure, file organization, directory map   |
+| 05  | data-flow.md             | 04.03.03     | per-stage data paths, source-to-sink lineage         |
+| 06  | topic-map.md             | 04.03.04     | requirement-to-design traceability, component coverage |
+| 07  | workflows.md             | 04.04.01     | workflow stages, gates, orchestration behavior       |
+| 08  | reconciliation.md        | 04.04.02     | match algorithm, tolerance rules, variance handling  |
+| 09  | statements.md            | 04.04.03     | statement builder, output format, publish lifecycle  |
+| 10  | data-pipeline.md         | 04.04.04     | source ingest, lineage, transformation stages        |
+| 11  | bill-payment.md          | 04.04.05     | bill intake, share allocation, HomeBudget posting    |
+| 12  | user-interface.md        | 04.05.01     | Google Sheets, CLI, GAS surfaces, workbook structure |
+| 13  | homebudget.md            | 04.07.01     | HomeBudget wrapper contract, read/write patterns     |
+| 14  | google-sheets.md         | 04.07.02     | Google Sheets adapter contract, import/output flow   |
+| 15  | bank-statements.md       | 04.07.03     | bank CSV/Excel import contract, validation rules     |
+| 16  | ibkr.md                  | 04.07.04     | IBKR CSV import contract, section extraction         |
+| 17  | cpf.md                   | 04.07.05     | bill PDF and cash form input contract, validation    |
+| 18  | error-handling.md        | 04.08        | error taxonomy, propagation, recovery flows          |
+| 19  | design-index.md          | 04.10.01     | design doc index, status, requirement traceability   |
+| 20  | design-issues.md         | 04.09-04.10  | open decisions register, deferred items, closure log |
+
+_04.03.05 (closed) tech stack runtime and dependencies_
+
+Closure evidence:
+
+- Tech stack design document created at docs/releases/010/design/tech-stack.md.
+- Runtime baseline defined for Windows local host, Python primary runtime, SQLite canonical persistence, Google Sheets UI, optional GAS bridge, optional Node.js extension runtime, and AWS S3 artifact boundary.
+- Component stack matrix completed for all architecture components in docs/releases/010/design/architecture.md, including runtime path and dependency and library mapping.
+- Workflow stage stack matrix completed for monthly close stages, bill payment workstream stages, and mapping maintenance workflow stages from docs/releases/010/design/workflows.md.
+- Library register documented with required and optional dependencies tied to functional requirements.
+
+_04.03.06 (closed) design patterns and conventions_
+
+Closure evidence:
+
+- Design guidelines document updated at docs/releases/010/design/design-guidelines.md.
+- Guidelines now align with selected runtime stack and boundaries: Flask plus Waitress API runtime, direct Google SDK adapter integration, backend-neutral SQL adapter boundary, and required ReportLab PDF render path.
+- API guidelines section added with route design, method policy, payload validation, idempotency key policy, error response contract, versioning policy, and a concrete workflow-stage endpoint example.
+- Config-driven pattern section added with config domains, startup validation, session configuration freeze policy, precedence rules, and secret reference policy.
+- Parameterization section added with stage, reconciliation, ingest, and publish parameter classes, validation rules, and audit persistence requirements.
 
 _04.04 (pending) domain behavior_
 
@@ -167,10 +192,58 @@ Subtasks:
 | seq | id       | status  | task                            |
 | --- | -------- | ------- | ------------------------------- |
 | 01  | 04.04.01 | closed  | workflows.md                    |
-| 02  | 04.04.02 | pending | reconciliation.md               |
+| 02  | 04.04.02 | open    | reconciliation.md               |
 | 03  | 04.04.03 | pending | statements.md                   |
 | 04  | 04.04.04 | pending | data-pipeline.md                |
 | 05  | 04.04.05 | pending | bill-payment.md                 |
+
+_04.04.02 (open) reconciliation.md_
+
+Design the reconciliation engine: the match algorithm, tolerance rules, variance handling, and per-account-group procedures for the reconcile stage of the monthly close workflow.
+
+Target output:
+
+- docs/releases/010/design/reconciliation.md
+
+Closure criteria:
+
+- Reconciliation engine module responsibilities and invocation contract with the workflow orchestrator are defined.
+- Transaction-level and balance-level method classes are specified with their matching algorithms, parameters, and expected outcomes.
+- Account-group procedures are documented for all in-scope groups: bank statement-process, HomeBudget-native, cash, IBKR, CPF, wallets and manual-input.
+- Tolerance rules, variance classification, and escalation paths are specified per account group.
+- Adjustment transaction contract is defined: fields, category assignment, auto-approve vs user-approval rules, and posting targets.
+- HB write-back behavior per account group is specified.
+- Reconciliation closure criteria and audit record requirements are defined.
+
+Primary sources:
+
+- `docs/releases/010/requirements/reconciliation-engine.md` — shared workflow phases, method classes, account-group procedures, tolerance and closure rules, adjustment contract, bill accrual conflict policy
+- `docs/releases/010/requirements/accounting-logic.md` — reconciliation date policy, reconciliation method classes by account type
+- `docs/releases/010/design/workflows.md` (stage 6: reconcile) — orchestrator integration points, step sequence, inputs table, components table, error table; do not duplicate stage-level content; cross-reference it
+- `docs/releases/010/design/architecture.md` — reconciliation engine component spec and module boundary
+- `docs/releases/010/design/design-guidelines.md` — API, config, parameterization, and naming conventions to apply
+- `reference/hb-reconcile/docs/reconcile.md` — legacy reconciliation algorithm and gap equation; use as implementation evidence for method class specifications
+- `reference/hb-reconcile/src/reconcile/reconcile.py` — forward and backward transaction matching implementation; use as algorithm evidence, not as baseline contract
+- `reference/hb-reconcile/account_settings/txn_heuristics.json` — account-level tolerance values and heuristic controls; use to inform parameter defaults and account-specific heuristic table
+
+Topics the design document must specify:
+
+- Module boundary: what the reconciliation engine owns vs what the workflow orchestrator and account close runtime own
+- Invocation contract: how the orchestrator triggers the engine per account and how status is returned
+- Method class specifications: transaction-level (forward and backwards algorithm, edits model, gap equation, heuristics, parameters) and balance-level (generic balance equation, outcome classes)
+- Account-group procedure table: method class, comparison basis, source schemas, tolerance, adjustment outcome per group
+- Variance handling rules: zero variance, within tolerance, exceeds tolerance — approval path and auto-approve conditions for each
+- Adjustment transaction fields and posting targets: close_book schema plus HB write-back where applicable
+- Bill accrual conflict policy design: how the four conflict classes (no conflict, near-end-of-month, cross-period, partial payment) map to engine behavior
+- Reconciliation session record: what is persisted at close, lineage fields, audit trail requirements
+- Config and parameter contract: which tolerance values are config-driven, parameterization class for reconcile parameters
+
+Out of scope for this document:
+
+- Stage 6 step sequence (owned by workflows.md)
+- Integration adapter contracts for HB wrapper or bank statement parser (owned by 04.07 docs)
+- Data pipeline ingest logic (owned by data-pipeline.md)
+- Statement builder inputs and outputs (owned by statements.md)
 
 _04.05 (pending) UI and interaction_
 

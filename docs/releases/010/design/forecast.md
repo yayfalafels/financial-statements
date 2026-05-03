@@ -12,7 +12,7 @@ status: draft
 
 ## Summary
 
-This document defines the forecasting design for release 0.1.0. Forecast is user-driven in Google Sheets interactive worksheets and is persisted by the app into dedicated forecast tables.
+This document defines the forecasting design. Forecast is user-driven in Google Sheets interactive worksheets and is persisted by the app into dedicated forecast tables.
 
 - Forecast values are authored in account currency. Common currency projection is produced by running forex translation on top of account currency forecast results.
 - Reporting-year consolidated statements combine reconciled actuals month to date and forecast for remaining months.

@@ -11,7 +11,7 @@ status: draft
 
 ## Summary
 
-This document maps the full set of design topics for release 0.1.0 to their target design documents. It serves two purposes: requirement traceability — every owner requirement topic is either mapped to a design doc or explicitly excluded with rationale — and component coverage — every architecture component is assigned to a design doc or grouped under a covering doc.
+This document maps the full set of design topics to their target design documents. It serves two purposes: requirement traceability — every owner requirement topic is either mapped to a design doc or explicitly excluded with rationale — and component coverage — every architecture component is assigned to a design doc or grouped under a covering doc.
 
 ## Table of contents
 
@@ -77,9 +77,10 @@ These design docs have no direct requirement equivalent. They cover structural, 
 | -- | ---------------------- | ---------------------------------------------------------------------------------------- |
 | 01 | architecture.md        | end-to-end system component model, layer boundaries, and runtime placement               |
 | 02 | design-guidelines.md   | naming conventions, coding style, patterns, and documentation standards                  |
-| 03 | repository-layout.md   | module structure and source tree organization                                            |
-| 04 | data-flow.md           | per-stage data flow from external sources through backend to close_book and outputs      |
-| 05 | topic-map.md           | this document                                                                            |
+| 03 | tech-stack.md          | runtime profiles, dependency policy, component and workflow stack mapping                |
+| 04 | repository-layout.md   | module structure and source tree organization                                            |
+| 05 | data-flow.md           | per-stage data flow from external sources through backend to close_book and outputs      |
+| 06 | topic-map.md           | this document                                                                            |
 
 Supporting docs that exist in the design output path but are not primary design output:
 
@@ -120,7 +121,7 @@ These components are covered within the design doc of their parent or primary co
 | -- | --------------------- | -------------------- | ----------------------------------------------------------- |
 | 01 | source adapters       | data-pipeline.md     | bank CSV, IBKR CSV, PDF archive grouped under pipeline      |
 | 02 | mapping CRUD module   | data-pipeline.md     | category mapping lifecycle is part of pipeline design       |
-| 03 | SQLite adapter        | architecture.md      | thin SQLAlchemy wrapper; boundary convention only           |
+| 03 | SQLite adapter        | architecture.md      | backend-neutral sql boundary; boundary convention only      |
 | 04 | Google Sheets adapter | google-sheets.md     | app sheet read and write boundary in Google Sheets design   |
 | 05 | AWS storage adapter   | statements.md        | artifact publish and archive path in statements design      |
 | 06 | logging module        | error-handling.md    | audit event and log policy alongside error handling         |

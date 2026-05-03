@@ -30,6 +30,8 @@ It presents shared policies and workflow phases first, then defines transaction-
   - [Lineage and audit requirements](#lineage-and-audit-requirements)
 - [Reconciliation method classes](#reconciliation-method-classes)
   - [Transaction-level method class](#transaction-level-method-class)
+    - [Semantic matching layer](#semantic-matching-layer)
+    - [Transfer-expense pairing](#transfer-expense-pairing)
   - [Balance-level method class](#balance-level-method-class)
 - [Account-group procedures](#account-group-procedures)
   - [Bank statement-process accounts](#bank-statement-process-accounts)
@@ -110,6 +112,8 @@ Reconciliation proceeds on a per-account basis. Each account follows the same sh
 
 - If variance is within tolerance, notify user of prepared adjustment; user can approve, investigate, or request modification.
 - If variance exceeds tolerance, flag account variance and present adjustment for user review before approval.
+- For transaction-level reconciliation, present semantic matching pairs and transfer-expense pairing proposals for user review before posting.
+- User can edit, add, or remove proposed pair and edit records before final approval.
 - User approval is required before posting.
 - Post approved adjustment to close_book schema.
 - Post approved adjustment to target system through wrapper interface when applicable.
@@ -127,8 +131,9 @@ Reconciliation proceeds on a per-account basis. Each account follows the same sh
 | -- | ------------------- | ---------------------------------------- |
 | 01 | source readiness    | required source datasets are available   |
 | 02 | match and classify  | transaction and balance matching passes  |
-| 03 | variance review     | residual variance reviewed and explained |
-| 04 | close decision      | close criteria satisfied for all paths   |
+| 03 | semantic pairing    | proposed semantic and transfer-expense pairings reviewed |
+| 04 | variance review     | residual variance reviewed and explained |
+| 05 | close decision      | close criteria satisfied for all paths   |
 
 ## Tolerance rules and variance escalation
 
@@ -283,6 +288,28 @@ Account-specific heuristics:
 
 - DBS Multi SGD, CPF net-zero cluster using CPF keyword matching.
 - UOB One SGD, cashback split cluster where one ledger cashback equals multiple statement rebate lines.
+
+### Semantic matching layer
+
+After heuristics, transaction-level reconciliation applies a semantic matching layer over remaining `add` and `remove` edits.
+
+- Pairing scope is account and period.
+- Pairing compares `add.note` and `remove.note` with semantic or heuristic matching rules.
+- Date proximity must satisfy `date_tolerance_days`.
+- For approved pairs, the `add` edit is removed, the `remove` edit is reclassified as `update` and `edit_amount` is set to the paired `add.amount`.
+- User review is required before semantic pair actions are committed.
+- User can create, update, or delete pair and edit records before approval.
+
+### Transfer-expense pairing
+
+After semantic statement-ledger pairing is approved, reconciliation applies transfer-expense pairing for `TWH - Personal` zero-sum behavior.
+
+- Pairing scope is one transfer against one expense unless an account heuristic enables multi-transaction grouping.
+- Pairing requires date proximity within `date_tolerance_days` and amount equivalence where `transfer.amount = -expense.amount`.
+- When multiple candidates exist, tie-breakers are semantic note match first, then date proximity.
+- Pairing actions map from transfer edit type to expense CRUD actions.
+- All transfer-expense actions are staged for user review and approval before HomeBudget write-back.
+- If no approved pairing exists, user performs manual expense repair and reconcile cannot close with unresolved blocking variance.
 
 ### Method parameters
 

@@ -9,7 +9,7 @@ last_updated: 2026-05-02
 
 ## Summary
 
-This document defines the POC system architecture for release 0.1.0 and describes the end-to-end component model from raw external data sources through local processing to the Google Sheets review interface and HomeBudget write-back paths.
+This document defines the POC system architecture and describes the end-to-end component model from raw external data sources through local processing to the Google Sheets review interface and HomeBudget write-back paths.
 
 The architecture is local-first, single-user, and session-based. Google Sheets is the primary session UI, HomeBudget remains the operational ledger UI, and local SQLite is the canonical application persistence layer for close-cycle state and outputs.
 S3 is an external artifact and archive integration for publish and lineage evidence handling.
@@ -609,6 +609,8 @@ Constraints:
 
 - Domain modules must not execute direct SQL outside this adapter.
 - SQL execution paths must be deterministic and auditable for close reruns.
+- Adapter contracts must be backend-neutral and must not expose SQLite-specific behavior to calling modules.
+- Transaction, query, and persistence operations must be expressed through stable adapter interfaces so that a cloud SQL adapter can replace the SQLite-backed implementation without caller-side contract changes.
 
 Requirement alignment:
 

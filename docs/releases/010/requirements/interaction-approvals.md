@@ -16,6 +16,7 @@ scope: poc
 - [Review checkpoints by workflow stage](#review-checkpoints-by-workflow-stage)
 - [Checkpoint criteria by workflow stage](#checkpoint-criteria-by-workflow-stage)
 - [Required user confirmations before commit](#required-user-confirmations-before-commit)
+- [Reconcile-stage required approvals](#reconcile-stage-required-approvals)
 - [Approval authority](#approval-authority)
 - [Escalation boundary](#escalation-boundary)
 - [Decision logging and readability requirements](#decision-logging-and-readability-requirements)
@@ -53,7 +54,7 @@ This document defines requirements for user interaction and approval behavior du
 | 02 | forex       | exchange-rate source and period checks                         |
 | 03 | data ingest | source files received and GS UI entries confirmed              |
 | 04 | data sync   | mapping sanity and `hb_gl_txn` plus dimension refresh status   |
-| 05 | reconcile   | variance review and close-blocking outcomes                    |
+| 05 | reconcile   | ledger edits and semantic pairing, transfer-expense pairing, and variance review |
 | 06 | statements  | statement totals and classification review                     |
 | 07 | publish     | final artifact confirmation                                    |
 
@@ -66,13 +67,20 @@ This document defines requirements for user interaction and approval behavior du
 | 02 | forex       | period rates loaded for all required pairs; values within expected range         |
 | 03 | data ingest | statement files received for all digital twin accounts; GS UI entries confirmed  |
 | 04 | data sync   | hb schema refreshed; route gates closed or overridden; mapping completeness pass |
-| 05 | reconcile   | all account-group variances within tolerance or user-approved; no blocking items |
+| 05 | reconcile   | pairing decisions approved; variances resolved or approved; no blocking items    |
 | 06 | statements  | statement totals reviewed; income and balance sheet alignment confirmed          |
 | 07 | publish     | artifacts generated; S3 upload complete; session close record committed          |
 
 A failed checkpoint blocks downstream commit actions until all pass criteria are met. Criteria are derived from stage exit conditions in workflow-orchestration.md, reconciliation engine Phase 1 input validation, and finalization criteria in statements-lifecycle.md.
 - Confirmation is required before publish and period close.
 - Confirmation records user identity and timestamp.
+
+## Reconcile-stage required approvals
+
+- User must review ledger edits and semantic statement-ledger pairing proposals before commit.
+- User must review transfer-expense pairing proposals and any staged expense CRUD actions before commit.
+- User may edit, add, or remove proposed pairing and edit records before approval.
+- Reconcile cannot close while unresolved blocking pairing findings remain.
 
 ## Approval authority
 

@@ -82,7 +82,7 @@ Two additional specialized agents are identified as high-value candidates for th
 | proposed agent         | rationale                                                                                                  |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `financial-accounting` | M2M, forex, double-entry, CPF rules, and reconciliation policy require domain-specific validation.         |
-| `python-data`          | SQLite schema, pandas pipelines, SQLAlchemy, HomeBudget and sqlite-gsheet wrappers need consistent idioms. |
+| `python-data`          | SQLite schema, pandas pipelines, SQL adapter boundaries, HomeBudget and sqlite-gsheet wrappers need consistent idioms. |
 
 ---
 
@@ -232,7 +232,7 @@ The following tasks carry the highest potential for error propagation or materia
 AI coding agents, including GitHub Copilot in agent mode, perform well on the following task types:
 
 - Generating boilerplate Python modules, CLI argument parsers, and file I/O scaffolding from clear specifications.
-- Translating well-defined schema design into SQLite DDL and SQLAlchemy ORM definitions.
+- Translating well-defined schema design into SQLite DDL and backend-neutral SQL adapter contracts.
 - Identifying duplicate code, refactoring for readability, and suggesting idiomatic Python patterns when given sufficient context.
 - Writing unit tests for pure functions with deterministic inputs and outputs.
 - Generating markdown documentation from structured specifications.

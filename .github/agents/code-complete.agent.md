@@ -19,6 +19,16 @@ handoffs:
 
 # Code Complete Agent
 
+## MANDATORY: Markdown table rules
+
+- when creating any markdown table, ensure that it conforms to the guidelines in skill `markdown-tables`
+- row length max < 115 characters
+- padded to fixed width columns
+- avoid lengthy description and notes fields, simplify, use aliases and shorthand, separate explanatory prose or list sections for lengthy explanations outside of the table.
+- include a numeric `01` id column to the far left.
+- lowercase column names
+- do not over-complicate the process of generating the tables to meet this requirement. use heuristics, DO NOT count characters, use your judgement, apply heuristics, review sample templates from within the documentation, make a pass and write the table.
+
 ## Purpose
 
 - Implement approved design artifacts into maintainable Python modules.

@@ -279,6 +279,7 @@ Account-level stage exits:
 - Data ingest exits per account when staged files are validated and lineage anchors are recorded, or GS UI entries are confirmed via GS adapter.
 - Data sync exits per account only when route gate conditions are met or an approved explicit skip state is recorded.
 - Reconcile exits per account only when the account route gate is closed and unresolved blocking variance is not present.
+- Reconcile exits per account only when edits and semantic pairing and transfer-expense pairing reviews are resolved, approved, or explicitly rejected with logged rationale.
 - Session-level data download is complete when all in-scope accounts have reached download-ready status.
 - Session-level reconcile is complete when all in-scope accounts are reconcile-closed or overridden.
 
@@ -313,7 +314,7 @@ Data sync is fully app-driven once data ingest is complete. For HomeBudget-sourc
 | 03 | data download | download-ready status per account, recorded GS UI entries                   |
 | 04 | data ingest   | staged files in ingest dir, lineage anchors, per-account feedback           |
 | 05 | data sync     | refreshed hb schema sync state, stm twin records, route-gate statuses       |
-| 06 | reconcile     | reconcile closure status per account, variance log                          |
+| 06 | reconcile     | account closure status, variance log, pairing decisions, staged expense CRUD |
 | 07 | statements    | draft income statement and balance sheet for review                         |
 | 08 | publish       | finalized PDF statements, S3 upload, session close record                   |
 
