@@ -189,15 +189,15 @@ Closure criteria:
 
 Subtasks:
 
-| seq | id       | status  | task                            |
-| --- | -------- | ------- | ------------------------------- |
-| 01  | 04.04.01 | closed  | workflows.md                    |
-| 02  | 04.04.02 | open    | reconciliation.md               |
-| 03  | 04.04.03 | pending | statements.md                   |
-| 04  | 04.04.04 | pending | data-pipeline.md                |
-| 05  | 04.04.05 | pending | bill-payment.md                 |
+| seq | id       | status  | task                         |
+| --- | -------- | ------- | ---------------------------- |
+| 01  | 04.04.01 | closed  | workflows                    |
+| 02  | 04.04.02 | open    | reconciliation               |
+| 03  | 04.04.03 | pending | statements                   |
+| 04  | 04.04.04 | pending | data-pipeline                |
+| 05  | 04.04.05 | pending | bill-payment                 |
 
-_04.04.02 (open) reconciliation.md_
+_04.04.02 (open) reconciliation_
 
 Design the reconciliation engine: the match algorithm, tolerance rules, variance handling, and per-account-group procedures for the reconcile stage of the monthly close workflow.
 
@@ -244,6 +244,33 @@ Out of scope for this document:
 - Integration adapter contracts for HB wrapper or bank statement parser (owned by 04.07 docs)
 - Data pipeline ingest logic (owned by data-pipeline.md)
 - Statement builder inputs and outputs (owned by statements.md)
+
+| seq | id          | status  | task                         |
+| --- | ----------- | ------- | ---------------------------- |
+| 01  | 04.04.02.01 | closed  | semantic matching add        |
+| 02  | 04.04.02.02 | open    | ibkr method review           |
+
+_04.04.02.01 (closed) semantic matching add_
+
+add two semantic matching methods
+
+1. **statement-ledger** pair related add-remove edits and convert to `update` edit type, reducing the manual entry burden of categorizing `add` edits
+2. **transfer-expense** pair hb bank statement transfer to expenses in the `TWH - Personal` cost center, matching on amount and date proximity, to reduce the manual entry burden of updating HomeBudget expenses in order to ensure the zero-sum property of the cost center when reconciliation edits are applied to the transfers
+
+updates
+
+| seq | id             | status  | task                                                            |
+| --- | -------------- | ------- | --------------------------------------------------------------- |
+| 01  | 04.04.02.01.01 | closed  | apply updates in impacted locations in requirements and design  |
+| 02  | 04.04.02.01.02 | closed  | identify update locations in reconciliation doc                 |
+| 03  | 04.04.02.01.03 | closed  | required inputs add hb exp                                      |
+| 04  | 04.04.02.01.04 | closed  | outputs add stm_ledger_pairs and xfr_exp_pairs                  |
+| 05  | 04.04.02.01.05 | closed  | post condition split into publish and post gates                |
+| 06  | 04.04.02.01.06 | closed  | audit checkpoints add semantic matching and xfr-exp gates       |
+| 07  | 04.04.02.01.07 | closed  | closure criteria add zero-sum cost center check                 |
+| 08  | 04.04.02.01.08 | closed  | module invocation contract outputs add pairs                    |
+| 09  | 04.04.02.01.09 | closed  | OOP dispatch add semantic matching and xfr-exp pairing steps    |
+
 
 _04.05 (pending) UI and interaction_
 

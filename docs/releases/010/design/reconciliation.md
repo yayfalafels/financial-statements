@@ -302,6 +302,7 @@ Method behavior is controlled by account-specific parameters stored in `txn_heur
 - `year` — int: calendar year
 - `month` — int: calendar month, 1–12
 - `hb_gl` — DataFrame: HomeBudget GL with columns `[account, date, year, month, txn_type, amount, category, subcategory, payee, notes]`
+- `hb_exp` — DataFrame: HomeBudget expenses for the month with columns `[date, year, month, amount, category, subcategory, account, notes]`
 - `stm_gl` — DataFrame: statement GL with columns `[account, date, year, month, amount, description]`
 - `balances` — DataFrame: balance dataset with columns `[account, date, year, month, balance]` — must contain prior month and current month rows
 - `txn_heuristics_config` — dict: loaded configuration from `txn_heuristics.json`
@@ -315,11 +316,21 @@ Method behavior is controlled by account-specific parameters stored in `txn_heur
 1. `edits` — DataFrame: table with columns `[source, date, amount, edit, edit_amount, note, ledger_idx, stmt_idx]`
 2. `gap` — decimal: final reconcile gap, should be 0.00 or within rounding tolerance
 3. `matches` — list: `(ledger_idx, stmt_idx)` tuples from forward pass
-4. `metadata` — dict: invocation metadata including opening_balance, statement_end_balance, ledger_end_balance, forward_edits_count, backward_edits_count, heuristics_applied
+4. `stm_ledger_pairs` — list: `(stmt_idx, ledger_idx)` tuples from semantic matching layer
+5. `xfr_exp_pairs` — list: `(transfer_idx, expense_idx)` tuples from transfer-expense pairing
+6. `metadata` — dict: invocation metadata including opening_balance, statement_end_balance, ledger_end_balance, forward_edits_count, backward_edits_count, heuristics_applied
 
-**Post-condition:**
+**Publish gate:**
+conditions to publish edits for user review:
 - `gap == 0.00`, within currency rounding tolerance 0.01
 - `forward_edits == backward_edits` after heuristics application — a mandatory correctness assertion
+
+**Post gate:**
+conditions after user review and approval
+- User-approved and updated edits received
+- User-added transactions incorporated
+- Second-pass validation confirms `gap == 0.00` and `forward_edits == backward_edits` after user adjustments
+- Zero-sum cost center check for `TWH - Personal` passes
 
 **Failure modes:**
 - Missing opening balance → raise `MissingOpeningBalanceError`
@@ -881,8 +892,10 @@ Each session must retain source-of-truth references for traceability:
 | 02 | validation pass      | `validation_checkpoint_timestamp`| if successful      | source validated      |
 | 03 | matching complete    | `matching_complete_timestamp`    | always             | variance computed     |
 | 04 | variance evaluated   | `variance_evaluation_timestamp`  | always             | tolerance compared    |
-| 05 | adjustment generated | `adjustment_created_timestamp`   | if variance != 0   | adjustment created    |
-| 06 | user approval        | `user_approval_timestamp`        | if exceeds tol     | explicit decision     |
+| 05  | adjustment generated| `adjustment_created_timestamp`   | if variance != 0   | adjustment created    |
+| 05a | semantic matching   | `semantic_matching_timestamp`    | if txn-level       | stm-ledger pairs      |
+| 05b | xfr-expense pairs   | `xfr_exp_pairing_timestamp`      | if xfr edits exist | transfer-expense pairs|
+| 06  | user approval       | `user_approval_timestamp`        | if exceeds tol     | explicit decision     |
 | 07 | adjustment posted    | `adjustment_posted_timestamp`    | if adjustment exists| posted to targets    |
 | 08 | session closed       | `session_closed_timestamp`       | always             | end account run       |
 
@@ -895,6 +908,7 @@ Each session must retain source-of-truth references for traceability:
 - If variance exceeds tolerance, user approval recorded with timestamp and optional comment.
 - Adjustment, if generated, posted to close_book; HB write-back attempted for applicable account groups.
 - Reconciliation report generated with period, account, variance, tolerance status, and checkpoint outcomes.
+- Zero-sum cost center check for `TWH - Personal` passes: net of all posted and staged transfer edits equals net of all staged expense edits.
 - Session status transitioned to `complete`, `overridden`, or `failed`.
 
 **Retention and Queryability:**
@@ -956,6 +970,8 @@ The reconciliation engine is invoked by the workflow orchestrator at reconcile s
 **Outputs:**
 - `session_record`: Reconciliation session with status, variance, approval decision.
 - `adjustment_record`: If variance non-zero; adjustment_id, amount, status, posting target.
+- `stm_ledger_pairs`: list of `(stmt_idx, ledger_idx)` tuples from semantic matching (txn-level accounts only).
+- `xfr_exp_pairs`: list of `(transfer_idx, expense_idx)` tuples from transfer-expense pairing (txn-level accounts only).
 - `report`: Human-readable reconciliation report with matched/unmatched counts, variance explanation.
 
 **Error Handling:**
@@ -992,9 +1008,15 @@ execute_reconciliation(account_id, period_key)
   ├─ instantiate_method(account_group) → TransactionLevelMethod | BalanceLevelMethod
   ├─ method.validate_inputs(account_id, period_key, source_schemas)
   ├─ method.compute_gap(account_id, period_key) → Decimal
+  ├─ method.apply_heuristics(edits) → edits (reduced)
+  ├─ method.apply_semantic_matching(edits) → stm_ledger_pairs, edits (updated)
+  ├─ method.apply_xfr_expense_pairing(stm_ledger_pairs, hb_exp) → xfr_exp_pairs
+  ├─ publish_for_user_review(edits, stm_ledger_pairs, xfr_exp_pairs)
+  ├─ [user review gate]
   ├─ method.classify_variance(gap, tolerance_config) → 'zero' | 'within_tolerance' | 'exceeds_tolerance'
   ├─ method.generate_adjustment(...) → dict | None
   ├─ evaluate_variance() + request_user_approval_if_needed()
+  ├─ method.validate_post_gate(gap, forward_edits, cost_center_zero_sum)
   ├─ post_adjustment_to_close_book()
   └─ close_session() → ReconciliationSession
 ```
