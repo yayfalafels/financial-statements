@@ -177,9 +177,9 @@ Primary sources and what each provides:
 | --- | --- |
 | **scope** | [ibkr-integration.md](../requirements/ibkr-integration.md) |
 | **gap** | Specification defines top-down derivation for position change and capital gains, but doesn't specify:  - What HomeBudget transactions are created? Only end-of-period M2M? Individual trade records? Neither? <br> - Is intramonth trading activity recorded at transaction level, or only aggregated as end-of-month position delta? <br> - What schema holds intermediate derivation before validation? |
-| **impact** | Affects IBKR reconciliation procedure, HomeBudget posting design, and close_book structure for investment accounts. |
+| **impact** | Affects IBKR source integration deterministic parse flow, HomeBudget posting design, and close_book structure for investment accounts. |
 | **blocker** | **yes** |
-| **design decision blocked** | IBKR transaction posting design, IBKR reconciliation procedure, investment schema structure |
+| **design decision blocked** | IBKR transaction posting design, IBKR source integration procedure, investment schema structure |
 
 ### B-03: Bill statement parsing contract is incomplete
 
@@ -695,7 +695,7 @@ Primary sources that define current behavior:
 - `docs/requirements/source-systems-lineage.md`
 	- cross-path reconciliation validation points and lineage requirements
 - `docs/requirements/ibkr-integration.md`
-	- IBKR reconcile equations, close-gate conditions, and account-specific
+	- IBKR deterministic derivation equations, close-gate conditions, and account-specific
 	acceptance checks
 - `docs/requirements/cpf-integration.md`
 	- CPF sub-account balance equation and gap-handling conditions

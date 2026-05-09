@@ -97,7 +97,7 @@ The product-manager agent owns this stage. Tasks span end-user workflow translat
 | R-01 | Translate monthly close workflow steps into structured requirements            | workflow, UX           | product-manager                        |
 | R-02 | Define stage entry and exit criteria for all seven workflow stages             | workflow orchestration | product-manager                        |
 | R-03 | Document accounting policy: M2M, forex, double-entry, income vs transfer      | accounting logic       | product-manager + financial-accounting |
-| R-04 | Define reconciliation procedures by account group: bank, HB, cash, IBKR, CPF | reconciliation         | product-manager + financial-accounting |
+| R-04 | Define reconciliation procedures by account group: bank, HB, cash, CPF        | reconciliation         | product-manager + financial-accounting |
 | R-05 | Define category mapping requirements: taxonomy, gates, blocking conditions    | transaction categories | product-manager                        |
 | R-06 | Define data model schema ownership and lineage boundaries                     | data model             | product-manager + design               |
 | R-07 | Define exception and error handling policy: categories, escalation paths      | error handling         | product-manager                        |

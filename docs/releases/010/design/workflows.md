@@ -167,9 +167,11 @@ Phase 1 validates that the session is ready to begin before committing the targe
 | 1.2  | orchestrator reads period selection from Google Sheets adapter           |
 | 1.3  | backend validates period is not already finalized                        |
 | 1.4  | environment configuration checked for required keys                     |
-| 1.5  | source readiness checklist evaluated                                     |
-| 1.6  | user confirms source readiness checkpoint in GS UI                      |
-| 1.7  | pre-flight status recorded; orchestrator advances to forex and download  |
+| 1.5  | system validates `txn_heuristics.json` and `tolerance_config.json`      |
+| 1.6  | system enforces UI-managed policy source and records config snapshot id  |
+| 1.7  | source readiness checklist evaluated                                     |
+| 1.8  | user confirms source readiness checkpoint in GS UI                      |
+| 1.9  | pre-flight status recorded; orchestrator advances to forex and download  |
 
 #### Inputs
 
@@ -177,6 +179,7 @@ Phase 1 validates that the session is ready to begin before committing the targe
 | ------------------- | -------------------- | --------------- | ------------------------------------------- |
 | target period       | Google Sheets UI     | YYYY-MM string  | user-entered; validated against session reg |
 | environment config  | config file          | key-value store | required keys: db path, gsheet key, s3 path |
+| recon config        | UI policy + config   | json + snapshot | includes `txn_heuristics` and `tolerance` |
 | prior period status | session_audit schema | SQLite record   | confirms prior period is not open           |
 
 #### Components
@@ -185,6 +188,7 @@ Phase 1 validates that the session is ready to begin before committing the targe
 | ------------------------ | ------------------------------------------------------------- |
 | Google Sheets session UI | presents period selector and source readiness checklist       |
 | Google Sheets adapter    | reads user-entered period and checklist confirmation          |
+| config loader and validator | validates policy config and builds session snapshot          |
 | workflow orchestrator    | evaluates pre-flight gate and routes to next stages           |
 | SQLite adapter           | reads session_audit for prior period state                    |
 | backend API              | routes pre-flight request from GS UI                         |
@@ -194,6 +198,7 @@ Phase 1 validates that the session is ready to begin before committing the targe
 - Period string is parsed and validated as a valid calendar month.
 - Prior period state is queried from session_audit schema.
 - Config key presence is verified; missing keys produce a config error.
+- Reconciliation config files are validated at pre-flight startup and frozen into a session config snapshot.
 
 #### User actions
 
@@ -204,6 +209,8 @@ Phase 1 validates that the session is ready to begin before committing the targe
 
 - Target period must be a valid calendar month that has not already been finalized.
 - Required environment config keys must be present and non-empty.
+- `txn_heuristics.json` and `tolerance_config.json` must pass schema and key validation before stage exit.
+- Reconciliation policy values must be sourced via the UI-managed config path; unsafe direct-file bypass is rejected.
 - Source readiness checklist confirmation must be recorded before exit.
 
 #### Possible errors
@@ -212,6 +219,8 @@ Phase 1 validates that the session is ready to begin before committing the targe
 | ------------------------------ | -------- | ------------------------------------------------- |
 | period already finalized       | blocking | exits with error; user must select another period |
 | missing environment config key | blocking | exits with config error; user must fix config     |
+| invalid reconciliation config  | blocking | exits with config error; fix via UI policy path   |
+| config source bypass detected  | blocking | pre-flight fails; direct JSON editing not accepted |
 | checklist not confirmed        | blocking | stage does not advance until user confirms        |
 
 ---
@@ -557,12 +566,12 @@ Each account uses the reconcile method defined for its group. Accounts within a 
 | account group | method        | source                | vs.                  | reconcile gate                  |
 | ------------- | ------------- | --------------------- | -------------------- | ------------------------------- |
 | bank accounts | txn-level     | `statements` schema   | `hb_gl_txn`          | statement ingest complete       |
-| IBKR          | balance-level | IBKR NAV / activity   | `hb_account_dim` bal | CSV parse and NAV done          |
 | CPF           | balance-level | CPF roll-forward      | `hb_account_dim` bal | UI entry confirmed; roll-fwd ok |
 | cash          | balance-level | cash form + close bal | `hb_gl_txn` cash agg | close balance and gap logged    |
 | wallets       | balance-level | observed balance      | `hb_account_dim` bal | observed balance reviewed       |
 | investments   | balance-level | valuation snapshot    | `hb_account_dim` bal | pricing and valuation done      |
 | others        | varies        | source-specific       | source-specific      | source-specific checks done     |
+
 
 #### Inputs
 
@@ -572,7 +581,6 @@ Each account uses the reconcile method defined for its group. Accounts within a 
 | `hb_gl_txn` records         | SQLite adapter (HB sync)    | HB transaction rows       |
 | `hb_account_dim`            | SQLite adapter (HB sync)    | account balance records   |
 | CPF roll-forward result     | SQLite adapter              | balance per sub-account   |
-| IBKR NAV and activity       | SQLite adapter              | NAV and trade records     |
 | valuation snapshots         | SQLite adapter (close_book) | valuation per holding     |
 | tolerance thresholds        | config / constants          | numeric per account group |
 | category mapping            | mapping schema (SQLite)     | `gl_code` per category    |
@@ -580,7 +588,7 @@ Each account uses the reconcile method defined for its group. Accounts within a 
 - `statements`: bank transaction rows parsed from statement files.
 - `hb_gl_txn`: period-scoped; category and account dimensions joined.
 - `hb_account_dim`: per-account HB balances including period-end balance.
-- CPF, IBKR NAV, and valuation snapshots: all computed in data sync stage.
+- CPF and valuation snapshots: all computed in data sync stage.
 - Tolerance thresholds: SGD 20 for cash; 0.01 precision for bank accounts.
 - Category mapping: applied during match to classify residual transactions.
 
@@ -598,13 +606,12 @@ Each account uses the reconcile method defined for its group. Accounts within a 
 #### Transformations and operations
 
 - Transaction-level (bank): statement rows matched against `hb_gl_txn` by date, amount, account; residual rows are variance.
-- Balance-level (IBKR, CPF, wallets, investments): period-end balance compared vs HB account balance; difference is variance.
+- Balance-level (CPF, wallets, investments): period-end balance compared vs HB account balance; difference is variance.
 - Cash: transaction aggregation vs HB cash transactions plus close balance; delta is variance.
 - Adjustment created with: account, amount, category (`gl_code`), adjustment rule reference, period, timestamp.
 - Approved entries posted to `close_book` schema.
 - HB write-back via wrapper executed at reconcile close for all account groups; behavior varies by expected HB state:
   - bank accounts: aim of reconciliation; matched source rows validated as existing in HB; unmatched source rows create new HB entries via wrapper.
-  - IBKR: transactions normally absent from HB at close time; new entries created via wrapper.
   - cash: transactions normally absent from HB at close time; new entries created via wrapper.
   - investments: valuation entries normally absent from HB at close time; new entries created via wrapper.
   - CPF: transactions expected to already exist in HB (entered by user); wrapper validates presence and flags if any are missing.

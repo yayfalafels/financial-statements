@@ -4,11 +4,48 @@ doc_type: design
 topic_type: owner
 owner: reconciliation-engine
 scope: poc
-last_updated: 2026-05-03
+last_updated: 2026-05-09
 status: draft
 ---
 
 # Reconciliation Design
+
+## Table of contents
+
+- [Summary](#summary)
+- [Authority](#authority)
+- [Design Principles](#design-principles)
+  - [Layered Dependency Flow](#layered-dependency-flow)
+  - [Method Dispatch via Account-Group Classification](#method-dispatch-via-account-group-classification)
+  - [Heuristics as Configuration](#heuristics-as-configuration)
+  - [Determinism and Idempotency Guarantees](#determinism-and-idempotency-guarantees)
+- [Key Design Decisions](#key-design-decisions)
+- [Implementation guidelines](#implementation-guidelines)
+- [Testing Strategy](#testing-strategy)
+- [OOP Architecture and Repository Layout](#oop-architecture-and-repository-layout)
+  - [Class Hierarchy Overview](#class-hierarchy-overview)
+  - [Method Dispatch Contract](#method-dispatch-contract)
+  - [Library Dependencies](#library-dependencies)
+  - [Implementation Constraints](#implementation-constraints)
+  - [Repository Layout](#repository-layout)
+- [Module Structure and Layered Architecture](#module-structure-and-layered-architecture)
+  - [Layer 1: Models](#layer-1-models)
+  - [Layer 2: Utilities](#layer-2-utilities)
+  - [Layer 3: Methods](#layer-3-methods)
+  - [Layer 4: Shared Adapters](#layer-4-shared-adapters)
+  - [Layer 5: Orchestration](#layer-5-orchestration)
+  - [Configuration](#configuration)
+  - [Data Flow Example](#data-flow-example)
+- [Method Class Specifications](#method-class-specifications)
+  - [Transaction-level Method Class](#transaction-level-method-class)
+  - [Balance-level Method Class](#balance-level-method-class)
+  - [Cross-cutting Concerns](#cross-cutting-concerns)
+- [Account-group Procedures](#account-group-procedures)
+  - [Procedure Table](#procedure-table)
+  - [Variance Interpretation Matrix](#variance-interpretation-matrix)
+  - [Tolerance Rules by Account Group](#tolerance-rules-by-account-group)
+  - [Approval Authority and Override Policy](#approval-authority-and-override-policy)
+- [Adjustment and Audit Contracts](#adjustment-and-audit-contracts)
 
 ## Summary
 
@@ -19,21 +56,612 @@ This document specifies the reconciliation method classes, account-group procedu
 This document is the authoritative source for reconciliation design decisions.
 If any conflict exists between this document and requirements artifacts, this document supersedes those requirements for reconciliation scope.
 
-## Table of contents
+## Design Principles
 
-- [Summary](#summary)
-- [Authority](#authority)
-- [Method Class Specifications](#method-class-specifications)
-  - [Transaction-level Method Class](#transaction-level-method-class)
-  - [Balance-level Method Class](#balance-level-method-class)
-  - [Cross-cutting Concerns](#cross-cutting-concerns)
-- [Account-group Procedures](#account-group-procedures)
-  - [Procedure Table](#procedure-table)
-  - [Variance Interpretation Matrix](#variance-interpretation-matrix)
-  - [Tolerance Rules by Account Group](#tolerance-rules-by-account-group)
-  - [Approval Authority and Override Policy](#approval-authority-and-override-policy)
-- [Key Findings](#key-findings)
-- [Recommendations and Risks](#recommendations-and-risks)
+The reconciliation engine is governed by four foundational design principles that ensure correctness, determinism, testability, and operational safety.
+
+### Layered Dependency Flow
+
+Reconciliation is structured as a layered, acyclic dependency hierarchy:
+
+```
+Layer 5: engine.py (orchestration, calls all layers)
+   ↓
+Layer 4: shared adapters (app-wide persistence and external integration)
+   ↓
+Layer 3: methods/ (algorithms, transaction-level and balance-level)
+   ↓
+Layer 2: utilities/ (helpers, gap calc, heuristics, slice builder)
+   ↓
+Layer 1: models/ (data structures, enums, domain entities)
+```
+
+**Key invariants:**
+- Models have NO external dependencies (pure data containers)
+- Utilities depend on models only (no persistence or business logic)
+- Methods depend on models and utilities (NOT on adapters or engine)
+- Shared adapters depend on models only (NOT on methods or engine)
+- Engine depends on all layers but contains NO algorithm logic
+
+**Rationale:** This layering preserves testability, reusability, and separation of concerns. Methods can be unit-tested in isolation from persistence. Shared adapters can be swapped without touching method implementations.
+
+### Method Dispatch via Account-Group Classification
+
+Account group classification is **owned by the engine**, not by callers. The dispatcher pattern enables polymorphic method selection without coupling callers to concrete implementations.
+
+**Dispatch protocol:**
+```
+Caller requests: engine.reconcile(account, year, month, ...)
+  ↓
+Engine classifies account group (bank, cash, homebudget_native, cpf, manual_input)
+  ↓
+Engine instantiates correct method (TransactionLevelMethod or BalanceLevelMethod)
+  ↓
+Engine invokes method.reconcile(...)
+  ↓
+Method returns ReconciliationResult
+```
+
+**Account group → Method mapping:**
+- **Bank statement-process** (DBS, CITI, UOB, Visa): `TransactionLevelMethod`
+- **Cash** (physical wallet): `BalanceLevelMethod`
+- **HomeBudget-native** (no external statement): `BalanceLevelMethod`
+- **CPF** (roll-forward): `BalanceLevelMethod`
+- **Manual-input** (wallets): `BalanceLevelMethod`
+- **IBKR** (routed to source integration deterministic parsing for CSV-to-HB and close_book txns, not reconciliation engine)
+
+### Heuristics as Configuration
+
+Heuristics rules and parameters are **configuration-driven, not hardcoded**. This enables account-specific policy updates without code changes and guarantees deterministic ordering for idempotency.
+
+**Configuration hierarchy:**
+```
+txn_heuristics.json
+  ├── matching_config.default (date_tolerance_days: 3, amount_tolerance: 0.01)
+  ├── matching_config.accounts (account overrides, e.g., UOB: 5 days)
+  ├── general_heuristics (applied to all accounts)
+  │   ├── net_zero_pair
+  │   └── same_amount_zero_sum_cluster
+  └── account_heuristics (account-specific rules)
+      ├── TWH DBS Multi SGD → cpf_net_zero
+      └── TWH UOB One SGD → uob_cashback_split
+```
+
+**Config discovery precedence:**
+1. Check `matching_config.accounts[account]` for account-specific override
+2. Fall back to `matching_config.default`
+3. Collect all `general_heuristics`
+4. Collect `account_heuristics[account]`
+5. Apply heuristics in order for determinism
+
+**Configuration safety guard:**
+- User policy edits are made through approved UI interfaces that validate values before persistence.
+- Direct manual JSON editing by end users is outside the operational contract.
+
+**Rationale:** Configuration-driven heuristics enable:
+- No code changes to add account-specific heuristics or adjust parameters
+- Deterministic ordering for idempotency (applied in config file order)
+- Auditable parameter values (stored with session metadata for reproducibility)
+- Runtime parameter discovery without pre-registration
+- Easy policy updates (e.g., "UOB date tolerance is now 5 days" → update via UI policy form)
+
+### Determinism and Idempotency Guarantees
+
+**Reconciliation must be byte-identical across reruns with identical inputs.** This enables safe reruns, session replay verification, and deterministic audit trails.
+
+**Determinism achieved via:**
+- **Ledger slice construction:** Deterministic sorting by `(date ASC, original_index)` as tie-breaker
+- **Match pairs:** Same forward-pass algorithm with same parameters produces same pairs
+- **Heuristics order:** Fixed order from config file, not dynamic or random
+- **Decimal arithmetic:** Exact `decimal.Decimal` throughout; never float conversions
+- **Adjustment ID:** Deterministic hash of `(session_id, account_id, period, rule, gap)`
+- **Gap validation:** Same calculation method produces same result
+
+**Idempotency contract for SQLite:**
+- Same adjustment_id inserted twice → upsert produces single record (no duplicate)
+- Statement builder queries are deterministic: same close_book → same statement aggregates
+- Session reopened and re-reconciled → identical adjustments with same adjustment_id
+- Deterministic matching enables safe retry: same reconciliation run twice is identical byte-for-byte
+
+## Key Design Decisions
+
+This section provides rationale for major architectural choices.
+
+### 1. Why Separate TransactionLevelMethod and BalanceLevelMethod?
+
+**Different algorithms, different inputs, different outputs:**
+
+| id | aspect    | transaction-level            | balance-level                 |
+| -- | --------- | ---------------------------- | ----------------------------- |
+| 01 | input     | ledger and statement txns    | primary and comparison bal    |
+| 02 | algorithm | forward/backward + heuristics | balance equation + variance   |
+| 03 | output    | edits, gap, matches          | variance class, adjustment    |
+| 04 | accounts  | bank statement-process       | cash, cpf, manual, hb-native  |
+
+Both inherit from `BaseReconciliationMethod` for polymorphism, but the inheritance represents "both are reconciliation methods," not code reuse.
+
+### 2. Why Heuristics as Configuration, Not Polymorphic Classes?
+
+**Configuration-driven approach enables:**
+- Add new account-specific heuristics without code changes (through UI-managed policy config)
+- Runtime parameter discovery (no pre-registration)
+- Deterministic ordering (applied in config file order)
+- Auditable parameters (stored with session metadata for reproducibility)
+- Easy policy updates (e.g., "UOB date tolerance is now 5 days" → update via UI policy form)
+
+**Heuristic class hierarchy is for extensibility:**
+- `Heuristic (ABC)` defines interface: `apply(edits_set) -> reduced_edits_set, diagnostics`
+- `NetZeroPairHeuristic`, `CPFNetZeroHeuristic`, etc. inherit and implement algorithm
+- Config file specifies which heuristics to apply in which order
+- New heuristic: code a class in heuristics.py, then expose and validate it through the UI-managed policy config path
+
+### 3. Why Adapters Don't Call Methods or Engine?
+
+**Preserves separation of concerns:**
+- Adapters are **pure persistence boundaries**, not workflow orchestrators
+- Methods are **pure algorithms**, not persistence providers
+- Engine is **orchestration only**, not a god object
+
+**Benefits:**
+- Adapter swap: e.g., from SQLite to PostgreSQL adapter with zero method/engine changes
+- Method swap: e.g., replace TransactionLevelMethod with improved algorithm; persistence logic unchanged
+- Testability: methods can be unit-tested without adapters; adapters can be integration-tested separately
+
+### 4. Why Deterministic Adjustment ID?
+
+**Adjustment ID is hash of `(session_id, account_id, period_key, rule_reference, residual_gap)`:**
+
+```python
+adjustment_id = SHA256(
+    f"{session_id}:{account_id}:{period_key}:{rule_reference}:{gap_amount}"
+)
+```
+
+**Enables:**
+- **Idempotency:** Same reconciliation session produces same adjustment_id
+- **Upsert safety:** Insert same adjustment twice → single record (no duplicate)
+- **Audit trail:** adjustment_id is stable across runs; session replay produces same record
+- **No database sequence dependency:** adjustment_id is deterministic, not auto-increment
+
+### 5. Why Session Record Required?
+
+**Reconciliation audit is complex; session record captures:**
+- **Lineage:** which statement version, which HB sync, which algorithm version
+- **Checkpoints:** timestamps for validation pass, matching complete, variance evaluated, approval, posting
+- **Metadata:** heuristics applied, parameters used, forward_backward_equivalence result
+- **Traceability:** session_id links to adjustment records, bill conflicts, close-book entries
+
+**Query use cases:**
+- "What happened during Feb 2026 reconciliation for DBS account?" → fetch ReconciliationSession(2026-02, DBS)
+- "Which adjustment was approved on 2026-05-03?" → query by user_approval_timestamp
+- "Replay Feb 2026 reconciliation?" → read session metadata, verify outcome reproducibility
+
+## Implementation guidelines
+
+The implementation phase must satisfy the following contracts.
+
+| id | contract                | guideline                                                   |
+| -- | ----------------------- | ----------------------------------------------------------- |
+| 01 | method invocation       | no positional args for optional config inputs               |
+| 02 | money arithmetic        | all amount operations use Decimal; no float conversions     |
+| 03 | edit invariants         | each heuristic keeps `sum(edit_amount)` invariant            |
+| 04 | deterministic ordering  | sort by date then source index before matching              |
+| 05 | error taxonomy          | use typed domain exceptions only                            |
+| 06 | persistence             | idempotent upsert by deterministic keys                     |
+| 07 | config usage            | no hard-coded tolerance values in method classes            |
+
+Code-complete handoff readiness is reached only when all items pass.
+
+| id | completion_gate            | pass_condition                                        | evidence                            |
+| -- | -------------------------- | ----------------------------------------------------- | ----------------------------------- |
+| 01 | package scaffold           | all required modules and classes exist                | tree and import smoke test          |
+| 02 | interface contract         | signatures match this design document                 | static typing and contract tests    |
+| 03 | algorithm correctness      | forward and backward edit equivalence always enforced | deterministic replay tests          |
+| 04 | config compliance          | runtime uses config paths with precedence rules       | config integration tests            |
+| 05 | invariants                 | gap and heuristic invariants never violated           | invariant assertion suite           |
+| 06 | idempotency                | duplicate execution yields byte-identical outputs     | rerun integration test              |
+| 07 | boundary enforcement       | IBKR dispatch rejected as unsupported in this module  | account-group dispatch tests        |
+| 08 | operational observability  | required logs and checkpoints emitted                 | log contract checks                 |
+| 09 | persistence contract       | close_book and session writes are idempotent          | SQLite write-back tests             |
+| 10 | failure behavior           | typed errors surfaced for all documented failure modes | exception-path tests               |
+
+### Configuration Management and Governance
+
+Configuration for reconciliation is managed through two primary files, validated at startup, and frozen into session snapshots for reproducibility.
+
+**Configuration keys and precedence:**
+
+| id | config_area        | key_path                                         | precedence_rule                  |
+| -- | ------------------ | ------------------------------------------------ | -------------------------------- |
+| 01 | matching default   | `matching_config.default`                        | fallback for all accounts        |
+| 02 | matching override  | `matching_config.accounts.<account>`             | overrides default per account    |
+| 03 | general heuristics | `general_heuristics[]`                           | applied first in listed order    |
+| 04 | account heuristics | `account_heuristics.<account>[]`                 | applied after general heuristics |
+| 05 | tolerance policy   | `tolerance_config.account_groups.<group>`        | consumed by balance-level method |
+| 06 | feature flags      | `runtime_flags.<flag_name>`                      | default false, explicit enable   |
+
+**Configuration governance and safety:**
+
+- Startup pre-flight must validate both `txn_heuristics.json` and `tolerance_config.json` before reconcile stages can start. Validation failures block reconciliation.
+- Configuration snapshot is captured at session start and frozen for reproducibility. No config changes during active reconciliation.
+- User-facing policy updates are performed through the UI interface and validated at save time before persistence.
+- Direct user edits to JSON files are out of scope for normal operation and are treated as unsafe configuration bypass. Direct edits are unsupported.
+
+**Minimal configuration payload shape (reference):**
+
+```json
+{
+  "matching_config": {
+    "default": {
+      "date_tolerance_days": 3,
+      "amount_tolerance": 0.01
+    },
+    "accounts": {
+      "TWH UOB One SGD": {
+        "date_tolerance_days": 5
+      }
+    }
+  },
+  "general_heuristics": ["net_zero_pair", "same_amount_zero_sum_cluster"],
+  "account_heuristics": {
+    "TWH DBS Multi SGD": ["cpf_net_zero"],
+    "TWH UOB One SGD": ["uob_cashback_split"]
+  }
+}
+```
+
+## Testing Strategy
+
+### Unit Tests (layers 1-4)
+
+| id | layer     | tests                               | examples                                  |
+| -- | --------- | ----------------------------------- | ----------------------------------------- |
+| 01 | models    | field validation, enum lifecycle    | test_adjustment_transaction.py            |
+| 02 | utilities | pure contracts, edge cases, decimal | test_gap_calculator.py                    |
+| 03 | methods   | algorithm correctness, determinism  | test_transaction_level_method.py          |
+| 04 | adapters  | persistence, idempotency, errors    | test_sqlite_adapter.py                    |
+
+Additional layer examples:
+- utilities: test_ledger_slice_builder.py
+- methods: test_balance_level_method.py
+- adapters: test_hb_adapter.py
+
+### Integration Tests (Layer 5)
+
+| id | test                     | scope                            | examples                                  |
+| -- | ------------------------ | -------------------------------- | ----------------------------------------- |
+| 01 | end-to-end workflow      | full reconciliation path         | test_integration_bank_account.py          |
+| 02 | determinism verification | same input, identical output     | rerun twice, compare result hash          |
+| 03 | idempotency verification | upsert keeps one persisted row   | post twice, verify close_book count = 1   |
+| 04 | account-group dispatch   | correct method chosen by account | mock method, verify chosen class          |
+| 05 | config discovery         | precedence picks correct values  | verify account override vs default        |
+
+### Validation Tests
+
+| id | validation                   | test                                | purpose                        |
+| -- | ---------------------------- | ----------------------------------- | ------------------------------ |
+| 01 | gap invariant                | sum(edit_amount) = 0                | heuristics keep gap invariant  |
+| 02 | forward-backward equivalence | forward_edits == backward_edits     | catch heuristic drift early    |
+| 03 | balance equation             | ledger_end = opening + sum(txn)     | slice build sanity check       |
+| 04 | determinism                  | reconcile twice, compare bytes      | rerun safety                   |
+
+## OOP Architecture and Repository Layout
+
+The reconciliation engine module is designed as a layered, object-oriented system with clean separation between domain models, algorithm implementations, utilities, shared adapters, and orchestration.
+
+### Class Hierarchy Overview
+
+**Abstract base class:**
+- `ReconciliationMethod` — Defines contract for all reconciliation strategies with 4 abstract methods: `validate_inputs()`, `compute_gap()`, `classify_variance()`, `generate_adjustment()`
+
+**Concrete method classes:**
+- `TransactionLevelMethod(ReconciliationMethod)` — Bank statement matching: forward/backward passes, heuristics, edits model
+- `BalanceLevelMethod(ReconciliationMethod)` — Balance equation reconciliation: cash, CPF, manual-input, HomeBudget-native
+
+**Orchestration class:**
+- `ReconciliationEngine` — Owns session state, method dispatch, adjustment posting, audit trail. Methods: `execute_reconciliation()`, `dispatch_by_account_group()`, `post_adjustment()`, `generate_session_record()`
+
+**Domain models:**
+- `AdjustmentTransaction` — Adjustment lifecycle with 20 fields and 4-state status: generated → pending_approval → approved → posted
+- `ReconciliationSession` — Per-account session record with 27 fields, 8 audit checkpoints, and lineage anchors
+
+### Library Dependencies
+
+| id | library    | purpose                       | key_classes_methods                  |
+| -- | ---------- | ----------------------------- | ------------------------------------ |
+| 01 | `pandas`   | ledger/stmnt transforms       | `DataFrame`, `sort_values()`, `sum()`|
+| 02 | `decimal`  | exact money arithmetic        | `Decimal`, `quantize()`              |
+| 03 | `sqlite3`  | read/write sqlite schemas     | `Connection`, param queries          |
+| 04 | `pydantic` | model validation              | `BaseModel`, `Field`, `validator`    |
+| 05 | `uuid`     | session/adjustment ids        | `uuid.uuid4()`                       |
+| 06 | `json`     | config loading                | `json.load()`                        |
+| 07 | `hashlib`  | deterministic id hashing      | `hashlib.sha256()`                   |
+| 08 | `logging`  | audit + checkpoint logs       | `getLogger()`, structured records    |
+| 09 | `enum`     | typed status enums            | `Enum`, `auto()`                     |
+
+### Implementation Constraints
+
+These are **design-level constraints** that code must enforce:
+
+| id | constraint             | definition                                                      | enforcement                                  |
+| -- | ---------------------- | --------------------------------------------------------------- | -------------------------------------------- |
+| 01 | deterministic matching | Same algorithm + same parameters + same row order = identical results | Rerun test with same inputs; compare output  |
+| 02 | decimal arithmetic     | All monetary amounts use Decimal(28,2) with ROUND_HALF_UP       | Type annotations; validation at entry/exit   |
+| 03 | idempotent posting     | Repeated post of same adjustment yields one logical record      | adjustment_id deterministic hash; upsert only |
+| 04 | gap invariant          | For every edit set: sum(edit_amount) == 0.00                    | Assertion before post; pre-flight validation |
+| 05 | fwd-bwd equivalence    | Forward-pass matches == backward-reduction matches after heuristics | Mandatory gate; divergence = fail-closed     |
+| 06 | config is ground truth | All policy decisions resolved from config; frozen per session    | Config validated at startup; immutable after |
+| 07 | config edit safety     | User policy changes routed through UI forms only                | Direct JSON edits unsupported; UI validated  |
+
+## Module Structure and Layered Architecture
+
+The reconciliation engine is organized into five layers with strict, acyclic dependencies. This section details each layer's responsibility, classes, and data contracts.
+
+### Layer 1: Models
+
+**Purpose:** Domain entities and data structures (no algorithms)
+
+| id | file                        | classes                                 | responsibility                  |
+| -- | --------------------------- | --------------------------------------- | ------------------------------- |
+| 01 | account_group.py            | AccountGroup, AccountGroupClassifier    | account grouping and dispatch   |
+| 02 | variance.py                 | VarianceClass, Variance                 | variance type and thresholds    |
+| 03 | edits.py                    | EditsRow, EditSet                       | edit rows and gap invariants    |
+| 04 | adjustment_transaction.py   | AdjustmentTransaction                   | adjustment contract and status  |
+| 05 | reconciliation_session.py   | ReconciliationSession                   | session lineage and checkpoints |
+
+**Key characteristics:**
+- Pure data structures (dataclasses or Pydantic models)
+- No algorithm logic
+- Field validation at construction time
+- Immutable audit fields (created_timestamp, adjustment_id)
+
+### Layer 2: Utilities
+
+**Purpose:** Helper functions and utility classes (pure computation)
+
+| id | file                    | classes/functions                     | responsibility                    |
+| -- | ----------------------- | ------------------------------------- | --------------------------------- |
+| 01 | ledger_slice_builder.py | LedgerSliceBuilder                    | deterministic slice build         |
+| 02 | heuristics.py           | HeuristicsEngine, base + rule classes | heuristic reduction and checks    |
+| 03 | config_loader.py        | HeuristicsConfigLoader                | config load and precedence        |
+| 04 | gap_calculator.py       | compute_gap, validate_*               | gap math and balance validations  |
+
+**Design patterns:**
+- Heuristics use abstract base class for extensibility; new heuristics inherit and implement algorithm
+- Config discovery is explicit and ordered (account override → default → general + account-specific)
+- Gap calculation is pure function with no side effects
+- All monetary calculations use `decimal.Decimal`
+
+### Layer 3: Methods
+
+**Purpose:** Reconciliation algorithm implementations
+
+| id | file                 | classes                                  | responsibility                     |
+| -- | -------------------- | ---------------------------------------- | ---------------------------------- |
+| 01 | base.py              | BaseReconciliationMethod, ReconciliationResult | method contract and result model |
+| 02 | transaction_level.py | TransactionLevelMethod                   | match, heuristics, edit reduction  |
+| 03 | balance_level.py     | BalanceLevelMethod                       | balance variance and adjustments   |
+
+**Method interface (from BaseReconciliationMethod):**
+```python
+class BaseReconciliationMethod(ABC):
+    @abstractmethod
+    def reconcile(self, account, year, month, **inputs) -> ReconciliationResult:
+        """
+        Reconciliation entry point.
+        
+        Returns: ReconciliationResult with edits, gap, variance_class, adjustment_record.
+        """
+```
+
+**Correctness assertions (Transaction-level method):**
+- Forward pass matches must be deterministic
+- Forward edits must produce gap = 0.00
+- Backward pass must produce identical edits after heuristics
+- Forward == Backward is mandatory; failure → raise `HeuristicsConsistencyError`
+
+### Layer 4: Shared Adapters
+
+**Purpose:** Persistence and external system integration boundaries
+
+| id | file              | classes                  | responsibility                    |
+| -- | ----------------- | ------------------------ | --------------------------------- |
+| 01 | sqlite_adapter.py | ReconciliationPersistence | session and adjustment persistence |
+| 02 | hb_adapter.py     | HomeBudgetAdapter        | HomeBudget posting integration     |
+
+**Key design decision:** Shared adapters depend on models ONLY (not on methods or engine). This preserves adapter independence: persistence logic is orthogonal to reconciliation algorithms.
+
+**Note:** `sqlite_adapter.py` is a sub-boundary within the larger SQL adapter (per architecture principle "SQLite adapter is the only SQL interface"). It is app-wide and exposes reconciliation-specific operations via scoped interfaces.
+
+### Layer 5: Orchestration
+
+**Purpose:** Reconciliation workflow orchestration
+
+```python
+class ReconciliationEngine:
+    def reconcile(self, account, year, month, hb_gl, stm_gl, balances) -> ReconciliationResult:
+        """
+        End-to-end reconciliation:
+        1. Classify account group
+        2. Create session record
+        3. Load config (heuristics, tolerances)
+        4. Instantiate and invoke method
+        5. Validate results
+        6. Generate adjustments if needed
+        7. Post to close_book via adapter
+        8. Return result + lineage
+        """
+    
+    def approve_adjustment(self, adjustment_id, user_comment) -> AdjustmentTransaction:
+        """User approval gate for exceeds-tolerance adjustments."""
+    
+    def get_session(self, session_id) -> ReconciliationSession:
+        """Retrieve session audit trail."""
+```
+
+**Engine responsibilities:**
+- Account group dispatch logic
+- Method polymorphism (select TransactionLevelMethod or BalanceLevelMethod)
+- Session lifecycle (create, checkpoint, close)
+- Adapter coordination (SQLite, HomeBudget)
+- Config loading (heuristics, tolerances)
+- Post-processing (adjustment generation, validation, posting)
+
+**Engine does NOT contain:**
+- Matching algorithm (in TransactionLevelMethod)
+- Gap calculation (in utilities.gap_calculator)
+- Heuristic rules (in utilities.heuristics)
+
+### Configuration
+
+| id | file                  | purpose                              |
+| -- | --------------------- | ------------------------------------ |
+| 01 | txn_heuristics.json   | heuristic rules and account overrides |
+| 02 | tolerance_config.json | tolerance limits and approval policy  |
+
+Both files are validated during pre-flight startup, then frozen into a session config snapshot used by reconciliation execution.
+
+### Repository Layout
+
+**Directory structure:**
+```
+src/close_session/reconciliation_engine/
+├─ __init__.py                          # Public API exports
+├─ engine.py                            # ReconciliationEngine class
+├─ models/
+│  ├─ adjustment_transaction.py
+│  ├─ reconciliation_session.py
+│  └─ enums.py                          # VarianceClass, AdjustmentStatus, SessionStatus
+├─ methods/
+│  ├─ __init__.py
+│  ├─ reconciliation_method.py           # Abstract base
+│  ├─ transaction_level_method.py
+│  └─ balance_level_method.py
+├─ utilities/
+│  ├─ heuristics_config.py
+│  ├─ ledger_slicer.py
+│  ├─ matching_algorithm.py
+│  ├─ gap_validator.py
+│  ├─ variance_classifier.py
+│  └─ adjustment_builder.py
+└─ config/
+   ├─ config_loader.py
+   ├─ txn_heuristics.json               # Heuristic parameters, account overrides
+   └─ tolerance_config.json             # Tolerance thresholds by account group
+
+src/python/adapters/                    # App-wide shared adapter layer
+├─ sqlite_adapter.py                    # Read GL, persist session, write close_book
+└─ homebudget_wrapper.py                # HB GL posting (read-only or write-back)
+```
+
+**Dependency flow — strict acyclic:**
+- Layer 1: `models/` — No external dependencies
+- Layer 2: `utilities/` — Depends on models only
+- Layer 3: `methods/` — Depends on models, utilities
+- Layer 4: shared adapters (`src/python/adapters/`) — App-wide utilities consumed by engine and other modules
+- Layer 5: `engine.py` — Depends on models, utilities, methods, and shared adapter interfaces
+
+### Data Flow Example: Bank Account Reconciliation
+
+```
+Input:
+  account = "TWH DBS Multi SGD"
+  year = 2026, month = 2
+  hb_gl = DataFrame with DBS transactions
+  stm_gl = DataFrame with DBS statement
+  balances = DataFrame with opening balance
+
+Step 1: Engine.reconcile() entry
+  → Create ReconciliationSession record
+  → AccountGroupClassifier.classify("TWH DBS Multi SGD") → AccountGroup.BANK
+
+Step 2: Config loading
+  → Pre-flight validates txn_heuristics.json and tolerance_config.json
+  → Load startup-validated session config snapshot
+  → discover date_tolerance_days = 3 (no override for DBS, use default)
+  → discover heuristics = [net_zero_pair, same_amount_zero_sum_cluster, cpf_net_zero]
+
+Step 3: Method dispatch
+  → Instantiate TransactionLevelMethod(heuristics_config)
+
+Step 4: Ledger slice construction
+  → LedgerSliceBuilder.build_ledger_slice(hb_gl, "TWH DBS Multi SGD", 2026, 2, balances)
+  → Filter out balance rows (txn_type == "balance")
+  → Filter out null amounts
+  → Sort by date ASC, then by original index
+  → Compute running balance
+  → Discover opening_balance from balances[2026-01]
+  → Return slice with columns: [date, amount, balance, notes, ...]
+
+Step 5: Forward pass matching
+  → For each unmatched ledger txn:
+    → Find statement txn where amount == amount AND abs(date diff) <= 3 AND exactly one match
+    → Mark as matched pair (ledger_idx, stmt_idx)
+  → Collect unmatched_ledger and unmatched_stmt indices
+
+Step 6: Forward edits construction
+  → For each ledger_idx in unmatched_ledger: add remove edit with edit_amount = -amount
+  → For each stmt_idx in unmatched_stmt: add add edit with edit_amount = +amount
+  → Compute gap = ledger_end + sum(edit_amount) - statement_end
+  → Expected: gap = 0.00 if GL data are consistent
+
+Step 7: Backward pass (correctness check)
+  → Start with trivial solution: remove all ledger, add all statement
+  → For each forward match (ledger_idx, stmt_idx): remove paired edits from trivial set
+  → Result: reduced edit set (should equal forward edits)
+
+Step 8: Heuristics application
+  → Apply net_zero_pair: identify opposite-amount edits within 3-day window, remove pairs
+  → Apply same_amount_zero_sum_cluster: identify clusters with same amount from mixed sources, check if net sum ≈ 0, remove cluster
+  → Apply cpf_net_zero: identify edits with CPF keywords, check if net sum ≈ 0, remove subset
+  → Verify: forward_edits_after_heuristics == backward_edits_after_heuristics (mandatory)
+  → Verify: sum(edit_amount) = 0.00 for every heuristic subset (gap invariant)
+
+Step 9: Gap validation
+  → Compute final gap = ledger_end + sum(all_edit_amount) - statement_end
+  → Verify: gap ≈ 0.00 (tolerance 0.01)
+  → If gap != 0.00: raise UnresolvedGapError
+
+Step 10: Result classification
+  → If gap = 0.00: zero variance → no adjustment needed
+  → If gap > 0.01 (exceeds tolerance): create adjustment
+    → AdjustmentTransaction(
+        adjustment_id = hash(session_id, account, period, rule, gap),
+        status = "pending_approval",
+        adjustment_amount = abs(gap),
+        rule_reference = "bank_unmatched_variance",
+        category_code = "Balancing:Unmatched"
+      )
+
+Step 11: Posting (if adjustment exists)
+  → ReconciliationPersistence.upsert_adjustment(adjustment_record)
+  → If status = "pending_approval": await user approval
+  → If status = "approved": post to close_book and HB GL via adapters
+
+Step 12: Session closure
+  → Update ReconciliationSession with final status, checkpoints, lineage
+  → Return ReconciliationResult with edits, gap, matches, metadata, adjustment_id
+
+Output:
+  result = ReconciliationResult(
+    edits = [EditsRow(...), EditsRow(...), ...],
+    gap = 0.00,
+    matches = [(ledger_idx, stmt_idx), ...],
+    variance_class = VarianceClass.ZERO,
+    adjustment_record = None,  # zero variance means no adjustment
+    session_id = UUID(...),
+    metadata = {
+      opening_balance = 10000.00,
+      statement_end_balance = 10500.00,
+      ledger_end_balance = 10500.00,
+      forward_edits_count = 2,
+      backward_edits_count = 2,
+      heuristics_applied = ["net_zero_pair", "same_amount_zero_sum_cluster"],
+      forward_backward_equivalence = true,
+      ...
+    }
+  )
+```
 
 ## Method Class Specifications
 
@@ -43,6 +671,10 @@ This section specifies the contract, algorithm, parameters, and invocation inter
 
 The transaction-level method compares transactions from two independent sources — ledger and statement — and produces a minimal edit set that closes the reconcile gap to zero.
 
+**Monetary type contract:**
+- All monetary fields in this method class use `Decimal` values with quantization to 2 decimal places using `ROUND_HALF_UP`.
+- Float arithmetic is forbidden in transaction-level reconciliation logic, including matching, gap computation, and heuristic validation.
+
 #### Edits Model Structure
 
 The method produces an edits table with the following fields and semantics:
@@ -51,9 +683,9 @@ The method produces an edits table with the following fields and semantics:
 | -- | ----------- | ------------------------- | ---------------------------- |
 | 01 | `source`    | `"ledger","statement"`    | row source                   |
 | 02 | `date`      | iso date                  | txn date (`YYYY-MM-DD`)      |
-| 03 | `amount`    | decimal                   | txn amount in acct currency  |
+| 03 | `amount`    | Decimal(28,2)             | txn amount in acct currency  |
 | 04 | `edit`      | `"remove","add","update"` | ledger-side action           |
-| 05 | `edit_amt`  | decimal                   | signed delta from edit       |
+| 05 | `edit_amt`  | Decimal(28,2)             | signed delta from edit       |
 | 06 | `note`      | string                    | txn note or description      |
 | 07 | `ledger_ix` | int or null               | ledger row index (0-based)   |
 | 08 | `stmt_ix`   | int or null               | statement row index (0-based)|
@@ -78,28 +710,28 @@ Among all valid solutions, the method selects the **minimal edit set** — the s
 Before matching, two slices are constructed from the source GL sheets for the `(account, year, month)` scope:
 
 **Ledger slice construction:**
-1. Filter `hb_gl` for rows matching account, year, month.
-2. Drop rows where `txn_type == "balance"` — these are balance assertion rows, not transactions.
+1. Filter `hb_gl_txn` for rows matching account, year, month.
+2. Keep transaction rows only, excluding non-transaction summary rows if present in source extracts.
 3. Drop rows with null `amount`.
 4. Sort by `date` ascending, with original row index as tie-breaker.
 5. Compute running `balance`: `balance[i] = opening_balance + cumsum(amount)[0:i+1]`.
 6. Retain only columns: `index`, `date`, `amount`, `balance`, `category`, `subcategory`, `payee`, `notes`.
 
 **Statement slice construction:**
-1. Filter `stm_gl` for rows matching account, year, month.
+1. Filter `statements` transaction rows for the account and period scope.
 2. Drop rows with null `amount`.
 3. Sort by `date` ascending, with original row index as tie-breaker.
 4. Compute running `balance`: `balance[i] = opening_balance + cumsum(amount)[0:i+1]`.
 5. Retain only columns: `index`, `date`, `amount`, `balance`, `description`.
 
 **Opening balance discovery:**
-- The opening balance is the `balance` value from the prior period row in the `balances` dataset.
-- For month M in year Y, look up `(account, year=Y, month=M-1)` in `balances`.
+- The opening balance is the prior-period ending balance from `hb_account_dim`.
+- For month M in year Y, look up the prior period row for `(account, year=Y, month=M-1)`.
 - For January (month=1), look up `(account, year=Y-1, month=12)`.
 - If no prior period row exists, initialization fails with a "missing opening balance" error.
 
 **Statement ending balance cross-check:**
-- The statement slice ending balance (last row `balance` value) must equal the `balance` value in the `balances` dataset for `(account, year, month)`.
+- The statement slice ending balance (last row `balance` value) must equal the statement period-end balance record in `statement_balance` for `(account, year, month)`.
 - If the difference exceeds account precision — typically 0.01 — log a warning and flag the variance for user review before proceeding.
 - This cross-check detects issues in statement ingest or GL schema inconsistency.
 
@@ -113,12 +745,14 @@ The forward pass greedily matches ledger and statement transactions that are una
 
 For each unmatched ledger transaction:
 1. Identify all statement transactions not yet matched.
-2. Filter candidates by three-part match test; all three must hold:
-   - **Amount test:** `amount_ledger == amount_statement` — exact match, same sign, exact cents, currency rounding.
-   - **Date test:** `abs(date_ledger - date_statement) <= date_tolerance_days` — configurable per account, default 3.
+2. Define `ledger_amount` and `ledger_date` from the current ledger row in the ledger slice.
+3. For each statement candidate, define `statement_amount` and `statement_date` from the statement slice row.
+4. Filter candidates by three-part match test; all three must hold:
+  - **Amount test:** `ledger_amount == statement_amount` — exact match, same sign, exact cents, currency rounding.
+  - **Date test:** `abs(ledger_date - statement_date) <= date_tolerance_days` — configurable per account, default 3.
    - **Uniqueness test:** exactly one statement candidate remains after filtering; zero or multiple candidates result in no match.
-3. If exactly one candidate remains, mark the pair `(ledger_idx, stmt_idx)` as matched.
-4. If zero or multiple candidates, leave the ledger transaction unmatched.
+5. If exactly one candidate remains, mark the pair `(ledger_idx, stmt_idx)` as matched.
+6. If zero or multiple candidates, leave the ledger transaction unmatched.
 
 **Match results:**
 - `matches`: list of `(ledger_idx, stmt_idx)` tuples.
@@ -128,6 +762,17 @@ For each unmatched ledger transaction:
 **Forward edits construction:**
 - For each `ledger_idx` in `unmatched_ledger`: add one `remove` edit with `edit_amount = -amount`.
 - For each `stmt_idx` in `unmatched_stmt`: add one `add` edit with `edit_amount = +amount`.
+
+**Key control: Exact-amount matching ensures zero-sum property at pair level**
+
+The forward pass enforces an exact-amount matching predicate as a mandatory control on valid matched pairs. When a ledger transaction with `amount = X` is paired to a statement transaction with `amount = X` (same sign, same cents), the pair has the property that **removing both rows from their respective sources contributes zero to the reconcile gap**.
+
+Formally: If `(ledger[i], stmt[j])` is a matched pair with `ledger[i].amount == stmt[j].amount == X`, then:
+- Ledger side contributes: `-X` (remove ledger row)
+- Statement side contributes: `+X` (add statement row, so negation is `-X`)
+- Net gap contribution: `-X + X = 0`
+
+This property holds **before heuristics are applied** and is preserved by all heuristics because they operate on the invariant that any removed or modified edit subset must sum to zero.
 
 **Expected outcome:** If GL data are internally consistent — no missing or spurious transactions — the forward edits already yield `gap == 0.00`. However, the set may not yet be minimal due to boundary conditions or timing variations.
 
@@ -153,15 +798,32 @@ The backward pass starts from a trivially valid solution — remove all ledger, 
 3. **Heuristics application:**
    - Apply the same heuristics to both the forward and backward-reduced edit sets, described in the Heuristics Layer section below.
 
-**Correctness assertion:**
-- After heuristics, the forward and backward-reduced edit sets **must be identical** in shape and values.
-- If they differ, this indicates a bug in the heuristics or a logical inconsistency in the algorithm and must be investigated before proceeding.
-- This equivalence is a mandatory correctness check, not an optional validation.
+**Correctness assertion and enforcement:**
+
+After heuristics application, the forward and backward-reduced edit sets **must be identical** in shape and values. This equivalence is a mandatory correctness gate, not an optional validation.
+
+_Execution point:_ The equivalence check must execute after heuristics application is complete and before tolerance evaluation proceeds. If sets diverge, reconciliation advancement is blocked.
+
+_Exception contract:_ If forward and backward sets diverge:
+- Raise a `ReconciliationInconsistencyError` exception with message content including:
+  - Forward set shape (row count, columns)
+  - Backward set shape (row count, columns)
+  - Symmetric difference (rows in forward but not backward; rows in backward but not forward)
+  - Log level: ERROR (halt-and-investigate severity)
+
+_Metadata storage:_ Store both reduced edit sets in reconciliation session attributes with the following metadata:
+  - `edits_forward_reduced`: complete DataFrame after heuristics, sorted by `(source, date, amount, edit)`
+  - `edits_backward_reduced`: complete DataFrame after heuristics, sorted by `(source, date, amount, edit)`
+  - `forward_backward_equivalence_check`: dict containing:
+    - `check_timestamp`: ISO 8601 timestamp
+    - `shapes_equal`: boolean
+    - `values_equal`: boolean
+    - `symmetric_difference`: list of row dicts found in one set but not the other
+    - `check_result`: "pass" or "fail"
+
+_Why it's required:_ Divergence indicates either a heuristic bug (incorrect gap preservation) or fundamental algorithmic inconsistency. Without mandatory enforcement, bugs propagate silently to tolerance evaluation and adjustment generation, corrupting the reconciliation session artifact and damaging the audit trail.
 
 **Requirement ref:** hb-reconcile/docs/reconcile.md § Backwards algorithm
-
-line 76: "Filter `hb_gl` for rows", "The opening balance is the `balance` value from the prior period row in the `balances` dataset": `hb_gl`, `txn_type == "balance"` filter, these are legacy references to the current workflow and schema. preserve the abstract algorithm logic, but align with the current data model design schema and table names. review and apply updates throughout the document, algorithm descriptions for txn level reconciliation, balance level reconciliation procedures
-line 111: "`amount_ledger`": jargon insertion. you introduce an unknown variable `amount_ledger` without defining and linking it to the ledger that you described in the section above describing ledger slicing construction. make the links more explicit.
 
 #### Heuristics Layer
 
@@ -279,7 +941,8 @@ delete the expense transaction
 
 #### Method Parameters
 
-Method behavior is controlled by account-specific parameters stored in `txn_heuristics.json`:
+Method behavior is controlled by account-specific parameters stored in `txn_heuristics.json` and `tolerance_config.json`.
+Both files must be validated during pre-flight at close-session startup, then frozen as a session config snapshot.
 
 | id | parameter             | usage         | config_key                                      | values          |
 | -- | --------------------- | ------------- | ----------------------------------------------- | --------------- |
@@ -289,7 +952,12 @@ Method behavior is controlled by account-specific parameters stored in `txn_heur
 **Parameter discovery:**
 1. Check `txn_heuristics.json` / `matching_config.accounts[account]` for account-specific override.
 2. If not present, use `matching_config.default`.
-3. Parameters are discovered at runtime before invoking the forward pass.
+3. Parameter values are resolved from the startup-validated session config snapshot before invoking the forward pass.
+
+**Config management boundary:**
+- User-managed reconciliation policy values are edited through the approved UI interface only.
+- Direct manual edits to JSON policy files are out of contract for operational runs.
+- Runtime modules treat config files as backend artifacts behind the UI and config loader boundary.
 
 **Config source:** `reference/hb-reconcile/account_settings/txn_heuristics.json`
 
@@ -301,16 +969,18 @@ Method behavior is controlled by account-specific parameters stored in `txn_heur
 - `account` — string: account identifier, e.g., `"TWH DBS Multi SGD"`
 - `year` — int: calendar year
 - `month` — int: calendar month, 1–12
-- `hb_gl` — DataFrame: HomeBudget GL with columns `[account, date, year, month, txn_type, amount, category, subcategory, payee, notes]`
+- `hb_gl_txn` — DataFrame: HomeBudget transaction dataset with columns `[account, date, year, month, amount, category, subcategory, payee, notes]`
 - `hb_exp` — DataFrame: HomeBudget expenses for the month with columns `[date, year, month, amount, category, subcategory, account, notes]`
-- `stm_gl` — DataFrame: statement GL with columns `[account, date, year, month, amount, description]`
-- `balances` — DataFrame: balance dataset with columns `[account, date, year, month, balance]` — must contain prior month and current month rows
+- `statements` — DataFrame: statement transaction dataset with columns `[account, date, year, month, amount, description]`
+- `hb_account_dim` — DataFrame: account balance dataset with prior-period rows for opening balance derivation
+- `statement_balance` — DataFrame: statement period-end balance records for ending-balance cross-check
 - `txn_heuristics_config` — dict: loaded configuration from `txn_heuristics.json`
 
 **Pre-conditions:**
-1. `hb_gl` and `stm_gl` must be non-empty for the account and period.
-2. `balances` must contain both the prior month row for opening balance and current month row for statement ending balance cross-check.
+1. `hb_gl_txn` and `statements` must be non-empty for the account and period.
+2. `hb_account_dim` must contain the prior month row for opening balance and `statement_balance` must contain the current month row for statement ending balance cross-check.
 3. Account must be present in at least one heuristics list — general or account-specific — if account-specific heuristics are required.
+4. Pre-flight config validation for `txn_heuristics.json` and `tolerance_config.json` must have passed for this session.
 
 **Outputs:**
 1. `edits` — DataFrame: table with columns `[source, date, amount, edit, edit_amount, note, ledger_idx, stmt_idx]`
@@ -337,6 +1007,7 @@ conditions after user review and approval
 - Statement ending balance mismatch > tolerance → log warning, allow user decision to proceed or investigate
 - Forward and backward edits differ after heuristics → raise `HeuristicsConsistencyError`; this is a mandatory correctness check
 - Unresolved ambiguous matches → edits remain; tolerance evaluation determines acceptance
+- Config validation failed at startup → raise `ConfigValidationError`; reconciliation cannot start
 
 **Requirement ref:** reconciliation-engine.md § Shared reconciliation patterns / Shared workflow phases
 
@@ -358,7 +1029,6 @@ Residual Gap = Primary Balance - Comparison Balance - Σ Staged Adjustments
   - Cash: HomeBudget ledger ending balance — sum of all `hb_gl_txn.amount` for the period
   - CPF: expected closing balance computed from roll-forward formula
   - Manual-input: pre-adjustment sum of `hb_gl_txn.amount`
-  - IBKR: not applicable; use IBKR integration derivation rules instead
 
 - **Comparison Balance:** secondary or user-observed balance for the account group. For example:
   - Cash: user-entered physical cash count
@@ -491,17 +1161,23 @@ All reconciliation methods depend on GL schema consistency:
 
 #### Heuristic Parameter Discovery and Invocation
 
-Heuristics are discovered and configured at invocation time from `txn_heuristics.json`:
+Heuristics are discovered from startup-validated configuration and invoked at reconcile time:
 
 1. **Config file location:** `reference/hb-reconcile/account_settings/txn_heuristics.json`
 2. **Config discovery sequence:**
-   - Load the JSON file into memory at agent initialization.
+  - During pre-flight startup, load `txn_heuristics.json` and `tolerance_config.json` through the config loader.
+  - Validate schema, required keys, account references, and value domains.
+  - Persist a resolved session config snapshot; all reconcile calls read from this snapshot.
    - For each account, check `matching_config.accounts[account]` for account-specific overrides.
    - If no override, use `matching_config.default`.
    - Collect all `general_heuristics` from the config.
    - Collect all `account_heuristics[account]` entries.
 3. **Invocation:** Apply heuristics in the order defined in the config.
 4. **Determinism requirement:** Heuristic order and parameter values must be deterministic across sessions for idempotency.
+
+**UI safety guard:**
+- Policy values intended for operator control are set and managed through the UI interface.
+- Direct JSON manipulation by end users is not a supported operational path because it bypasses field validation and corruption safeguards.
 
 **Config example structure:**
 ```json
@@ -554,19 +1230,19 @@ Method class selection is determined by account group classification. The classi
 3. **Cash:** user-provided physical cash count
    - Accounts: Cash TWH SGD
    - Method: Balance-level
-4. **IBKR:** deterministic statement derivation rules — routed to IBKR integration agent
-   - Accounts: TWH IB USD, IB Position USD, IB IRA USD
-   - Method: IBKR accounting model — not reconciliation engine
-5. **CPF:** user-provided closing balance and contributions
+4. **CPF:** user-provided closing balance and contributions
    - Accounts: CPF OA, CPF SA, CPF MA
    - Method: Balance-level
-6. **Manual-input balance-only:** user-provided account balance
+5. **Manual-input balance-only:** user-provided account balance
    - Examples: Amazon wallet, digital wallets
    - Method: Balance-level
+
+**Out of scope for this module:** IBKR accounts are routed to source integration parsing and deterministic derivation in `ibkr-integration.md`, then persisted to HB and close_book before reconciliation stage execution.
 
 **Dispatch contract:**
 - Reconciliation engine owns method selection logic.
 - Account-group classifier is called before method invocation.
+- Only in-scope accounts are processed; out-of-scope accounts raise `UnsupportedAccountError`.
 - Callers do not hard-code method dispatch; they request reconciliation for an account and receive the result.
 
 ### Procedure Table
@@ -578,9 +1254,8 @@ Each account group follows either the transaction-level or balance-level reconci
 | 01 | bank (dbs/citi/uob/visa) | transaction-level | 0.00 (+/-0.01)   | close_book + hb gl  |
 | 02 | homebudget-native | balance-level     | user confirmation| close_book only     |
 | 03 | cash (twh cash sgd)| balance-level    | +/- sgd 20       | close_book + hb gl  |
-| 04 | ibkr (ib usd/position)| accounting model| validation gates | close_book + hb gl  |
-| 05 | cpf (oa/sa/ma)    | balance-level     | rounding         | close_book only     |
-| 06 | manual-input (wallets)| balance-level  | 0.00 exact       | close_book + hb gl  |
+| 04 | cpf (oa/sa/ma)    | balance-level     | rounding         | close_book only     |
+| 05 | manual-input (wallets)| balance-level  | 0.00 exact       | close_book + hb gl  |
 
 **Details by account group:**
 
@@ -589,8 +1264,6 @@ Each account group follows either the transaction-level or balance-level reconci
 **HomeBudget-native accounts:** User reviews `hb_gl_txn` ledger state and confirms it is final. User may mark corrections to be updated in HB directly. No numeric tolerance; user confirmation is the comparison basis.
 
 **Cash reconciliation:** Balance equation: HB current balance - physical cash count - staged wallet expenses. ±SGD 20 tolerance. Within-tolerance gaps auto-prepare adjustment. Exceeds-tolerance gaps require user approval.
-
-**IBKR accounts:** Not variance-based reconciliation. Uses deterministic derivation — see [ibkr-integration.md](ibkr-integration.md). Close-gate checks validate balance equation and position consistency. If checks pass, txns posted; if fail, account blocked for investigation.
 
 **CPF accounts:** Roll-forward balance validation. User confirms expected closing balance matches HB ledger. Rounding tolerance for interest/contribution calculations. Exceeds-tolerance gaps flagged for user balance correction.
 
@@ -604,7 +1277,7 @@ Variance outcomes by class and account group:
 
 - **Zero variance:** Gap equals zero, within rounding tolerance. No adjustment needed. Reconciliation passes directly to closure.
 - **Within-tolerance variance:** Gap exceeds zero but is within account-group tolerance threshold. Auto-prepare adjustment when applicable per account group. User notified. Adjustment posted on user confirmation.
-- **Exceeds-tolerance variance:** Gap exceeds tolerance threshold. Blocks reconciliation closure. Requires explicit user approval — investigation for IBKR accounts, balance correction for CPF, or user update for HB-native accounts. User approval recorded with timestamp and optional comment.
+- **Exceeds-tolerance variance:** Gap exceeds tolerance threshold. Blocks reconciliation closure. Requires explicit user approval, for example balance correction for CPF or user update for HB-native accounts. User approval recorded with timestamp and optional comment.
 
 ### Tolerance Rules by Account Group
 
@@ -677,25 +1350,6 @@ This section details tolerance thresholds, variance evaluation, and adjustment b
 - **Post target:** close_book as primary; HB GL via wrapper — new entries created for previously unstaged cash txns.
 
 **Example:** HB ledger balance = SGD 500. Physical cash count = SGD 478. Staged wallet expenses = SGD 10. Gap = 500 - 478 - 10 = SGD 12. Within ±SGD 20 tolerance; auto-prepare and post SGD -12 adjustment.
-
-#### IBKR accounts
-
-**Scope:** TWH IB USD cash, IB Position USD holdings, IB IRA USD.
-**Method:** Accounting model derivation — see [ibkr-integration.md](ibkr-integration.md); not variance-based reconciliation.
-**Tolerance:**
-- No numeric tolerance applied to variance-based reconciliation.
-- Validation tolerance applied per account close-gate check in ibkr-integration.md, covering balance-equation closure, NAV roll-down verification, and position quantity consistency.
-
-**Variance evaluation:**
-- IBKR statement activity and NAV reconciled via deterministic derivation logic in ibkr-integration.md.
-- Close-gate checks validated per ibkr-integration.md requirements.
-- Reconciliation-engine does not create variance-based adjustments for IBKR.
-
-**Adjustment outcome:**
-- **Close-gate checks pass:** derived txns posted directly to close_book and HB GL via wrapper; reconciliation passes.
-- **Close-gate check fails:** account reconcile blocked; account flagged for investigation; no adjustment posted; user must resolve the underlying cause — for example, missing dividend or incorrect statement balance — before close can proceed.
-
-**Approval authority:** Close-gate validation failures require user investigation and correction. No user approval for derived txns; txns are deterministic outputs of statement activity.
 
 #### CPF accounts
 
@@ -801,10 +1455,9 @@ This section specifies the adjustment transaction contract, bill conflict policy
 | -- | ------------- | -------------- | --------------- | ---------------------- |
 | 01 | bank accounts | 0.00 exact     | yes (zero gap)  | yes (any unmatched)    |
 | 02 | cash          | +/- sgd 20     | yes (<=20)      | yes (>20)              |
-| 03 | ibkr          | per policy     | no              | yes (mismatch)         |
-| 04 | cpf           | +/- 0.01 round | yes (<=0.01)    | yes (>0.01)            |
-| 05 | wallets       | 0.00 exact     | yes (zero gap)  | yes (any variance)     |
-| 06 | manual-input  | 0.00 exact     | no              | yes (any variance)     |
+| 03 | cpf           | +/- 0.01 round | yes (<=0.01)    | yes (>0.01)            |
+| 04 | wallets       | 0.00 exact     | yes (zero gap)  | yes (any variance)     |
+| 05 | manual-input  | 0.00 exact     | no              | yes (any variance)     |
 
 ### Bill Accrual Conflict Policy
 
@@ -859,7 +1512,7 @@ Four conflict classes govern bill accrual treatment during reconciliation:
 | 01 | `session_id`             | uuid             | pk; generated at start    | unique session id     |
 | 02 | `period_key`             | string yyyy-mm   | non-null                  | period scope          |
 | 03 | `account_id`             | string           | valid account; non-null   | account scope         |
-| 04 | `account_group`          | string           | enum bank/cash/ibkr/cpf...| dispatch context      |
+| 04 | `account_group`          | string           | enum bank/cash/cpf...     | dispatch context      |
 | 05 | `method_class`           | enum             | txn/balance/account model | algo class            |
 | 06 | `session_status`         | enum             | pending..failed           | closure state         |
 | 07 | `variance_amount`        | dec(28,2)        | null if zero              | pre-adjust gap        |
@@ -876,7 +1529,7 @@ Each session must retain source-of-truth references for traceability:
 
 | id | lineage_anchor              | content                    | examples                      |
 | -- | --------------------------- | -------------------------- | ----------------------------- |
-| 01 | `statement_source_reference`| comparison source id       | statements row, ibkr id, bill |
+| 01 | `statement_source_reference`| comparison source id       | statements row, bill          |
 | 02 | `statement_fetch_date`      | source fetch date          | iso date                      |
 | 03 | `statement_source_hash`     | deterministic source hash  | sha256 of source payload      |
 | 04 | `hb_sync_timestamp`         | hb wrapper sync time       | iso datetime                  |
@@ -980,296 +1633,4 @@ The reconciliation engine is invoked by the workflow orchestrator at reconcile s
 - If HB write-back fails: adjustment staged in close_book; retry logged.
 - If SQLite posting fails: reconciliation blocked; error surfaced.
 
-## OOP Architecture and Repository Layout
-
-The reconciliation engine module is designed as a layered, object-oriented system with clean separation between domain models, algorithm implementations, utilities, shared adapters, and orchestration.
-
-### Class Hierarchy Overview
-
-**Abstract base class:**
-- `ReconciliationMethod` — Defines contract for all reconciliation strategies with 4 abstract methods: `validate_inputs()`, `compute_gap()`, `classify_variance()`, `generate_adjustment()`
-
-**Concrete method classes:**
-- `TransactionLevelMethod(ReconciliationMethod)` — Bank statement matching: forward/backward passes, heuristics, edits model
-- `BalanceLevelMethod(ReconciliationMethod)` — Balance equation reconciliation: cash, CPF, manual-input, HomeBudget-native
-
-**Orchestration class:**
-- `ReconciliationEngine` — Owns session state, method dispatch, adjustment posting, audit trail. Methods: `execute_reconciliation()`, `dispatch_by_account_group()`, `post_adjustment()`, `generate_session_record()`
-
-**Domain models:**
-- `AdjustmentTransaction` — Adjustment lifecycle with 20 fields and 4-state status: generated → pending_approval → approved → posted
-- `ReconciliationSession` — Per-account session record with 27 fields, 8 audit checkpoints, and lineage anchors
-
-### Method Dispatch Contract
-
-```
-execute_reconciliation(account_id, period_key)
-  ├─ classify_account_group(account_id) → 'bank' | 'cash' | 'cpf' | ...
-  ├─ instantiate_method(account_group) → TransactionLevelMethod | BalanceLevelMethod
-  ├─ method.validate_inputs(account_id, period_key, source_schemas)
-  ├─ method.compute_gap(account_id, period_key) → Decimal
-  ├─ method.apply_heuristics(edits) → edits (reduced)
-  ├─ method.apply_semantic_matching(edits) → stm_ledger_pairs, edits (updated)
-  ├─ method.apply_xfr_expense_pairing(stm_ledger_pairs, hb_exp) → xfr_exp_pairs
-  ├─ publish_for_user_review(edits, stm_ledger_pairs, xfr_exp_pairs)
-  ├─ [user review gate]
-  ├─ method.classify_variance(gap, tolerance_config) → 'zero' | 'within_tolerance' | 'exceeds_tolerance'
-  ├─ method.generate_adjustment(...) → dict | None
-  ├─ evaluate_variance() + request_user_approval_if_needed()
-  ├─ method.validate_post_gate(gap, forward_edits, cost_center_zero_sum)
-  ├─ post_adjustment_to_close_book()
-  └─ close_session() → ReconciliationSession
-```
-
-### Key Utility Classes
-
-| id | utility_class         | purpose                              |
-| -- | --------------------- | ------------------------------------ |
-| 01 | `HeuristicsConfig`    | load config + account overrides      |
-| 02 | `LedgerSlicer`        | build slices + opening balances      |
-| 03 | `MatchingAlgorithm`   | forward/backward match + heuristics  |
-| 04 | `GapValidator`        | assert equations + invariants        |
-| 05 | `VarianceClassifier`  | classify zero/within/exceeds         |
-| 06 | `AdjustmentBuilder`   | build deterministic adjustment ids   |
-
-### Repository Layout
-
-**Directory structure:**
-```
-src/close_session/reconciliation_engine/
-├─ __init__.py                          # Public API exports
-├─ engine.py                            # ReconciliationEngine class
-├─ models/
-│  ├─ adjustment_transaction.py
-│  ├─ reconciliation_session.py
-│  └─ enums.py                          # VarianceClass, AdjustmentStatus, SessionStatus
-├─ methods/
-│  ├─ __init__.py
-│  ├─ reconciliation_method.py           # Abstract base
-│  ├─ transaction_level_method.py
-│  └─ balance_level_method.py
-├─ utilities/
-│  ├─ heuristics_config.py
-│  ├─ ledger_slicer.py
-│  ├─ matching_algorithm.py
-│  ├─ gap_validator.py
-│  ├─ variance_classifier.py
-│  └─ adjustment_builder.py
-└─ config/
-   ├─ config_loader.py
-   ├─ txn_heuristics.json               # Heuristic parameters, account overrides
-   └─ tolerance_config.json             # Tolerance thresholds by account group
-
-src/python/adapters/                    # App-wide shared adapter layer
-├─ sqlite_adapter.py                    # Read GL, persist session, write close_book
-└─ homebudget_wrapper.py                # HB GL posting (read-only or write-back)
-```
-
-**Dependency flow — strict acyclic:**
-- Layer 1: `models/` — No external dependencies
-- Layer 2: `utilities/` — Depends on models only
-- Layer 3: `methods/` — Depends on models, utilities
-- Layer 4: shared adapters (`src/python/adapters/`) — App-wide utilities consumed by engine and other modules
-- Layer 5: `engine.py` — Depends on models, utilities, methods, and shared adapter interfaces
-
-### Library Dependencies
-
-| id | library    | purpose                       | key_classes_methods                  |
-| -- | ---------- | ----------------------------- | ------------------------------------ |
-| 01 | `pandas`   | ledger/stmnt transforms       | `DataFrame`, `sort_values()`, `sum()`|
-| 02 | `decimal`  | exact money arithmetic        | `Decimal`, `quantize()`              |
-| 03 | `sqlite3`  | read/write sqlite schemas     | `Connection`, param queries          |
-| 04 | `pydantic` | model validation              | `BaseModel`, `Field`, `validator`    |
-| 05 | `uuid`     | session/adjustment ids        | `uuid.uuid4()`                       |
-| 06 | `json`     | config loading                | `json.load()`                        |
-| 07 | `hashlib`  | deterministic id hashing      | `hashlib.sha256()`                   |
-| 08 | `logging`  | audit + checkpoint logs       | `getLogger()`, structured records    |
-| 09 | `enum`     | typed status enums            | `Enum`, `auto()`                     |
-
-### Implementation Constraints
-
-1. **Deterministic matching:** Same algorithm, same parameters, same row ordering → identical match pairs
-2. **Decimal arithmetic:** All monetary amounts use `Decimal(28,2)` with `ROUND_HALF_UP`. Never float.
-3. **Idempotent posting:** Adjustment_id is deterministic hash of `(session_id, account_id, period_key, rule_reference, residual_gap)`. Same variance twice produces same adjustment_id.
-4. **Gap invariant:** `sum(edit_amount) == 0.00` for every edit set and heuristic application. Mandatory correctness check.
-5. **Forward-backward equivalence:** Forward-pass matches must equal backward-reduction matches after heuristics. Divergence is correctness failure; fail closed.
-6. **Configuration is ground truth:** txn_heuristics.json and tolerance_config.json are sole sources; discovered at runtime; stored in metadata for reproducibility.
-
-### Design Completeness References
-
-- **Full class hierarchy specification:** [reconciliation-class-hierarchy.json](reconciliation-class-hierarchy.json)
-- **Utility and dependency design:** [reconciliation-utilities-design.json](reconciliation-utilities-design.json)
-- **Module layout and import relationships:** [reconciliation-engine-module-layout.json](reconciliation-engine-module-layout.json)
-- **Markdown layout summary:** [reconciliation-engine-module-layout.md](reconciliation-engine-module-layout.md)
-
-All specifications are implementation-ready with method signatures, parameter contracts, inheritance relationships, and composition cardinality fully defined.
-
----
-
-## Key Findings
-
-### Method Class Design Findings
-
-#### Finding 1: Forward–backward equivalence is a mandatory correctness assertion for transaction-level reconciliation
-
-After heuristics application, the forward and backward-reduced edit sets must be identical in both shape and values. This equivalence check is not optional validation; it is a correctness gate that must block reconciliation advancement if sets differ. Divergence indicates either a heuristic bug or a fundamental algorithmic inconsistency that risks data corruption and audit trail damage.
-
-**Implication:** Store both edit sets in reconciliation metadata; compute set difference before proceeding to tolerance evaluation. Fail closed if sets diverge; do not allow silent override without explicit documented exception process.
-
-#### Finding 2: Edits model invariant — sum of edit_amount = 0.00 for modified subsets — is both power and constraint
-
-The edits model provides universal representation for both forward — greedy matching — and backward — trivial reduction — derivations. The gap-preservation invariant (`sum(edit_amount) == 0.00` for any heuristic-modified subset) is simultaneously a source of power — no re-balancing needed after edits removal — and a constraint: heuristics cannot be arbitrary text-matching rules.
-
-**Implication:** Account-specific heuristics must be carefully designed to preserve this invariant. Any heuristic that removes edits without net-zero edit_amount will silently corrupt the gap equation. Heuristic validation by computing subset sum for removed edits must be mandatory before production deployment.
-
-#### Finding 3: Heuristic parameter discovery from config file is ground truth; parameters must be discovered at runtime, not hard-coded
-
-The `txn_heuristics.json` file is the sole source of truth for matching parameters — date_tolerance_days and amount_tolerance — and heuristic configuration: keywords, patterns, and enabled flags. This design allows per-account customization without code changes; however, it requires the config to be version-controlled, validated at startup, and stored in invocation metadata for audit trail.
-
-**Implication:** Validate `txn_heuristics.json` at agent startup, not at reconciliation time. Log configuration errors early. Include discovered parameters in reconciliation session metadata. When parameters change — for example, to handle new bank behavior — update config first, then validate against known historical reconciliation sessions to ensure consistency.
-
-#### Finding 4: Balance-level tolerance thresholds are account-group-specific and asymmetric; user confirmation is a tolerance mechanism
-
-Bank statement-process accounts require zero tolerance, while cash allows ±SGD 20 asymmetry. This asymmetry reflects source quality: bank statements are source-of-truth, while cash is subject to physical counting variance. Separately, HomeBudget-native and CPF accounts use user confirmation and roll-forward validation instead of numeric thresholds.
-
-**Implication:** Tolerance configuration must be keyed by account group, not by individual account. Variance evaluation logic must distinguish numeric tolerance — threshold-based — from confirmation tolerance — user-validated. Adjustment preparation differs: auto-prepare for numeric groups; present for approval without pre-population for confirmation-tolerance groups.
-
-### Account-group Procedure Findings
-
-Bank statement-process accounts require zero tolerance, while cash allows ±SGD 20 asymmetry. This asymmetry reflects source quality and account volatility: bank statements are considered source-of-truth with deterministic txn records, while cash is subject to physical counting variance and timing ambiguity. Account groups share the same tolerance class within group — all bank accounts have zero tolerance — but different groups have different thresholds. **Implication:** tolerance configuration must be keyed by account group, not by individual account. Variance evaluation must apply group-specific threshold before presenting adjustment to POC.
-
-### Finding 2: Variance handling diverges between transaction-level and balance-level methods
-
-Transaction-level reconciliation for bank accounts produces a list of unmatched items as edits and requires user review per unmatched item. Balance-level reconciliation for cash, CPF, wallets, and IBKR produces a single residual gap and requires single approval decision. This difference affects the adjustment outcome structure and approval scope. **Implication:** reconciliation engine must maintain separate variance evaluation workflows for transaction-level vs. balance-level. Adjustment outcome messages and approval UI must be tailored per method class.
-
-### Finding 3: IBKR deviates from shared reconciliation framework; uses deterministic derivation instead of variance-based adjustment
-
-IBKR accounts do not produce reconciliation adjustments based on variance evaluation. Instead, IBKR txns are derived deterministically from statement activity following the accounting model in ibkr-integration.md. Close-gate checks validate the derived txns: balance-equation closure and NAV roll-down. If checks pass, txns are posted directly. If checks fail, reconciliation is blocked. **Implication:** IBKR reconciliation is not variance-driven and does not follow shared tolerance rules. IBKR has its own accounting model and must be routed to separate validation logic, not to general reconciliation engine.
-
-### Finding 4: Post-target schema ownership is asymmetric: all adjustments post to close_book, but HB write-back behavior varies by account group
-
-All account groups post approved adjustments to close_book as the primary target for period closure. However, HB write-back behavior differs: bank statement-process accounts write back matched source rows as validation-only; cash and IBKR create new HB entries via wrapper; CPF and HomeBudget-native accounts have no HB write-back. **Implication:** adjustment posting must be two-phase: first, post to close_book for all groups; second, conditionally post to HB GL via wrapper based on account group write-back policy.
-
-### Finding 5: User confirmation is the tolerance mechanism for non-numeric account groups
-
-HomeBudget-native and CPF accounts do not have numeric tolerance thresholds. Instead, tolerance is user confirmation — HB-native confirms the ledger is final — or roll-forward validation — CPF user corrects balance inputs. This deviates from bank/cash/wallets which have numeric thresholds and auto-prepared adjustments. **Implication:** variance evaluation logic must distinguish numeric tolerance — threshold-based — from confirmation tolerance — user-validated. Adjustment preparation workflow differs: auto-prepare for numeric tolerance groups; present for approval without pre-population for confirmation-tolerance groups.
-
-## Recommendations and Risks
-
-### Method Class Implementation Recommendations
-
-**Recommendation 1: Implement mandatory forward–backward equivalence check as a correctness gate**
-
-After heuristics application, always assert that forward and backward-reduced edit sets are identical. This equivalence check must block reconciliation advancement if sets differ. Do not allow silent override or "close anyway" unless explicitly approved through a documented exception process.
-
-*Rationale:* Divergence between forward and backward approaches indicates either a heuristic bug or a fundamental algorithmic inconsistency. Early detection prevents data corruption and audit trail damage.
-
-*Implementation:* Store both edit sets in reconciliation metadata; compute set difference before proceeding to tolerance evaluation. Include set comparison result in reconciliation session artifact.
-
-**Recommendation 2: Separate configuration validation from runtime invocation**
-
-Validate `txn_heuristics.json` at agent startup, not at reconciliation time:
-1. Check config file exists and is valid JSON.
-2. Verify all account names match account dimension.
-3. Verify heuristic names match enabled heuristic functions.
-4. Check tolerance values are valid positive decimals.
-5. Fail agent startup if validation fails.
-
-*Rationale:* Configuration errors should not emerge mid-reconciliation. Early validation provides operator visibility and prevents reconciliation cascades from propagating invalid config.
-
-**Recommendation 3: Detailed heuristics application audit trail**
-
-For each heuristics invocation, record:
-1. Heuristic name and parameters applied.
-2. Number of edits before and after.
-3. Edits removed: list of `(source, date, amount, note)` tuples.
-4. Verification: `sum(edit_amount over removed subset) == 0.00`.
-
-*Rationale:* Heuristics application is non-obvious and domain-specific. Audit trail enables operator review, variant investigation, and confidence in correctness.
-
-**Recommendation 4: Handle statement ending balance mismatch gracefully in slice construction**
-
-When statement slice ending balance does not match `balances` dataset:
-1. Log a warning with the mismatch amount and date.
-2. Allow user to choose: proceed with reconciliation or investigate balance discrepancy.
-3. If user proceeds, reconciliation continues but the discrepancy is flagged in the session artifact.
-4. Do not silently adjust the statement ending balance.
-
-*Rationale:* Balance mismatches indicate upstream data quality issues that may affect downstream reporting. Transparent user choice preserves control and audit trail.
-
-**Recommendation 5: Implement Decimal-only arithmetic throughout reconciliation pipeline**
-
-Use Python `Decimal` type exclusively for all amount, balance, and gap calculations. Never use float arithmetic. Add type hints to all reconciliation functions. Use strict assertions at function entry points: `assert isinstance(gap, Decimal)`.
-
-*Rationale:* Float arithmetic can accumulate rounding errors that cause gap to be non-zero even when all edits are valid. Decimal ensures exact arithmetic and maintains gap invariant.
-
-### Account-group Procedure Recommendations
-
-**Recommendation 1: Implement account-group dispatch logic before reconciliation-engine invocation
-
-**Recommendation:** Create account-close runtime routing logic that dispatches accounts to the correct reconciliation method class and tolerance configuration based on account group classification. Do not pass account-group classification to reconciliation-engine as a parameter; instead, resolve all account-specific configuration — method class, tolerance, source schemas, and adjustment category — before dispatch, and pass fully-resolved configuration to reconciliation-engine.
-
-**Rationale:** Account-group classification is a design-time property; passing it at runtime increases reconciliation-engine parameter complexity and couples account classification to reconciliation-engine logic. Pre-resolving configuration simplifies engine inputs and makes configuration more testable.
-
-### Method Class Design Risks
-
-**Risk 1: Heuristic pattern fragility in account-specific rules**
-
-Account-specific heuristics — CPF keywords and UOB cashback patterns — depend on consistent transaction description formatting from the source. If statement parsing changes or bank changes transaction description format, heuristics may silently fail to match, leaving edits in the final set that should have been removed.
-
-*Mitigation:* Store heuristic hit count — the number of times each heuristic matched — in session metadata. Monitor for periods where heuristic was expected to apply but did not. Alert operator if hit count drops unexpectedly from historical baseline.
-
-**Risk 2: Ambiguous match proliferation in forward pass**
-
-If matching parameters are too loose — large date_tolerance_days or large amount_tolerance — one ledger transaction may match multiple statement candidates, causing the one-to-one uniqueness test to fail. This leaves the transaction unmatched, requiring an edit. If heuristics then remove the edit, the final reconciliation may appear valid but hide the underlying ambiguity.
-
-*Mitigation:* Log the count of ambiguous matches per account per period. If ambiguity exceeds a threshold — for example, more than 5% of transactions — escalate to user for review. Include ambiguous match list in session artifact for inspection.
-
-**Risk 3: Float arithmetic contamination in gap calculations**
-
-If any part of the reconciliation pipeline uses float arithmetic instead of Decimal, accumulated rounding errors may cause gap to be non-zero even when all edits are valid. This is particularly dangerous in heuristics, where sum checks must be exact.
-
-*Mitigation:* Use Decimal type exclusively for all amount, balance, and gap calculations. Never call `float()` or use `/` operator on Decimals without explicit `Decimal(x) / Decimal(y)` guards. Add type hints. Use strict assertions at function entry: `assert isinstance(gap, Decimal)`.
-
-**Risk 4: Backward pass equivalence check not enforced as mandatory gate**
-
-If the forward–backward equivalence check is implemented as a warning instead of a failure condition, divergence may be silently accepted and carried forward to tolerance evaluation and adjustment generation, corrupting the session artifact.
-
-*Mitigation:* Make equivalence check a mandatory gate. Fail closed if forward and backward sets diverge. Document this as a correctness requirement, not a validation suggestion. Include equivalence result as a critical checkpoint in reconciliation report.
-
-### Account-group Procedure Risks
-
-**Risk 1: Cash tolerance threshold — ±SGD 20 — may be too permissive for small-variance detection**
-
-**Risk:** Cash is managed by user manual counts. A ±SGD 20 threshold allows 4% variance on a SGD 500 wallet or 0.2% on a SGD 10,000 physical safe. For high-value cash reserves, this tolerance may hide systematic counting errors or losses. Conversely, for low-value petty cash, this tolerance is excessively strict.
-
-**Mitigation:**
-- Make cash tolerance configurable per cash account subtype — for example, petty cash vs. safe — if multi-account cash is deployed in future.
-- Document the ±SGD 20 threshold as a POC-scope decision; it requires review for production deployment.
-- Include cash variance in reconciliation report and long-term audit trend analysis to detect systematic cash-handling issues.
-
-**Confidence: High** — this is a known constraint documented in requirements.
-
-### Key Risk 2: IBKR close-gate check failures block close but do not identify root cause automatically
-
-**Risk:** If IBKR close-gate checks fail — for example, NAV roll-down mismatch — reconciliation is blocked without automated diagnosis. POC must manually investigate IBKR statement and compare to derived txns to find the discrepancy. This could consume significant time during close if IBKR data is complex.
-
-**Mitigation:**
-- Implement diagnostic output from IBKR accounting model; close-gate checks should include detailed error messages, for example: "NAV mismatch: expected SGD 145,000, derived SGD 144,800, delta SGD 200 not accounted for in trades/dividends/interest".
-- Provide POC with side-by-side statement vs. derived txn comparison in GS session UI.
-- Document common IBKR close-gate failure modes and POC troubleshooting steps in user guide.
-
-**Confidence: Medium** — IBKR derivation logic is complex; error messages must be clear to aid POC diagnosis.
-
-### Key Risk 3: Bank statement-process tolerance of zero may fail if statement formatting changes mid-period
-
-**Risk:** If bank statement format changes unexpectedly — for example, bank switches CSV vendor or column order — date or amount parsing may shift, causing previously-matched txns to become unmatched. POC would face bulk unmatched txns even if underlying ledger is correct.
-
-**Mitigation:**
-- Implement format detection in bank statement adapter with explicit format version tracking.
-- If format change detected, log warning to GS session UI and block ingest until format is re-confirmed.
-- Provide POC with format re-configuration workflow if expected format changes — for example, seasonal format change or bank upgrade.
-- Test reconciliation against multiple statement formats in unit tests to catch format sensitivity early.
-
-**Confidence: High** — format stability is a critical dependency that should be validated up front.
 

@@ -493,7 +493,8 @@ Interfaces:
 
 Functional specification:
 
-- Execute account-group workflow runtime logic for ingest, normalization, and reconciliation initiation for bank, IBKR, CPF, cash, and related account paths.
+- Execute account-group workflow runtime logic for ingest, normalization, and reconciliation initiation for bank, CPF, cash, and related account paths.
+- Route IBKR accounts to source integration deterministic parsing and derivation, including HB and GL transaction creation, before reconciliation stage entry.
 
 Constraints:
 

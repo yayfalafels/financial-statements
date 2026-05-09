@@ -193,6 +193,8 @@ Config rules:
 - Optional keys must have explicit defaults in schema.
 - Config values are read at startup and bound into a typed config object.
 - Dynamic reload is allowed only for approved non-critical sections.
+- User-facing policy config must be edited through approved UI interfaces with validation; direct manual JSON editing is not an operational path.
+- For reconciliation policy, `txn_heuristics.json` and `tolerance_config.json` must pass pre-flight startup validation before any account reconcile stage executes.
 
 Session configuration freeze:
 
