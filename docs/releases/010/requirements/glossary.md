@@ -37,6 +37,12 @@ scope: poc
 - [Checkpoint](#checkpoint)
 - [Session state](#session-state)
 - [Workflow step](#workflow-step)
+- [System component](#system-component)
+- [Runtime component](#runtime-component)
+- [Adapter component](#adapter-component)
+- [Internal module](#internal-module)
+- [Interface boundary](#interface-boundary)
+- [Interaction topology](#interaction-topology)
 - [Bill](#bill)
 - [Shared cost](#shared-cost)
 - [Novel decision](#novel-decision)
@@ -179,6 +185,39 @@ Session state is the persisted progress record for a period close run, including
 ## Workflow step
 
 Workflow step is an executable unit of the monthly close process with defined inputs, outputs, and validation criteria.
+
+## System component
+
+System component is a named architecture participant in the release 010 component catalog, such as workflow orchestrator, account close runtime, statement builder, or SQLite adapter.
+Use system component for cross-component ownership, contracts, and handoff behavior.
+Do not use module as a synonym for system component.
+
+## Runtime component
+
+Runtime component is a system component that executes stage or workflow business logic and owns stage outcomes.
+Examples include account close runtime and bill and shared-cost runtime.
+
+## Adapter component
+
+Adapter component is a system component that translates between app contracts and external or persistence interfaces.
+Examples include source adapters, HomeBudget wrapper adapter, Google Sheets adapter, and SQLite adapter.
+
+## Internal module
+
+Internal module is a within-component code organization unit, such as a Python package, file, or import unit.
+Use internal module only for repository or code-structure discussion inside a component design.
+Do not use internal module for architecture-level participants.
+
+## Interface boundary
+
+Interface boundary is the explicit contract seam between system components, including allowed call direction, payload contract, and failure signaling behavior.
+Qualify boundary terms by context when possible, such as API boundary, integration boundary, or persistence boundary.
+
+## Interaction topology
+
+Interaction topology is the allowed interaction pattern among system components, independent of internal code layout.
+Use interaction topology for sequence and wiring constraints among components.
+Do not use module layout when describing architecture-level interactions.
 
 ## Bill
 

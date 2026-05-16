@@ -1,0 +1,481 @@
+reporting_year,period_month,section,line_item,line_type,amount_reporting
+2026,2026-01,summary,net income PL,aggregate,60575.00
+2026,2026-02,summary,net income PL,aggregate,19908.00
+2026,2026-03,summary,net income PL,aggregate,-51871.00
+2026,2026-04,summary,net income PL,aggregate,-20931.00
+2026,2026-05,summary,net income PL,aggregate,4695.00
+2026,2026-06,summary,net income PL,aggregate,4654.00
+2026,2026-07,summary,net income PL,aggregate,3965.00
+2026,2026-08,summary,net income PL,aggregate,3143.00
+2026,2026-09,summary,net income PL,aggregate,4875.00
+2026,2026-10,summary,net income PL,aggregate,3698.00
+2026,2026-11,summary,net income PL,aggregate,5699.00
+2026,2026-12,summary,net income PL,aggregate,3239.00
+2026,2026-01,summary,reconcile error,line_item,158.00
+2026,2026-02,summary,reconcile error,line_item,18388.00
+2026,2026-03,summary,reconcile error,line_item,0.00
+2026,2026-04,summary,reconcile error,line_item,0.00
+2026,2026-05,summary,reconcile error,line_item,0.00
+2026,2026-06,summary,reconcile error,line_item,0.00
+2026,2026-07,summary,reconcile error,line_item,0.00
+2026,2026-08,summary,reconcile error,line_item,0.00
+2026,2026-09,summary,reconcile error,line_item,0.00
+2026,2026-10,summary,reconcile error,line_item,0.00
+2026,2026-11,summary,reconcile error,line_item,0.00
+2026,2026-12,summary,reconcile error,line_item,0.00
+2026,2026-01,summary,change in net assets,aggregate,60733.00
+2026,2026-02,summary,change in net assets,aggregate,38296.00
+2026,2026-03,summary,change in net assets,aggregate,-51871.00
+2026,2026-04,summary,change in net assets,aggregate,-20931.00
+2026,2026-05,summary,change in net assets,aggregate,4695.00
+2026,2026-06,summary,change in net assets,aggregate,4654.00
+2026,2026-07,summary,change in net assets,aggregate,3965.00
+2026,2026-08,summary,change in net assets,aggregate,3143.00
+2026,2026-09,summary,change in net assets,aggregate,4875.00
+2026,2026-10,summary,change in net assets,aggregate,3698.00
+2026,2026-11,summary,change in net assets,aggregate,5699.00
+2026,2026-12,summary,change in net assets,aggregate,3239.00
+2026,2026-01,summary,opening net assets,aggregate,357948.00
+2026,2026-02,summary,opening net assets,aggregate,418681.00
+2026,2026-03,summary,opening net assets,aggregate,456977.00
+2026,2026-04,summary,opening net assets,aggregate,405106.00
+2026,2026-05,summary,opening net assets,aggregate,384175.00
+2026,2026-06,summary,opening net assets,aggregate,388869.00
+2026,2026-07,summary,opening net assets,aggregate,393523.00
+2026,2026-08,summary,opening net assets,aggregate,397488.00
+2026,2026-09,summary,opening net assets,aggregate,400632.00
+2026,2026-10,summary,opening net assets,aggregate,405507.00
+2026,2026-11,summary,opening net assets,aggregate,409204.00
+2026,2026-12,summary,opening net assets,aggregate,414903.00
+2026,2026-01,summary,closing net assets,aggregate,418681.00
+2026,2026-02,summary,closing net assets,aggregate,456977.00
+2026,2026-03,summary,closing net assets,aggregate,405106.00
+2026,2026-04,summary,closing net assets,aggregate,384175.00
+2026,2026-05,summary,closing net assets,aggregate,388869.00
+2026,2026-06,summary,closing net assets,aggregate,393523.00
+2026,2026-07,summary,closing net assets,aggregate,397488.00
+2026,2026-08,summary,closing net assets,aggregate,400632.00
+2026,2026-09,summary,closing net assets,aggregate,405507.00
+2026,2026-10,summary,closing net assets,aggregate,409204.00
+2026,2026-11,summary,closing net assets,aggregate,414903.00
+2026,2026-12,summary,closing net assets,aggregate,418142.00
+2026,2026-01,summary,net assets,aggregate,418680.85
+2026,2026-02,summary,net assets,aggregate,456977.00
+2026,2026-03,summary,net assets,aggregate,405106.00
+2026,2026-04,summary,net assets,aggregate,384175.00
+2026,2026-05,summary,net assets,aggregate,388869.00
+2026,2026-06,summary,net assets,aggregate,393523.00
+2026,2026-07,summary,net assets,aggregate,397488.00
+2026,2026-08,summary,net assets,aggregate,400632.00
+2026,2026-09,summary,net assets,aggregate,405507.00
+2026,2026-10,summary,net assets,aggregate,409204.00
+2026,2026-11,summary,net assets,aggregate,414903.00
+2026,2026-12,summary,net assets,aggregate,418142.00
+2026,2026-01,illiquid_retirement,illiquid and retirement,line_item,194515.00
+2026,2026-02,illiquid_retirement,illiquid and retirement,line_item,197980.00
+2026,2026-03,illiquid_retirement,illiquid and retirement,line_item,200940.00
+2026,2026-04,illiquid_retirement,illiquid and retirement,line_item,203900.00
+2026,2026-05,illiquid_retirement,illiquid and retirement,line_item,206145.00
+2026,2026-06,illiquid_retirement,illiquid and retirement,line_item,209105.00
+2026,2026-07,illiquid_retirement,illiquid and retirement,line_item,212065.00
+2026,2026-08,illiquid_retirement,illiquid and retirement,line_item,212638.00
+2026,2026-09,illiquid_retirement,illiquid and retirement,line_item,215598.00
+2026,2026-10,illiquid_retirement,illiquid and retirement,line_item,218274.00
+2026,2026-11,illiquid_retirement,illiquid and retirement,line_item,221234.00
+2026,2026-12,illiquid_retirement,illiquid and retirement,line_item,229657.00
+2026,2026-01,illiquid_retirement,liquid net assets,line_item,224165.00
+2026,2026-02,illiquid_retirement,liquid net assets,line_item,258996.00
+2026,2026-03,illiquid_retirement,liquid net assets,line_item,204165.00
+2026,2026-04,illiquid_retirement,liquid net assets,line_item,180274.00
+2026,2026-05,illiquid_retirement,liquid net assets,line_item,182724.00
+2026,2026-06,illiquid_retirement,liquid net assets,line_item,184418.00
+2026,2026-07,illiquid_retirement,liquid net assets,line_item,185423.00
+2026,2026-08,illiquid_retirement,liquid net assets,line_item,187994.00
+2026,2026-09,illiquid_retirement,liquid net assets,line_item,189909.00
+2026,2026-10,illiquid_retirement,liquid net assets,line_item,190930.00
+2026,2026-11,illiquid_retirement,liquid net assets,line_item,193669.00
+2026,2026-12,illiquid_retirement,liquid net assets,line_item,188484.00
+2026,2026-01,illiquid_retirement,cash and bank accounts,line_item,8739.00
+2026,2026-02,illiquid_retirement,cash and bank accounts,line_item,21278.00
+2026,2026-03,illiquid_retirement,cash and bank accounts,line_item,2880.00
+2026,2026-04,illiquid_retirement,cash and bank accounts,line_item,5583.00
+2026,2026-05,illiquid_retirement,cash and bank accounts,line_item,8032.00
+2026,2026-06,illiquid_retirement,cash and bank accounts,line_item,5726.00
+2026,2026-07,illiquid_retirement,cash and bank accounts,line_item,6731.00
+2026,2026-08,illiquid_retirement,cash and bank accounts,line_item,3914.00
+2026,2026-09,illiquid_retirement,cash and bank accounts,line_item,5829.00
+2026,2026-10,illiquid_retirement,cash and bank accounts,line_item,3851.00
+2026,2026-11,illiquid_retirement,cash and bank accounts,line_item,6590.00
+2026,2026-12,illiquid_retirement,cash and bank accounts,line_item,1405.00
+2026,2026-01,liquid_investments,liquid investments,line_item,251680.00
+2026,2026-02,liquid_investments,liquid investments,line_item,242002.00
+2026,2026-03,liquid_investments,liquid investments,line_item,251484.00
+2026,2026-04,liquid_investments,liquid investments,line_item,219891.00
+2026,2026-05,liquid_investments,liquid investments,line_item,219892.00
+2026,2026-06,liquid_investments,liquid investments,line_item,194618.00
+2026,2026-07,liquid_investments,liquid investments,line_item,181981.00
+2026,2026-08,liquid_investments,liquid investments,line_item,200936.00
+2026,2026-09,liquid_investments,liquid investments,line_item,200937.00
+2026,2026-10,liquid_investments,liquid investments,line_item,200937.00
+2026,2026-11,liquid_investments,liquid investments,line_item,219892.00
+2026,2026-12,liquid_investments,liquid investments,line_item,219892.00
+2026,2026-01,liquid_investments,credit,line_item,-36254.00
+2026,2026-02,liquid_investments,credit,line_item,-4284.00
+2026,2026-03,liquid_investments,credit,line_item,-50199.00
+2026,2026-04,liquid_investments,credit,line_item,-45200.00
+2026,2026-05,liquid_investments,credit,line_item,-45200.00
+2026,2026-06,liquid_investments,credit,line_item,-15926.00
+2026,2026-07,liquid_investments,credit,line_item,-3289.00
+2026,2026-08,liquid_investments,credit,line_item,-16857.00
+2026,2026-09,liquid_investments,credit,line_item,-16857.00
+2026,2026-10,liquid_investments,credit,line_item,-13857.00
+2026,2026-11,liquid_investments,credit,line_item,-32813.00
+2026,2026-12,liquid_investments,credit,line_item,-32813.00
+2026,2026-01,liquid_investments,M2M forex USD.SGD,line_item,-4844.00
+2026,2026-02,liquid_investments,M2M forex USD.SGD,line_item,118.00
+2026,2026-03,liquid_investments,M2M forex USD.SGD,line_item,23.00
+2026,2026-04,liquid_investments,M2M forex USD.SGD,line_item,0.00
+2026,2026-05,liquid_investments,M2M forex USD.SGD,line_item,0.00
+2026,2026-06,liquid_investments,M2M forex USD.SGD,line_item,0.00
+2026,2026-07,liquid_investments,M2M forex USD.SGD,line_item,0.00
+2026,2026-08,liquid_investments,M2M forex USD.SGD,line_item,0.00
+2026,2026-09,liquid_investments,M2M forex USD.SGD,line_item,0.00
+2026,2026-10,liquid_investments,M2M forex USD.SGD,line_item,0.00
+2026,2026-11,liquid_investments,M2M forex USD.SGD,line_item,0.00
+2026,2026-12,liquid_investments,M2M forex USD.SGD,line_item,0.00
+2026,2026-01,liquid_investments,IB --> CITI,line_item,0.00
+2026,2026-02,liquid_investments,IB --> CITI,line_item,0.00
+2026,2026-03,liquid_investments,IB --> CITI,line_item,-2000.00
+2026,2026-04,liquid_investments,IB --> CITI,line_item,0.00
+2026,2026-05,liquid_investments,IB --> CITI,line_item,0.00
+2026,2026-06,liquid_investments,IB --> CITI,line_item,0.00
+2026,2026-07,liquid_investments,IB --> CITI,line_item,0.00
+2026,2026-08,liquid_investments,IB --> CITI,line_item,-1889.00
+2026,2026-09,liquid_investments,IB --> CITI,line_item,0.00
+2026,2026-10,liquid_investments,IB --> CITI,line_item,0.00
+2026,2026-11,liquid_investments,IB --> CITI,line_item,0.00
+2026,2026-12,liquid_investments,IB --> CITI,line_item,0.00
+2026,2026-01,liquid_investments,IB --> DBS,line_item,0.00
+2026,2026-02,liquid_investments,IB --> DBS,line_item,0.00
+2026,2026-03,liquid_investments,IB --> DBS,line_item,0.00
+2026,2026-04,liquid_investments,IB --> DBS,line_item,0.00
+2026,2026-05,liquid_investments,IB --> DBS,line_item,0.00
+2026,2026-06,liquid_investments,IB --> DBS,line_item,-3165.00
+2026,2026-07,liquid_investments,IB --> DBS,line_item,0.00
+2026,2026-08,liquid_investments,IB --> DBS,line_item,-2374.00
+2026,2026-09,liquid_investments,IB --> DBS,line_item,0.00
+2026,2026-10,liquid_investments,IB --> DBS,line_item,-2374.00
+2026,2026-11,liquid_investments,IB --> DBS,line_item,0.00
+2026,2026-12,liquid_investments,IB --> DBS,line_item,0.00
+2026,2026-01,liquid_investments,WF --> CITI,line_item,1000.00
+2026,2026-02,liquid_investments,WF --> CITI,line_item,0.00
+2026,2026-03,liquid_investments,WF --> CITI,line_item,0.00
+2026,2026-04,liquid_investments,WF --> CITI,line_item,0.00
+2026,2026-05,liquid_investments,WF --> CITI,line_item,0.00
+2026,2026-06,liquid_investments,WF --> CITI,line_item,0.00
+2026,2026-07,liquid_investments,WF --> CITI,line_item,0.00
+2026,2026-08,liquid_investments,WF --> CITI,line_item,0.00
+2026,2026-09,liquid_investments,WF --> CITI,line_item,0.00
+2026,2026-10,liquid_investments,WF --> CITI,line_item,0.00
+2026,2026-11,liquid_investments,WF --> CITI,line_item,0.00
+2026,2026-12,liquid_investments,WF --> CITI,line_item,0.00
+2026,2026-01,liquid_investments,IRA --> CITI,line_item,0.00
+2026,2026-02,liquid_investments,IRA --> CITI,line_item,0.00
+2026,2026-03,liquid_investments,IRA --> CITI,line_item,0.00
+2026,2026-04,liquid_investments,IRA --> CITI,line_item,0.00
+2026,2026-05,liquid_investments,IRA --> CITI,line_item,0.00
+2026,2026-06,liquid_investments,IRA --> CITI,line_item,0.00
+2026,2026-07,liquid_investments,IRA --> CITI,line_item,0.00
+2026,2026-08,liquid_investments,IRA --> CITI,line_item,1889.00
+2026,2026-09,liquid_investments,IRA --> CITI,line_item,0.00
+2026,2026-10,liquid_investments,IRA --> CITI,line_item,0.00
+2026,2026-11,liquid_investments,IRA --> CITI,line_item,0.00
+2026,2026-12,liquid_investments,IRA --> CITI,line_item,0.00
+2026,2026-01,liquid_investments,net cash transfers,line_item,7149.00
+2026,2026-02,liquid_investments,net cash transfers,line_item,-29646.00
+2026,2026-03,liquid_investments,net cash transfers,line_item,55711.00
+2026,2026-04,liquid_investments,net cash transfers,line_item,0.00
+2026,2026-05,liquid_investments,net cash transfers,line_item,0.00
+2026,2026-06,liquid_investments,net cash transfers,line_item,-25274.00
+2026,2026-07,liquid_investments,net cash transfers,line_item,-12637.00
+2026,2026-08,liquid_investments,net cash transfers,line_item,18956.00
+2026,2026-09,liquid_investments,net cash transfers,line_item,0.00
+2026,2026-10,liquid_investments,net cash transfers,line_item,0.00
+2026,2026-11,liquid_investments,net cash transfers,line_item,18956.00
+2026,2026-12,liquid_investments,net cash transfers,line_item,0.00
+2026,2026-01,liquid_investments,CPF CONTRIBUTIONS,line_item,2738.00
+2026,2026-02,liquid_investments,CPF CONTRIBUTIONS,line_item,2960.00
+2026,2026-03,liquid_investments,CPF CONTRIBUTIONS,line_item,2960.00
+2026,2026-04,liquid_investments,CPF CONTRIBUTIONS,line_item,2960.00
+2026,2026-05,liquid_investments,CPF CONTRIBUTIONS,line_item,2960.00
+2026,2026-06,liquid_investments,CPF CONTRIBUTIONS,line_item,2960.00
+2026,2026-07,liquid_investments,CPF CONTRIBUTIONS,line_item,2960.00
+2026,2026-08,liquid_investments,CPF CONTRIBUTIONS,line_item,2960.00
+2026,2026-09,liquid_investments,CPF CONTRIBUTIONS,line_item,2960.00
+2026,2026-10,liquid_investments,CPF CONTRIBUTIONS,line_item,2960.00
+2026,2026-11,liquid_investments,CPF CONTRIBUTIONS,line_item,2960.00
+2026,2026-12,liquid_investments,CPF CONTRIBUTIONS,line_item,2960.00
+2026,2026-01,liquid_investments,IB BUY / SELL,line_item,5657.00
+2026,2026-02,liquid_investments,IB BUY / SELL,line_item,-23460.00
+2026,2026-03,liquid_investments,IB BUY / SELL,line_item,44086.00
+2026,2026-04,liquid_investments,IB BUY / SELL,line_item,0.00
+2026,2026-05,liquid_investments,IB BUY / SELL,line_item,0.00
+2026,2026-06,liquid_investments,IB BUY / SELL,line_item,-20000.00
+2026,2026-07,liquid_investments,IB BUY / SELL,line_item,-10000.00
+2026,2026-08,liquid_investments,IB BUY / SELL,line_item,15000.00
+2026,2026-09,liquid_investments,IB BUY / SELL,line_item,0.00
+2026,2026-10,liquid_investments,IB BUY / SELL,line_item,0.00
+2026,2026-11,liquid_investments,IB BUY / SELL,line_item,15000.00
+2026,2026-12,liquid_investments,IB BUY / SELL,line_item,0.00
+2026,2026-01,cash_accounts,wallet cash,line_item,1168.00
+2026,2026-02,cash_accounts,wallet cash,line_item,2945.00
+2026,2026-03,cash_accounts,wallet cash,line_item,1639.00
+2026,2026-04,cash_accounts,wallet cash,line_item,1639.00
+2026,2026-05,cash_accounts,wallet cash,line_item,1639.00
+2026,2026-06,cash_accounts,wallet cash,line_item,1639.00
+2026,2026-07,cash_accounts,wallet cash,line_item,1639.00
+2026,2026-08,cash_accounts,wallet cash,line_item,1639.00
+2026,2026-09,cash_accounts,wallet cash,line_item,1639.00
+2026,2026-10,cash_accounts,wallet cash,line_item,1639.00
+2026,2026-11,cash_accounts,wallet cash,line_item,1639.00
+2026,2026-12,cash_accounts,wallet cash,line_item,1639.00
+2026,2026-01,bank_accounts,bank accounts,line_item,7571.00
+2026,2026-02,bank_accounts,bank accounts,line_item,6309.00
+2026,2026-03,bank_accounts,bank accounts,line_item,1242.00
+2026,2026-04,bank_accounts,bank accounts,line_item,3944.00
+2026,2026-05,bank_accounts,bank accounts,line_item,6394.00
+2026,2026-06,bank_accounts,bank accounts,line_item,4088.00
+2026,2026-07,bank_accounts,bank accounts,line_item,5093.00
+2026,2026-08,bank_accounts,bank accounts,line_item,2276.00
+2026,2026-09,bank_accounts,bank accounts,line_item,4191.00
+2026,2026-10,bank_accounts,bank accounts,line_item,2212.00
+2026,2026-11,bank_accounts,bank accounts,line_item,4951.00
+2026,2026-12,bank_accounts,bank accounts,line_item,-234.00
+2026,2026-01,bank_accounts,DBS,line_item,4218.00
+2026,2026-02,bank_accounts,DBS,line_item,2955.00
+2026,2026-03,bank_accounts,DBS,line_item,415.00
+2026,2026-04,bank_accounts,DBS,line_item,3118.00
+2026,2026-05,bank_accounts,DBS,line_item,5567.00
+2026,2026-06,bank_accounts,DBS,line_item,3261.00
+2026,2026-07,bank_accounts,DBS,line_item,4266.00
+2026,2026-08,bank_accounts,DBS,line_item,1449.00
+2026,2026-09,bank_accounts,DBS,line_item,3364.00
+2026,2026-10,bank_accounts,DBS,line_item,1386.00
+2026,2026-11,bank_accounts,DBS,line_item,4124.00
+2026,2026-12,bank_accounts,DBS,line_item,-1061.00
+2026,2026-01,bank_accounts,CITI,line_item,2604.00
+2026,2026-02,bank_accounts,CITI,line_item,2604.00
+2026,2026-03,bank_accounts,CITI,line_item,604.00
+2026,2026-04,bank_accounts,CITI,line_item,604.00
+2026,2026-05,bank_accounts,CITI,line_item,604.00
+2026,2026-06,bank_accounts,CITI,line_item,604.00
+2026,2026-07,bank_accounts,CITI,line_item,604.00
+2026,2026-08,bank_accounts,CITI,line_item,604.00
+2026,2026-09,bank_accounts,CITI,line_item,604.00
+2026,2026-10,bank_accounts,CITI,line_item,604.00
+2026,2026-11,bank_accounts,CITI,line_item,604.00
+2026,2026-12,bank_accounts,CITI,line_item,604.00
+2026,2026-01,bank_accounts,WF,line_item,50.00
+2026,2026-02,bank_accounts,WF,line_item,50.00
+2026,2026-03,bank_accounts,WF,line_item,50.00
+2026,2026-04,bank_accounts,WF,line_item,50.00
+2026,2026-05,bank_accounts,WF,line_item,50.00
+2026,2026-06,bank_accounts,WF,line_item,50.00
+2026,2026-07,bank_accounts,WF,line_item,50.00
+2026,2026-08,bank_accounts,WF,line_item,50.00
+2026,2026-09,bank_accounts,WF,line_item,50.00
+2026,2026-10,bank_accounts,WF,line_item,50.00
+2026,2026-11,bank_accounts,WF,line_item,50.00
+2026,2026-12,bank_accounts,WF,line_item,50.00
+2026,2026-01,credit_accounts,credit cards,line_item,-5466.00
+2026,2026-02,credit_accounts,credit cards,line_item,-4284.00
+2026,2026-03,credit_accounts,credit cards,line_item,-2000.00
+2026,2026-04,credit_accounts,credit cards,line_item,-2000.00
+2026,2026-05,credit_accounts,credit cards,line_item,-2000.00
+2026,2026-06,credit_accounts,credit cards,line_item,-2000.00
+2026,2026-07,credit_accounts,credit cards,line_item,-2000.00
+2026,2026-08,credit_accounts,credit cards,line_item,-2000.00
+2026,2026-09,credit_accounts,credit cards,line_item,-2000.00
+2026,2026-10,credit_accounts,credit cards,line_item,-2000.00
+2026,2026-11,credit_accounts,credit cards,line_item,-2000.00
+2026,2026-12,credit_accounts,credit cards,line_item,-2000.00
+2026,2026-01,credit_accounts,UOB One,line_item,-5466.00
+2026,2026-02,credit_accounts,UOB One,line_item,-4284.00
+2026,2026-03,credit_accounts,UOB One,line_item,-2000.00
+2026,2026-04,credit_accounts,UOB One,line_item,-2000.00
+2026,2026-05,credit_accounts,UOB One,line_item,-2000.00
+2026,2026-06,credit_accounts,UOB One,line_item,-2000.00
+2026,2026-07,credit_accounts,UOB One,line_item,-2000.00
+2026,2026-08,credit_accounts,UOB One,line_item,-2000.00
+2026,2026-09,credit_accounts,UOB One,line_item,-2000.00
+2026,2026-10,credit_accounts,UOB One,line_item,-2000.00
+2026,2026-11,credit_accounts,UOB One,line_item,-2000.00
+2026,2026-12,credit_accounts,UOB One,line_item,-2000.00
+2026,2026-01,other_credit,misc credit,line_item,-30788.00
+2026,2026-02,other_credit,misc credit,line_item,12024.00
+2026,2026-03,other_credit,misc credit,line_item,-48199.00
+2026,2026-04,other_credit,misc credit,line_item,-43200.00
+2026,2026-05,other_credit,misc credit,line_item,-43200.00
+2026,2026-06,other_credit,misc credit,line_item,-13926.00
+2026,2026-07,other_credit,misc credit,line_item,-1289.00
+2026,2026-08,other_credit,misc credit,line_item,-14857.00
+2026,2026-09,other_credit,misc credit,line_item,-14857.00
+2026,2026-10,other_credit,misc credit,line_item,-11857.00
+2026,2026-11,other_credit,misc credit,line_item,-30813.00
+2026,2026-12,other_credit,misc credit,line_item,-30813.00
+2026,2026-01,other_credit,other credit,line_item,130.00
+2026,2026-02,other_credit,other credit,line_item,-58.00
+2026,2026-03,other_credit,other credit,line_item,-30.00
+2026,2026-04,other_credit,other credit,line_item,-30.00
+2026,2026-05,other_credit,other credit,line_item,-30.00
+2026,2026-06,other_credit,other credit,line_item,-30.00
+2026,2026-07,other_credit,other credit,line_item,-30.00
+2026,2026-08,other_credit,other credit,line_item,-30.00
+2026,2026-09,other_credit,other credit,line_item,-30.00
+2026,2026-10,other_credit,other credit,line_item,-30.00
+2026,2026-11,other_credit,other credit,line_item,-30.00
+2026,2026-12,other_credit,other credit,line_item,-30.00
+2026,2026-01,other_credit,EZLink,line_item,24.00
+2026,2026-02,other_credit,EZLink,line_item,1.00
+2026,2026-03,other_credit,EZLink,line_item,1.00
+2026,2026-04,other_credit,EZLink,line_item,1.00
+2026,2026-05,other_credit,EZLink,line_item,1.00
+2026,2026-06,other_credit,EZLink,line_item,1.00
+2026,2026-07,other_credit,EZLink,line_item,1.00
+2026,2026-08,other_credit,EZLink,line_item,1.00
+2026,2026-09,other_credit,EZLink,line_item,1.00
+2026,2026-10,other_credit,EZLink,line_item,1.00
+2026,2026-11,other_credit,EZLink,line_item,1.00
+2026,2026-12,other_credit,EZLink,line_item,1.00
+2026,2026-01,other_credit,Amazon,line_item,39.00
+2026,2026-02,other_credit,Amazon,line_item,18.00
+2026,2026-03,other_credit,Amazon,line_item,18.00
+2026,2026-04,other_credit,Amazon,line_item,18.00
+2026,2026-05,other_credit,Amazon,line_item,18.00
+2026,2026-06,other_credit,Amazon,line_item,18.00
+2026,2026-07,other_credit,Amazon,line_item,18.00
+2026,2026-08,other_credit,Amazon,line_item,18.00
+2026,2026-09,other_credit,Amazon,line_item,18.00
+2026,2026-10,other_credit,Amazon,line_item,18.00
+2026,2026-11,other_credit,Amazon,line_item,18.00
+2026,2026-12,other_credit,Amazon,line_item,18.00
+2026,2026-01,other_credit,IB CASH,line_item,-15854.00
+2026,2026-02,other_credit,IB CASH,line_item,7905.00
+2026,2026-03,other_credit,IB CASH,line_item,-34181.00
+2026,2026-04,other_credit,IB CASH,line_item,-34181.00
+2026,2026-05,other_credit,IB CASH,line_item,-34181.00
+2026,2026-06,other_credit,IB CASH,line_item,-11015.00
+2026,2026-07,other_credit,IB CASH,line_item,-1015.00
+2026,2026-08,other_credit,IB CASH,line_item,-11752.00
+2026,2026-09,other_credit,IB CASH,line_item,-11752.00
+2026,2026-10,other_credit,IB CASH,line_item,-9378.00
+2026,2026-11,other_credit,IB CASH,line_item,-24378.00
+2026,2026-12,other_credit,IB CASH,line_item,-24378.00
+2026,2026-01,other_credit,IRS,line_item,-8670.00
+2026,2026-02,other_credit,IRS,line_item,1637.00
+2026,2026-03,other_credit,IRS,line_item,-3956.00
+2026,2026-04,other_credit,IRS,line_item,0.00
+2026,2026-05,other_credit,IRS,line_item,0.00
+2026,2026-06,other_credit,IRS,line_item,0.00
+2026,2026-07,other_credit,IRS,line_item,0.00
+2026,2026-08,other_credit,IRS,line_item,0.00
+2026,2026-09,other_credit,IRS,line_item,0.00
+2026,2026-10,other_credit,IRS,line_item,0.00
+2026,2026-11,other_credit,IRS,line_item,0.00
+2026,2026-12,other_credit,IRS,line_item,0.00
+2026,2026-01,liquid_investments,liquid investments,line_item,251680.00
+2026,2026-02,liquid_investments,liquid investments,line_item,242002.00
+2026,2026-03,liquid_investments,liquid investments,line_item,251484.00
+2026,2026-04,liquid_investments,liquid investments,line_item,219891.00
+2026,2026-05,liquid_investments,liquid investments,line_item,219892.00
+2026,2026-06,liquid_investments,liquid investments,line_item,194618.00
+2026,2026-07,liquid_investments,liquid investments,line_item,181981.00
+2026,2026-08,liquid_investments,liquid investments,line_item,200936.00
+2026,2026-09,liquid_investments,liquid investments,line_item,200937.00
+2026,2026-10,liquid_investments,liquid investments,line_item,200937.00
+2026,2026-11,liquid_investments,liquid investments,line_item,219892.00
+2026,2026-12,liquid_investments,liquid investments,line_item,219892.00
+2026,2026-01,liquid_investments,IB POSITION,line_item,196861.00
+2026,2026-02,liquid_investments,IB POSITION,line_item,189649.00
+2026,2026-03,liquid_investments,IB POSITION,line_item,197610.00
+2026,2026-04,liquid_investments,IB POSITION,line_item,172610.00
+2026,2026-05,liquid_investments,IB POSITION,line_item,172610.00
+2026,2026-06,liquid_investments,IB POSITION,line_item,152610.00
+2026,2026-07,liquid_investments,IB POSITION,line_item,142610.00
+2026,2026-08,liquid_investments,IB POSITION,line_item,157610.00
+2026,2026-09,liquid_investments,IB POSITION,line_item,157610.00
+2026,2026-10,liquid_investments,IB POSITION,line_item,157611.00
+2026,2026-11,liquid_investments,IB POSITION,line_item,172611.00
+2026,2026-12,liquid_investments,IB POSITION,line_item,172611.00
+2026,2026-01,liquid_investments,SILVER,line_item,2300.00
+2026,2026-02,liquid_investments,SILVER,line_item,1854.00
+2026,2026-03,liquid_investments,SILVER,line_item,1396.00
+2026,2026-04,liquid_investments,SILVER,line_item,1396.00
+2026,2026-05,liquid_investments,SILVER,line_item,1396.00
+2026,2026-06,liquid_investments,SILVER,line_item,1396.00
+2026,2026-07,liquid_investments,SILVER,line_item,1396.00
+2026,2026-08,liquid_investments,SILVER,line_item,1396.00
+2026,2026-09,liquid_investments,SILVER,line_item,1396.00
+2026,2026-10,liquid_investments,SILVER,line_item,1396.00
+2026,2026-11,liquid_investments,SILVER,line_item,1396.00
+2026,2026-12,liquid_investments,SILVER,line_item,1396.00
+2026,2026-01,illiquid_retirement,illiquid and retirement,line_item,194515.00
+2026,2026-02,illiquid_retirement,illiquid and retirement,line_item,197980.00
+2026,2026-03,illiquid_retirement,illiquid and retirement,line_item,200940.00
+2026,2026-04,illiquid_retirement,illiquid and retirement,line_item,203900.00
+2026,2026-05,illiquid_retirement,illiquid and retirement,line_item,206145.00
+2026,2026-06,illiquid_retirement,illiquid and retirement,line_item,209105.00
+2026,2026-07,illiquid_retirement,illiquid and retirement,line_item,212065.00
+2026,2026-08,illiquid_retirement,illiquid and retirement,line_item,212638.00
+2026,2026-09,illiquid_retirement,illiquid and retirement,line_item,215598.00
+2026,2026-10,illiquid_retirement,illiquid and retirement,line_item,218274.00
+2026,2026-11,illiquid_retirement,illiquid and retirement,line_item,221234.00
+2026,2026-12,illiquid_retirement,illiquid and retirement,line_item,229657.00
+2026,2026-01,illiquid_retirement,CPF OA,line_item,78743.00
+2026,2026-02,illiquid_retirement,CPF OA,line_item,80424.00
+2026,2026-03,illiquid_retirement,CPF OA,line_item,82104.00
+2026,2026-04,illiquid_retirement,CPF OA,line_item,83785.00
+2026,2026-05,illiquid_retirement,CPF OA,line_item,85465.00
+2026,2026-06,illiquid_retirement,CPF OA,line_item,87145.00
+2026,2026-07,illiquid_retirement,CPF OA,line_item,88826.00
+2026,2026-08,illiquid_retirement,CPF OA,line_item,90506.00
+2026,2026-09,illiquid_retirement,CPF OA,line_item,92187.00
+2026,2026-10,illiquid_retirement,CPF OA,line_item,93867.00
+2026,2026-11,illiquid_retirement,CPF OA,line_item,95547.00
+2026,2026-12,illiquid_retirement,CPF OA,line_item,99386.00
+2026,2026-01,illiquid_retirement,CPF SA,line_item,28239.00
+2026,2026-02,illiquid_retirement,CPF SA,line_item,28798.00
+2026,2026-03,illiquid_retirement,CPF SA,line_item,29358.00
+2026,2026-04,illiquid_retirement,CPF SA,line_item,29918.00
+2026,2026-05,illiquid_retirement,CPF SA,line_item,30478.00
+2026,2026-06,illiquid_retirement,CPF SA,line_item,31037.00
+2026,2026-07,illiquid_retirement,CPF SA,line_item,31597.00
+2026,2026-08,illiquid_retirement,CPF SA,line_item,32157.00
+2026,2026-09,illiquid_retirement,CPF SA,line_item,32717.00
+2026,2026-10,illiquid_retirement,CPF SA,line_item,33276.00
+2026,2026-11,illiquid_retirement,CPF SA,line_item,33836.00
+2026,2026-12,illiquid_retirement,CPF SA,line_item,36207.00
+2026,2026-01,illiquid_retirement,CPF MS,line_item,28622.00
+2026,2026-02,illiquid_retirement,CPF MS,line_item,29341.00
+2026,2026-03,illiquid_retirement,CPF MS,line_item,30061.00
+2026,2026-04,illiquid_retirement,CPF MS,line_item,30781.00
+2026,2026-05,illiquid_retirement,CPF MS,line_item,30786.00
+2026,2026-06,illiquid_retirement,CPF MS,line_item,31506.00
+2026,2026-07,illiquid_retirement,CPF MS,line_item,32226.00
+2026,2026-08,illiquid_retirement,CPF MS,line_item,32945.00
+2026,2026-09,illiquid_retirement,CPF MS,line_item,33665.00
+2026,2026-10,illiquid_retirement,CPF MS,line_item,34101.00
+2026,2026-11,illiquid_retirement,CPF MS,line_item,34821.00
+2026,2026-12,illiquid_retirement,CPF MS,line_item,37035.00
+2026,2026-01,illiquid_retirement,IRA,line_item,46618.00
+2026,2026-02,illiquid_retirement,IRA,line_item,47018.00
+2026,2026-03,illiquid_retirement,IRA,line_item,47018.00
+2026,2026-04,illiquid_retirement,IRA,line_item,47018.00
+2026,2026-05,illiquid_retirement,IRA,line_item,47018.00
+2026,2026-06,illiquid_retirement,IRA,line_item,47018.00
+2026,2026-07,illiquid_retirement,IRA,line_item,47018.00
+2026,2026-08,illiquid_retirement,IRA,line_item,45129.00
+2026,2026-09,illiquid_retirement,IRA,line_item,45129.00
+2026,2026-10,illiquid_retirement,IRA,line_item,45129.00
+2026,2026-11,illiquid_retirement,IRA,line_item,45129.00
+2026,2026-12,illiquid_retirement,IRA,line_item,45129.00

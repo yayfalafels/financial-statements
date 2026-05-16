@@ -39,7 +39,7 @@ Google Sheets adapter is the primary app-owned integration boundary for sheet re
   - [13. Bill and shared-cost runtime](#13-bill-and-shared-cost-runtime)
   - [14. Source adapters](#14-source-adapters)
   - [15. HomeBudget wrapper adapter](#15-homebudget-wrapper-adapter)
-  - [16. Mapping CRUD module in backend API](#16-mapping-crud-module-in-backend-api)
+  - [16. Mapping CRUD service in backend API](#16-mapping-crud-service-in-backend-api)
   - [17. SQLite adapter](#17-sqlite-adapter)
     - [17A. Google Sheets adapter](#17a-google-sheets-adapter)
   - [18. Reconciliation engine](#18-reconciliation-engine)
@@ -78,12 +78,12 @@ Out of scope:
 ## Workflow runtime placement
 
 - Workflow orchestrator owns stage routing, dependencies, and checkpoint enforcement.
-- Workflow-specific execution logic runs in runtime modules hosted inside the Backend API boundary.
+- Workflow-specific execution logic runs in runtime components hosted inside the Backend API boundary.
 - Account ingest and reconcile logic runs in the account close runtime.
 - Bill payment and shared-cost logic runs in the bill and shared-cost runtime.
 - Google Sheets adapter handles app-initiated sheet read and write operations, including workflow event write-back.
 - GAS, when enabled, handles only selected click-driven event triggers and routes them through backend API contracts.
-- Runtime modules never read or write SQLite directly; all persistence goes through Backend API SQL interfaces.
+- Runtime components never read or write SQLite directly; all persistence goes through Backend API SQL interfaces.
 
 ## System component catalog
 
@@ -100,19 +100,19 @@ Out of scope:
 | 08 | homebudget app                | user interface      | operational ledger UI and review surface    |
 | 09 | CLI                           | user interface      | parallel automation and review interface    |
 | 10 | backend api                   | backend service     | service contract for UI and automation      |
-| 11 | aws storage adapter           | api internal module | adapter boundary for S3 integration       |
-| 12 | workflow orchestrator         | api internal module | stage routing and checkpoint enforcement  |
-| 13 | account close runtime         | api internal module | account ingest and reconcile execution     |
-| 14 | bill and shared-cost runtime  | api internal module | bill payment and shared-cost execution    |
-| 15 | source adapters               | api internal module | source-specific extraction and normalization|
-| 16 | homebudget wrapper adapter    | api internal module | HomeBudget read and write integration     |
-| 17 | mapping CRUD module           | api internal module | governed mapping lifecycle management     |
-| 18 | sqlite adapter                | api internal module | single SQL gateway for sqlite schemas     |
-| 18A | google sheets adapter        | api internal module | primary sheet read/write and UI write-back boundary |
-| 19 | reconciliation engine         | api internal module | matching, variance, tolerance, adjustment |
-| 20 | statement builder             | api internal module | income statement, balance sheet, and artifact publish |
-| 21 | logging module                | api internal module | shared runtime logging and audit events   |
-| 22 | error handling module         | api internal module | shared error policy and exception mapping |
+| 11 | aws storage adapter           | api internal component | adapter boundary for S3 integration       |
+| 12 | workflow orchestrator         | api internal component | stage routing and checkpoint enforcement  |
+| 13 | account close runtime         | api internal component | account ingest and reconcile execution     |
+| 14 | bill and shared-cost runtime  | api internal component | bill payment and shared-cost execution    |
+| 15 | source adapters               | api internal component | source-specific extraction and normalization|
+| 16 | homebudget wrapper adapter    | api internal component | HomeBudget read and write integration     |
+| 17 | mapping CRUD service          | api internal component | governed mapping lifecycle management     |
+| 18 | sqlite adapter                | api internal component | single SQL gateway for sqlite schemas     |
+| 18A | google sheets adapter        | api internal component | primary sheet read/write and UI write-back boundary |
+| 19 | reconciliation engine         | api internal component | matching, variance, tolerance, adjustment |
+| 20 | statement builder             | api internal component | income statement, balance sheet, and artifact publish |
+| 21 | logging service               | api internal component | shared runtime logging and audit events   |
+| 22 | error handling service        | api internal component | shared error policy and exception mapping |
 | 23 | sqlite app database           | local persistence   | app-owned schemas and lineage anchors       |
 
 ## System architecture diagram
@@ -171,13 +171,13 @@ flowchart LR
         BSRUN["Bill and shared-cost runtime"]
         ADAPT["Source adapters"]
         HBA["HomeBudget wrapper adapter"]
-        MAPMOD["Mapping CRUD module"]
+        MAPMOD["Mapping CRUD service"]
         SQLA["SQLite adapter"]
         GSADAPT["Google Sheets adapter"]
         RECON["Reconciliation engine"]
         STMT["Statement builder"]
-        LOG["Logging module"]
-        ERR["Error handling module"]
+        LOG["Logging service"]
+        ERR["Error handling service"]
     end
 
     subgraph DB
@@ -437,7 +437,7 @@ Requirement alignment:
 Interfaces:
 
 - Inbound: Google Sheets session UI direct calls, optional GAS-triggered calls, and CLI.
-- Outbound: AWS storage adapter, workflow orchestrator, account close runtime, bill and shared-cost runtime, source adapters, HomeBudget wrapper adapter, mapping CRUD module, SQLite adapter, Google Sheets adapter, reconciliation engine, and statement builder.
+- Outbound: AWS storage adapter, workflow orchestrator, account close runtime, bill and shared-cost runtime, source adapters, HomeBudget wrapper adapter, mapping CRUD service, SQLite adapter, Google Sheets adapter, reconciliation engine, and statement builder.
 
 SQL interface boundary:
 
@@ -464,7 +464,7 @@ Requirement alignment:
 Interfaces:
 
 - Inbound: account close runtime, bill and shared-cost runtime, and statement builder requests.
-- Outbound: AWS S3 artifact storage operations and result payloads to requesting runtime modules.
+- Outbound: AWS S3 artifact storage operations and result payloads to requesting runtime components.
 
 ### 11. Workflow orchestrator
 
@@ -487,7 +487,7 @@ Requirement alignment:
 Interfaces:
 
 - Inbound: Google Sheets and CLI workflow actions through Backend API boundary routing.
-- Outbound: Google Sheets adapter for app-initiated event write-back, mapping CRUD module for mapping completeness gate checks, account close runtime, bill and shared-cost runtime, and statement builder.
+- Outbound: Google Sheets adapter for app-initiated event write-back, mapping CRUD service for mapping completeness gate checks, account close runtime, bill and shared-cost runtime, and statement builder.
 
 ### 12. Account close runtime
 
@@ -578,7 +578,7 @@ Interfaces:
 - Inbound: account close runtime and bill and shared-cost runtime invocation.
 - Outbound: HomeBudget app and SQLite adapter sync payloads.
 
-### 16. Mapping CRUD module in backend API
+### 16. Mapping CRUD service in backend API
 
 Functional specification:
 
@@ -620,7 +620,7 @@ Requirement alignment:
 
 Interfaces:
 
-- Inbound: Backend API internal modules.
+- Inbound: Backend API internal components.
 - Outbound: statements, hb, cash_staging, bills, mapping, close_book, and session and audit schemas.
 
 ### 17A. Google Sheets adapter
@@ -643,7 +643,7 @@ Requirement alignment:
 
 Interfaces:
 
-- Inbound: workflow orchestrator and backend API internal modules requiring app-driven sheet read/write operations.
+- Inbound: workflow orchestrator and backend API internal components requiring app-driven sheet read/write operations.
 - Outbound: Google Sheets session UI updates, status publishing, and event write-back payloads.
 
 ### 18. Reconciliation engine

@@ -1,0 +1,697 @@
+reporting_year,period_month,section,line_item,line_type,amount_reporting
+2026,2026-01,summary,net income,aggregate,60575.00
+2026,2026-02,summary,net income,aggregate,19908.00
+2026,2026-03,summary,net income,aggregate,-51871.00
+2026,2026-04,summary,net income,aggregate,-20931.00
+2026,2026-05,summary,net income,aggregate,4695.00
+2026,2026-06,summary,net income,aggregate,4654.00
+2026,2026-07,summary,net income,aggregate,3965.00
+2026,2026-08,summary,net income,aggregate,3143.00
+2026,2026-09,summary,net income,aggregate,4875.00
+2026,2026-10,summary,net income,aggregate,3698.00
+2026,2026-11,summary,net income,aggregate,5699.00
+2026,2026-12,summary,net income,aggregate,3239.00
+2026,2026-01,summary,cash savings,line_item,-8047.00
+2026,2026-02,summary,cash savings,line_item,-4021.00
+2026,2026-03,summary,cash savings,line_item,-8381.00
+2026,2026-04,summary,cash savings,line_item,7181.00
+2026,2026-05,summary,cash savings,line_item,1280.00
+2026,2026-06,summary,cash savings,line_item,1240.00
+2026,2026-07,summary,cash savings,line_item,603.00
+2026,2026-08,summary,cash savings,line_item,-192.00
+2026,2026-09,summary,cash savings,line_item,1500.00
+2026,2026-10,summary,cash savings,line_item,322.00
+2026,2026-11,summary,cash savings,line_item,2324.00
+2026,2026-12,summary,cash savings,line_item,-176.00
+2026,2026-01,summary,gross savings,line_item,-5309.00
+2026,2026-02,summary,gross savings,line_item,-1061.00
+2026,2026-03,summary,gross savings,line_item,-5421.00
+2026,2026-04,summary,gross savings,line_item,10141.00
+2026,2026-05,summary,gross savings,line_item,4240.00
+2026,2026-06,summary,gross savings,line_item,4200.00
+2026,2026-07,summary,gross savings,line_item,3563.00
+2026,2026-08,summary,gross savings,line_item,2768.00
+2026,2026-09,summary,gross savings,line_item,4460.00
+2026,2026-10,summary,gross savings,line_item,3282.00
+2026,2026-11,summary,gross savings,line_item,5284.00
+2026,2026-12,summary,gross savings,line_item,2784.00
+2026,2026-01,summary,investments PL,line_item,70728.00
+2026,2026-02,summary,investments PL,line_item,20852.00
+2026,2026-03,summary,investments PL,line_item,-46450.00
+2026,2026-04,summary,investments PL,line_item,-31072.00
+2026,2026-05,summary,investments PL,line_item,455.00
+2026,2026-06,summary,investments PL,line_item,455.00
+2026,2026-07,summary,investments PL,line_item,402.00
+2026,2026-08,summary,investments PL,line_item,376.00
+2026,2026-09,summary,investments PL,line_item,415.00
+2026,2026-10,summary,investments PL,line_item,415.00
+2026,2026-11,summary,investments PL,line_item,415.00
+2026,2026-12,summary,investments PL,line_item,455.00
+2026,2026-01,summary,M2M USD forex,line_item,-4844.00
+2026,2026-02,summary,M2M USD forex,line_item,118.00
+2026,2026-03,summary,M2M USD forex,line_item,0.00
+2026,2026-04,summary,M2M USD forex,line_item,0.00
+2026,2026-05,summary,M2M USD forex,line_item,0.00
+2026,2026-06,summary,M2M USD forex,line_item,0.00
+2026,2026-07,summary,M2M USD forex,line_item,0.00
+2026,2026-08,summary,M2M USD forex,line_item,0.00
+2026,2026-09,summary,M2M USD forex,line_item,0.00
+2026,2026-10,summary,M2M USD forex,line_item,0.00
+2026,2026-11,summary,M2M USD forex,line_item,0.00
+2026,2026-12,summary,M2M USD forex,line_item,0.00
+2026,2026-01,summary,Reconcile error,line_item,-80.00
+2026,2026-02,summary,Reconcile error,line_item,21.00
+2026,2026-03,summary,Reconcile error,line_item,0.00
+2026,2026-04,summary,Reconcile error,line_item,0.00
+2026,2026-05,summary,Reconcile error,line_item,0.00
+2026,2026-06,summary,Reconcile error,line_item,0.00
+2026,2026-07,summary,Reconcile error,line_item,0.00
+2026,2026-08,summary,Reconcile error,line_item,0.00
+2026,2026-09,summary,Reconcile error,line_item,0.00
+2026,2026-10,summary,Reconcile error,line_item,0.00
+2026,2026-11,summary,Reconcile error,line_item,0.00
+2026,2026-12,summary,Reconcile error,line_item,0.00
+2026,2026-01,summary,investments PL,line_item,70728.00
+2026,2026-02,summary,investments PL,line_item,20852.00
+2026,2026-03,summary,investments PL,line_item,-46450.00
+2026,2026-04,summary,investments PL,line_item,-31072.00
+2026,2026-05,summary,investments PL,line_item,455.00
+2026,2026-06,summary,investments PL,line_item,455.00
+2026,2026-07,summary,investments PL,line_item,402.00
+2026,2026-08,summary,investments PL,line_item,376.00
+2026,2026-09,summary,investments PL,line_item,415.00
+2026,2026-10,summary,investments PL,line_item,415.00
+2026,2026-11,summary,investments PL,line_item,415.00
+2026,2026-12,summary,investments PL,line_item,455.00
+2026,2026-01,summary,cash profit and loss,line_item,-10054.00
+2026,2026-02,summary,cash profit and loss,line_item,378.00
+2026,2026-03,summary,cash profit and loss,line_item,-799.00
+2026,2026-04,summary,cash profit and loss,line_item,520.00
+2026,2026-05,summary,cash profit and loss,line_item,454.00
+2026,2026-06,summary,cash profit and loss,line_item,454.00
+2026,2026-07,summary,cash profit and loss,line_item,402.00
+2026,2026-08,summary,cash profit and loss,line_item,375.00
+2026,2026-09,summary,cash profit and loss,line_item,415.00
+2026,2026-10,summary,cash profit and loss,line_item,415.00
+2026,2026-11,summary,cash profit and loss,line_item,415.00
+2026,2026-12,summary,cash profit and loss,line_item,454.00
+2026,2026-01,summary,mark-to-market liquid,line_item,78305.00
+2026,2026-02,summary,mark-to-market liquid,line_item,19969.00
+2026,2026-03,summary,mark-to-market liquid,line_item,-45651.00
+2026,2026-04,summary,mark-to-market liquid,line_item,-31593.00
+2026,2026-05,summary,mark-to-market liquid,line_item,0.00
+2026,2026-06,summary,mark-to-market liquid,line_item,0.00
+2026,2026-07,summary,mark-to-market liquid,line_item,0.00
+2026,2026-08,summary,mark-to-market liquid,line_item,0.00
+2026,2026-09,summary,mark-to-market liquid,line_item,0.00
+2026,2026-10,summary,mark-to-market liquid,line_item,0.00
+2026,2026-11,summary,mark-to-market liquid,line_item,0.00
+2026,2026-12,summary,mark-to-market liquid,line_item,0.00
+2026,2026-01,summary,mark-to-market illiquid,line_item,2476.00
+2026,2026-02,summary,mark-to-market illiquid,line_item,505.00
+2026,2026-03,summary,mark-to-market illiquid,line_item,0.00
+2026,2026-04,summary,mark-to-market illiquid,line_item,0.00
+2026,2026-05,summary,mark-to-market illiquid,line_item,0.00
+2026,2026-06,summary,mark-to-market illiquid,line_item,0.00
+2026,2026-07,summary,mark-to-market illiquid,line_item,0.00
+2026,2026-08,summary,mark-to-market illiquid,line_item,0.00
+2026,2026-09,summary,mark-to-market illiquid,line_item,0.00
+2026,2026-10,summary,mark-to-market illiquid,line_item,0.00
+2026,2026-11,summary,mark-to-market illiquid,line_item,0.00
+2026,2026-12,summary,mark-to-market illiquid,line_item,0.00
+2026,2026-01,income,personal income,line_item,1135.00
+2026,2026-02,income,personal income,line_item,4918.00
+2026,2026-03,income,personal income,line_item,1106.00
+2026,2026-04,income,personal income,line_item,15131.00
+2026,2026-05,income,personal income,line_item,10148.00
+2026,2026-06,income,personal income,line_item,10022.00
+2026,2026-07,income,personal income,line_item,10022.00
+2026,2026-08,income,personal income,line_item,10022.00
+2026,2026-09,income,personal income,line_item,10022.00
+2026,2026-10,income,personal income,line_item,10022.00
+2026,2026-11,income,personal income,line_item,10022.00
+2026,2026-12,income,personal income,line_item,10022.00
+2026,2026-01,income,CPF contribution,line_item,2738.00
+2026,2026-02,income,CPF contribution,line_item,2960.00
+2026,2026-03,income,CPF contribution,line_item,2960.00
+2026,2026-04,income,CPF contribution,line_item,2960.00
+2026,2026-05,income,CPF contribution,line_item,2960.00
+2026,2026-06,income,CPF contribution,line_item,2960.00
+2026,2026-07,income,CPF contribution,line_item,2960.00
+2026,2026-08,income,CPF contribution,line_item,2960.00
+2026,2026-09,income,CPF contribution,line_item,2960.00
+2026,2026-10,income,CPF contribution,line_item,2960.00
+2026,2026-11,income,CPF contribution,line_item,2960.00
+2026,2026-12,income,CPF contribution,line_item,2960.00
+2026,2026-01,income,total cash income,aggregate,9834.00
+2026,2026-02,income,total cash income,aggregate,7400.00
+2026,2026-03,income,total cash income,aggregate,7400.00
+2026,2026-04,income,total cash income,aggregate,7400.00
+2026,2026-05,income,total cash income,aggregate,7526.00
+2026,2026-06,income,total cash income,aggregate,7400.00
+2026,2026-07,income,total cash income,aggregate,7400.00
+2026,2026-08,income,total cash income,aggregate,7400.00
+2026,2026-09,income,total cash income,aggregate,7400.00
+2026,2026-10,income,total cash income,aggregate,7400.00
+2026,2026-11,income,total cash income,aggregate,7400.00
+2026,2026-12,income,total cash income,aggregate,7400.00
+2026,2026-01,income,income tax,line_item,11437.00
+2026,2026-02,income,income tax,line_item,5442.00
+2026,2026-03,income,income tax,line_item,9254.00
+2026,2026-04,income,income tax,line_item,-4771.00
+2026,2026-05,income,income tax,line_item,338.00
+2026,2026-06,income,income tax,line_item,338.00
+2026,2026-07,income,income tax,line_item,338.00
+2026,2026-08,income,income tax,line_item,338.00
+2026,2026-09,income,income tax,line_item,338.00
+2026,2026-10,income,income tax,line_item,338.00
+2026,2026-11,income,income tax,line_item,338.00
+2026,2026-12,income,income tax,line_item,338.00
+2026,2026-01,income,net salary less CPF,line_item,7520.00
+2026,2026-02,income,net salary less CPF,line_item,7400.00
+2026,2026-03,income,net salary less CPF,line_item,7400.00
+2026,2026-04,income,net salary less CPF,line_item,7400.00
+2026,2026-05,income,net salary less CPF,line_item,7400.00
+2026,2026-06,income,net salary less CPF,line_item,7400.00
+2026,2026-07,income,net salary less CPF,line_item,7400.00
+2026,2026-08,income,net salary less CPF,line_item,7400.00
+2026,2026-09,income,net salary less CPF,line_item,7400.00
+2026,2026-10,income,net salary less CPF,line_item,7400.00
+2026,2026-11,income,net salary less CPF,line_item,7400.00
+2026,2026-12,income,net salary less CPF,line_item,7400.00
+2026,2026-01,income,gross salary,line_item,9000.00
+2026,2026-02,income,gross salary,line_item,9000.00
+2026,2026-03,income,gross salary,line_item,9000.00
+2026,2026-04,income,gross salary,line_item,9000.00
+2026,2026-05,income,gross salary,line_item,9000.00
+2026,2026-06,income,gross salary,line_item,9000.00
+2026,2026-07,income,gross salary,line_item,9000.00
+2026,2026-08,income,gross salary,line_item,9000.00
+2026,2026-09,income,gross salary,line_item,9000.00
+2026,2026-10,income,gross salary,line_item,9000.00
+2026,2026-11,income,gross salary,line_item,9000.00
+2026,2026-12,income,gross salary,line_item,9000.00
+2026,2026-01,income,base salary,line_item,9000.00
+2026,2026-02,income,base salary,line_item,9000.00
+2026,2026-03,income,base salary,line_item,9000.00
+2026,2026-04,income,base salary,line_item,9000.00
+2026,2026-05,income,base salary,line_item,9000.00
+2026,2026-06,income,base salary,line_item,9000.00
+2026,2026-07,income,base salary,line_item,9000.00
+2026,2026-08,income,base salary,line_item,9000.00
+2026,2026-09,income,base salary,line_item,9000.00
+2026,2026-10,income,base salary,line_item,9000.00
+2026,2026-11,income,base salary,line_item,9000.00
+2026,2026-12,income,base salary,line_item,9000.00
+2026,2026-01,income,other,line_item,2314.00
+2026,2026-02,income,other,line_item,0.00
+2026,2026-03,income,other,line_item,0.00
+2026,2026-04,income,other,line_item,0.00
+2026,2026-05,income,other,line_item,126.00
+2026,2026-06,income,other,line_item,0.00
+2026,2026-07,income,other,line_item,0.00
+2026,2026-08,income,other,line_item,0.00
+2026,2026-09,income,other,line_item,0.00
+2026,2026-10,income,other,line_item,0.00
+2026,2026-11,income,other,line_item,0.00
+2026,2026-12,income,other,line_item,0.00
+2026,2026-01,expense,total expenses,aggregate,6444.00
+2026,2026-02,expense,total expenses,aggregate,5979.00
+2026,2026-03,expense,total expenses,aggregate,6527.00
+2026,2026-04,expense,total expenses,aggregate,4990.00
+2026,2026-05,expense,total expenses,aggregate,5909.00
+2026,2026-06,expense,total expenses,aggregate,5822.00
+2026,2026-07,expense,total expenses,aggregate,6459.00
+2026,2026-08,expense,total expenses,aggregate,7254.00
+2026,2026-09,expense,total expenses,aggregate,5562.00
+2026,2026-10,expense,total expenses,aggregate,6739.00
+2026,2026-11,expense,total expenses,aggregate,4738.00
+2026,2026-12,expense,total expenses,aggregate,7238.00
+2026,2026-01,expense,rent,line_item,2250.00
+2026,2026-02,expense,rent,line_item,1350.00
+2026,2026-03,expense,rent,line_item,3353.00
+2026,2026-04,expense,rent,line_item,2250.00
+2026,2026-05,expense,rent,line_item,2250.00
+2026,2026-06,expense,rent,line_item,2250.00
+2026,2026-07,expense,rent,line_item,2250.00
+2026,2026-08,expense,rent,line_item,2250.00
+2026,2026-09,expense,rent,line_item,2250.00
+2026,2026-10,expense,rent,line_item,2250.00
+2026,2026-11,expense,rent,line_item,2250.00
+2026,2026-12,expense,rent,line_item,2250.00
+2026,2026-01,expense,COLE ex rent,line_item,1189.00
+2026,2026-02,expense,COLE ex rent,line_item,1074.00
+2026,2026-03,expense,COLE ex rent,line_item,1192.00
+2026,2026-04,expense,COLE ex rent,line_item,1054.00
+2026,2026-05,expense,COLE ex rent,line_item,2184.00
+2026,2026-06,expense,COLE ex rent,line_item,1170.00
+2026,2026-07,expense,COLE ex rent,line_item,1019.00
+2026,2026-08,expense,COLE ex rent,line_item,1007.00
+2026,2026-09,expense,COLE ex rent,line_item,1582.00
+2026,2026-10,expense,COLE ex rent,line_item,1309.00
+2026,2026-11,expense,COLE ex rent,line_item,1008.00
+2026,2026-12,expense,COLE ex rent,line_item,2388.00
+2026,2026-01,expense,discretionary,line_item,3005.00
+2026,2026-02,expense,discretionary,line_item,3556.00
+2026,2026-03,expense,discretionary,line_item,1982.00
+2026,2026-04,expense,discretionary,line_item,1686.00
+2026,2026-05,expense,discretionary,line_item,1474.00
+2026,2026-06,expense,discretionary,line_item,2402.00
+2026,2026-07,expense,discretionary,line_item,3190.00
+2026,2026-08,expense,discretionary,line_item,3997.00
+2026,2026-09,expense,discretionary,line_item,1730.00
+2026,2026-10,expense,discretionary,line_item,3180.00
+2026,2026-11,expense,discretionary,line_item,1480.00
+2026,2026-12,expense,discretionary,line_item,2600.00
+2026,2026-01,expense,LF,line_item,0.00
+2026,2026-02,expense,LF,line_item,0.00
+2026,2026-03,expense,LF,line_item,2.11
+2026,2026-04,expense,LF,line_item,0.00
+2026,2026-05,expense,LF,line_item,0.00
+2026,2026-06,expense,LF,line_item,1.38
+2026,2026-07,expense,LF,line_item,0.00
+2026,2026-08,expense,LF,line_item,0.00
+2026,2026-09,expense,LF,line_item,2.20
+2026,2026-10,expense,LF,line_item,0.00
+2026,2026-11,expense,LF,line_item,0.00
+2026,2026-12,expense,LF,line_item,1.80
+2026,2026-01,expense,personal expenses,line_item,4115.00
+2026,2026-02,expense,personal expenses,line_item,4314.00
+2026,2026-03,expense,personal expenses,line_item,2990.00
+2026,2026-04,expense,personal expenses,line_item,2592.00
+2026,2026-05,expense,personal expenses,line_item,3511.00
+2026,2026-06,expense,personal expenses,line_item,3429.00
+2026,2026-07,expense,personal expenses,line_item,4063.00
+2026,2026-08,expense,personal expenses,line_item,4529.00
+2026,2026-09,expense,personal expenses,line_item,3367.00
+2026,2026-10,expense,personal expenses,line_item,4344.00
+2026,2026-11,expense,personal expenses,line_item,2143.00
+2026,2026-12,expense,personal expenses,line_item,3872.00
+2026,2026-01,expense,food,line_item,935.00
+2026,2026-02,expense,food,line_item,777.00
+2026,2026-03,expense,food,line_item,678.00
+2026,2026-04,expense,food,line_item,797.00
+2026,2026-05,expense,food,line_item,751.00
+2026,2026-06,expense,food,line_item,742.00
+2026,2026-07,expense,food,line_item,763.00
+2026,2026-08,expense,food,line_item,752.00
+2026,2026-09,expense,food,line_item,752.00
+2026,2026-10,expense,food,line_item,756.00
+2026,2026-11,expense,food,line_item,753.00
+2026,2026-12,expense,food,line_item,753.00
+2026,2026-01,expense,transport,line_item,29.00
+2026,2026-02,expense,transport,line_item,66.00
+2026,2026-03,expense,transport,line_item,66.00
+2026,2026-04,expense,transport,line_item,40.00
+2026,2026-05,expense,transport,line_item,40.00
+2026,2026-06,expense,transport,line_item,40.00
+2026,2026-07,expense,transport,line_item,40.00
+2026,2026-08,expense,transport,line_item,40.00
+2026,2026-09,expense,transport,line_item,40.00
+2026,2026-10,expense,transport,line_item,40.00
+2026,2026-11,expense,transport,line_item,40.00
+2026,2026-12,expense,transport,line_item,40.00
+2026,2026-01,expense,healthcare OOP,line_item,32.00
+2026,2026-02,expense,healthcare OOP,line_item,25.00
+2026,2026-03,expense,healthcare OOP,line_item,200.00
+2026,2026-04,expense,healthcare OOP,line_item,25.00
+2026,2026-05,expense,healthcare OOP,line_item,25.00
+2026,2026-06,expense,healthcare OOP,line_item,200.00
+2026,2026-07,expense,healthcare OOP,line_item,25.00
+2026,2026-08,expense,healthcare OOP,line_item,25.00
+2026,2026-09,expense,healthcare OOP,line_item,200.00
+2026,2026-10,expense,healthcare OOP,line_item,25.00
+2026,2026-11,expense,healthcare OOP,line_item,25.00
+2026,2026-12,expense,healthcare OOP,line_item,200.00
+2026,2026-01,expense,insurance,line_item,0.00
+2026,2026-02,expense,insurance,line_item,0.00
+2026,2026-03,expense,insurance,line_item,0.00
+2026,2026-04,expense,insurance,line_item,0.00
+2026,2026-05,expense,insurance,line_item,1176.00
+2026,2026-06,expense,insurance,line_item,0.00
+2026,2026-07,expense,insurance,line_item,0.00
+2026,2026-08,expense,insurance,line_item,0.00
+2026,2026-09,expense,insurance,line_item,0.00
+2026,2026-10,expense,insurance,line_item,298.00
+2026,2026-11,expense,insurance,line_item,0.00
+2026,2026-12,expense,insurance,line_item,771.00
+2026,2026-01,expense,mobile,line_item,59.00
+2026,2026-02,expense,mobile,line_item,59.00
+2026,2026-03,expense,mobile,line_item,48.00
+2026,2026-04,expense,mobile,line_item,28.00
+2026,2026-05,expense,mobile,line_item,28.00
+2026,2026-06,expense,mobile,line_item,28.00
+2026,2026-07,expense,mobile,line_item,28.00
+2026,2026-08,expense,mobile,line_item,28.00
+2026,2026-09,expense,mobile,line_item,28.00
+2026,2026-10,expense,mobile,line_item,28.00
+2026,2026-11,expense,mobile,line_item,28.00
+2026,2026-12,expense,mobile,line_item,28.00
+2026,2026-01,expense,clothing,line_item,0.00
+2026,2026-02,expense,clothing,line_item,0.00
+2026,2026-03,expense,clothing,line_item,0.00
+2026,2026-04,expense,clothing,line_item,0.00
+2026,2026-05,expense,clothing,line_item,0.00
+2026,2026-06,expense,clothing,line_item,0.00
+2026,2026-07,expense,clothing,line_item,0.00
+2026,2026-08,expense,clothing,line_item,0.00
+2026,2026-09,expense,clothing,line_item,400.00
+2026,2026-10,expense,clothing,line_item,0.00
+2026,2026-11,expense,clothing,line_item,0.00
+2026,2026-12,expense,clothing,line_item,0.00
+2026,2026-01,expense,post,line_item,13.00
+2026,2026-02,expense,post,line_item,16.00
+2026,2026-03,expense,post,line_item,16.00
+2026,2026-04,expense,post,line_item,16.00
+2026,2026-05,expense,post,line_item,16.00
+2026,2026-06,expense,post,line_item,16.00
+2026,2026-07,expense,post,line_item,16.00
+2026,2026-08,expense,post,line_item,16.00
+2026,2026-09,expense,post,line_item,16.00
+2026,2026-10,expense,post,line_item,16.00
+2026,2026-11,expense,post,line_item,16.00
+2026,2026-12,expense,post,line_item,50.00
+2026,2026-01,expense,fitness,line_item,265.00
+2026,2026-02,expense,fitness,line_item,62.00
+2026,2026-03,expense,fitness,line_item,90.00
+2026,2026-04,expense,fitness,line_item,300.00
+2026,2026-05,expense,fitness,line_item,90.00
+2026,2026-06,expense,fitness,line_item,90.00
+2026,2026-07,expense,fitness,line_item,2000.00
+2026,2026-08,expense,fitness,line_item,90.00
+2026,2026-09,expense,fitness,line_item,300.00
+2026,2026-10,expense,fitness,line_item,90.00
+2026,2026-11,expense,fitness,line_item,90.00
+2026,2026-12,expense,fitness,line_item,300.00
+2026,2026-01,expense,non alcoholic drinks,line_item,151.00
+2026,2026-02,expense,non alcoholic drinks,line_item,181.00
+2026,2026-03,expense,non alcoholic drinks,line_item,107.00
+2026,2026-04,expense,non alcoholic drinks,line_item,146.00
+2026,2026-05,expense,non alcoholic drinks,line_item,144.00
+2026,2026-06,expense,non alcoholic drinks,line_item,132.00
+2026,2026-07,expense,non alcoholic drinks,line_item,90.00
+2026,2026-08,expense,non alcoholic drinks,line_item,90.00
+2026,2026-09,expense,non alcoholic drinks,line_item,90.00
+2026,2026-10,expense,non alcoholic drinks,line_item,90.00
+2026,2026-11,expense,non alcoholic drinks,line_item,90.00
+2026,2026-12,expense,non alcoholic drinks,line_item,90.00
+2026,2026-01,expense,alcohol,line_item,17.00
+2026,2026-02,expense,alcohol,line_item,65.00
+2026,2026-03,expense,alcohol,line_item,40.00
+2026,2026-04,expense,alcohol,line_item,40.00
+2026,2026-05,expense,alcohol,line_item,40.00
+2026,2026-06,expense,alcohol,line_item,40.00
+2026,2026-07,expense,alcohol,line_item,40.00
+2026,2026-08,expense,alcohol,line_item,40.00
+2026,2026-09,expense,alcohol,line_item,40.00
+2026,2026-10,expense,alcohol,line_item,40.00
+2026,2026-11,expense,alcohol,line_item,40.00
+2026,2026-12,expense,alcohol,line_item,40.00
+2026,2026-01,expense,socializing,line_item,911.00
+2026,2026-02,expense,socializing,line_item,1368.00
+2026,2026-03,expense,socializing,line_item,1200.00
+2026,2026-04,expense,socializing,line_item,900.00
+2026,2026-05,expense,socializing,line_item,900.00
+2026,2026-06,expense,socializing,line_item,900.00
+2026,2026-07,expense,socializing,line_item,800.00
+2026,2026-08,expense,socializing,line_item,800.00
+2026,2026-09,expense,socializing,line_item,800.00
+2026,2026-10,expense,socializing,line_item,800.00
+2026,2026-11,expense,socializing,line_item,800.00
+2026,2026-12,expense,socializing,line_item,800.00
+2026,2026-01,expense,IT software,line_item,142.00
+2026,2026-02,expense,IT software,line_item,116.00
+2026,2026-03,expense,IT software,line_item,160.00
+2026,2026-04,expense,IT software,line_item,160.00
+2026,2026-05,expense,IT software,line_item,160.00
+2026,2026-06,expense,IT software,line_item,160.00
+2026,2026-07,expense,IT software,line_item,120.00
+2026,2026-08,expense,IT software,line_item,120.00
+2026,2026-09,expense,IT software,line_item,120.00
+2026,2026-10,expense,IT software,line_item,120.00
+2026,2026-11,expense,IT software,line_item,120.00
+2026,2026-12,expense,IT software,line_item,120.00
+2026,2026-01,expense,IT hardware,line_item,0.00
+2026,2026-02,expense,IT hardware,line_item,0.00
+2026,2026-03,expense,IT hardware,line_item,0.00
+2026,2026-04,expense,IT hardware,line_item,0.00
+2026,2026-05,expense,IT hardware,line_item,0.00
+2026,2026-06,expense,IT hardware,line_item,500.00
+2026,2026-07,expense,IT hardware,line_item,0.00
+2026,2026-08,expense,IT hardware,line_item,0.00
+2026,2026-09,expense,IT hardware,line_item,0.00
+2026,2026-10,expense,IT hardware,line_item,0.00
+2026,2026-11,expense,IT hardware,line_item,0.00
+2026,2026-12,expense,IT hardware,line_item,500.00
+2026,2026-01,expense,books,line_item,0.00
+2026,2026-02,expense,books,line_item,0.00
+2026,2026-03,expense,books,line_item,40.00
+2026,2026-04,expense,books,line_item,0.00
+2026,2026-05,expense,books,line_item,0.00
+2026,2026-06,expense,books,line_item,40.00
+2026,2026-07,expense,books,line_item,0.00
+2026,2026-08,expense,books,line_item,0.00
+2026,2026-09,expense,books,line_item,40.00
+2026,2026-10,expense,books,line_item,0.00
+2026,2026-11,expense,books,line_item,0.00
+2026,2026-12,expense,books,line_item,40.00
+2026,2026-01,expense,travel,line_item,1332.00
+2026,2026-02,expense,travel,line_item,1472.00
+2026,2026-03,expense,travel,line_item,0.00
+2026,2026-04,expense,travel,line_item,0.00
+2026,2026-05,expense,travel,line_item,0.00
+2026,2026-06,expense,travel,line_item,0.00
+2026,2026-07,expense,travel,line_item,0.00
+2026,2026-08,expense,travel,line_item,0.00
+2026,2026-09,expense,travel,line_item,0.00
+2026,2026-10,expense,travel,line_item,0.00
+2026,2026-11,expense,travel,line_item,0.00
+2026,2026-12,expense,travel,line_item,0.00
+2026,2026-01,expense,higher education,line_item,0.00
+2026,2026-02,expense,higher education,line_item,0.00
+2026,2026-03,expense,higher education,line_item,0.00
+2026,2026-04,expense,higher education,line_item,0.00
+2026,2026-05,expense,higher education,line_item,0.00
+2026,2026-06,expense,higher education,line_item,0.00
+2026,2026-07,expense,higher education,line_item,0.00
+2026,2026-08,expense,higher education,line_item,2387.00
+2026,2026-09,expense,higher education,line_item,0.00
+2026,2026-10,expense,higher education,line_item,0.00
+2026,2026-11,expense,higher education,line_item,0.00
+2026,2026-12,expense,higher education,line_item,0.00
+2026,2026-01,expense,projects,line_item,120.00
+2026,2026-02,expense,projects,line_item,100.00
+2026,2026-03,expense,projects,line_item,100.00
+2026,2026-04,expense,projects,line_item,100.00
+2026,2026-05,expense,projects,line_item,100.00
+2026,2026-06,expense,projects,line_item,500.00
+2026,2026-07,expense,projects,line_item,100.00
+2026,2026-08,expense,projects,line_item,100.00
+2026,2026-09,expense,projects,line_item,500.00
+2026,2026-10,expense,projects,line_item,2000.00
+2026,2026-11,expense,projects,line_item,100.00
+2026,2026-12,expense,projects,line_item,100.00
+2026,2026-01,expense,discretionary misc,line_item,110.00
+2026,2026-02,expense,discretionary misc,line_item,8.00
+2026,2026-03,expense,discretionary misc,line_item,245.00
+2026,2026-04,expense,discretionary misc,line_item,40.00
+2026,2026-05,expense,discretionary misc,line_item,40.00
+2026,2026-06,expense,discretionary misc,line_item,40.00
+2026,2026-07,expense,discretionary misc,line_item,40.00
+2026,2026-08,expense,discretionary misc,line_item,40.00
+2026,2026-09,expense,discretionary misc,line_item,40.00
+2026,2026-10,expense,discretionary misc,line_item,40.00
+2026,2026-11,expense,discretionary misc,line_item,40.00
+2026,2026-12,expense,discretionary misc,line_item,40.00
+2026,2026-01,expense,household expenses,line_item,2328.00
+2026,2026-02,expense,household expenses,line_item,1665.00
+2026,2026-03,expense,household expenses,line_item,3537.00
+2026,2026-04,expense,household expenses,line_item,2397.00
+2026,2026-05,expense,household expenses,line_item,2398.00
+2026,2026-06,expense,household expenses,line_item,2394.00
+2026,2026-07,expense,household expenses,line_item,2396.00
+2026,2026-08,expense,household expenses,line_item,2726.00
+2026,2026-09,expense,household expenses,line_item,2195.00
+2026,2026-10,expense,household expenses,line_item,2396.00
+2026,2026-11,expense,household expenses,line_item,2596.00
+2026,2026-12,expense,household expenses,line_item,3365.00
+2026,2026-01,expense,rental,line_item,2250.00
+2026,2026-02,expense,rental,line_item,1350.00
+2026,2026-03,expense,rental,line_item,3353.00
+2026,2026-04,expense,rental,line_item,2250.00
+2026,2026-05,expense,rental,line_item,2250.00
+2026,2026-06,expense,rental,line_item,2250.00
+2026,2026-07,expense,rental,line_item,2250.00
+2026,2026-08,expense,rental,line_item,2250.00
+2026,2026-09,expense,rental,line_item,2250.00
+2026,2026-10,expense,rental,line_item,2250.00
+2026,2026-11,expense,rental,line_item,2250.00
+2026,2026-12,expense,rental,line_item,2250.00
+2026,2026-01,expense,Singtel internet,line_item,17.00
+2026,2026-02,expense,Singtel internet,line_item,17.00
+2026,2026-03,expense,Singtel internet,line_item,17.00
+2026,2026-04,expense,Singtel internet,line_item,17.00
+2026,2026-05,expense,Singtel internet,line_item,17.00
+2026,2026-06,expense,Singtel internet,line_item,17.00
+2026,2026-07,expense,Singtel internet,line_item,17.00
+2026,2026-08,expense,Singtel internet,line_item,17.00
+2026,2026-09,expense,Singtel internet,line_item,17.00
+2026,2026-10,expense,Singtel internet,line_item,17.00
+2026,2026-11,expense,Singtel internet,line_item,17.00
+2026,2026-12,expense,Singtel internet,line_item,17.00
+2026,2026-01,expense,PUB water/gas,line_item,22.00
+2026,2026-02,expense,PUB water/gas,line_item,26.00
+2026,2026-03,expense,PUB water/gas,line_item,25.00
+2026,2026-04,expense,PUB water/gas,line_item,25.00
+2026,2026-05,expense,PUB water/gas,line_item,25.00
+2026,2026-06,expense,PUB water/gas,line_item,25.00
+2026,2026-07,expense,PUB water/gas,line_item,25.00
+2026,2026-08,expense,PUB water/gas,line_item,25.00
+2026,2026-09,expense,PUB water/gas,line_item,25.00
+2026,2026-10,expense,PUB water/gas,line_item,25.00
+2026,2026-11,expense,PUB water/gas,line_item,25.00
+2026,2026-12,expense,PUB water/gas,line_item,25.00
+2026,2026-01,expense,electricity,line_item,75.00
+2026,2026-02,expense,electricity,line_item,88.00
+2026,2026-03,expense,electricity,line_item,64.00
+2026,2026-04,expense,electricity,line_item,76.00
+2026,2026-05,expense,electricity,line_item,76.00
+2026,2026-06,expense,electricity,line_item,72.00
+2026,2026-07,expense,electricity,line_item,75.00
+2026,2026-08,expense,electricity,line_item,74.00
+2026,2026-09,expense,electricity,line_item,74.00
+2026,2026-10,expense,electricity,line_item,74.00
+2026,2026-11,expense,electricity,line_item,74.00
+2026,2026-12,expense,electricity,line_item,74.00
+2026,2026-01,expense,sundries,line_item,7.00
+2026,2026-02,expense,sundries,line_item,0.00
+2026,2026-03,expense,sundries,line_item,78.00
+2026,2026-04,expense,sundries,line_item,30.00
+2026,2026-05,expense,sundries,line_item,30.00
+2026,2026-06,expense,sundries,line_item,30.00
+2026,2026-07,expense,sundries,line_item,30.00
+2026,2026-08,expense,sundries,line_item,30.00
+2026,2026-09,expense,sundries,line_item,30.00
+2026,2026-10,expense,sundries,line_item,30.00
+2026,2026-11,expense,sundries,line_item,30.00
+2026,2026-12,expense,sundries,line_item,30.00
+2026,2026-01,expense,pets and plants,line_item,0.00
+2026,2026-02,expense,pets and plants,line_item,181.00
+2026,2026-03,expense,pets and plants,line_item,0.00
+2026,2026-04,expense,pets and plants,line_item,0.00
+2026,2026-05,expense,pets and plants,line_item,0.00
+2026,2026-06,expense,pets and plants,line_item,0.00
+2026,2026-07,expense,pets and plants,line_item,0.00
+2026,2026-08,expense,pets and plants,line_item,180.00
+2026,2026-09,expense,pets and plants,line_item,0.00
+2026,2026-10,expense,pets and plants,line_item,0.00
+2026,2026-11,expense,pets and plants,line_item,0.00
+2026,2026-12,expense,pets and plants,line_item,0.00
+2026,2026-01,expense,durables,line_item,6.00
+2026,2026-02,expense,durables,line_item,3.00
+2026,2026-03,expense,durables,line_item,0.00
+2026,2026-04,expense,durables,line_item,0.00
+2026,2026-05,expense,durables,line_item,0.00
+2026,2026-06,expense,durables,line_item,0.00
+2026,2026-07,expense,durables,line_item,0.00
+2026,2026-08,expense,durables,line_item,0.00
+2026,2026-09,expense,durables,line_item,0.00
+2026,2026-10,expense,durables,line_item,0.00
+2026,2026-11,expense,durables,line_item,0.00
+2026,2026-12,expense,durables,line_item,300.00
+2026,2026-01,expense,maintenance,line_item,0.00
+2026,2026-02,expense,maintenance,line_item,0.00
+2026,2026-03,expense,maintenance,line_item,0.00
+2026,2026-04,expense,maintenance,line_item,0.00
+2026,2026-05,expense,maintenance,line_item,0.00
+2026,2026-06,expense,maintenance,line_item,0.00
+2026,2026-07,expense,maintenance,line_item,0.00
+2026,2026-08,expense,maintenance,line_item,0.00
+2026,2026-09,expense,maintenance,line_item,0.00
+2026,2026-10,expense,maintenance,line_item,0.00
+2026,2026-11,expense,maintenance,line_item,0.00
+2026,2026-12,expense,maintenance,line_item,400.00
+2026,2026-01,expense,family gifts,line_item,-50.00
+2026,2026-02,expense,family gifts,line_item,0.00
+2026,2026-03,expense,family gifts,line_item,0.00
+2026,2026-04,expense,family gifts,line_item,0.00
+2026,2026-05,expense,family gifts,line_item,0.00
+2026,2026-06,expense,family gifts,line_item,0.00
+2026,2026-07,expense,family gifts,line_item,0.00
+2026,2026-08,expense,family gifts,line_item,150.00
+2026,2026-09,expense,family gifts,line_item,-200.00
+2026,2026-10,expense,family gifts,line_item,0.00
+2026,2026-11,expense,family gifts,line_item,200.00
+2026,2026-12,expense,family gifts,line_item,270.00
+2026,2026-01,expense,CPF contributions,line_item,2738.00
+2026,2026-02,expense,CPF contributions,line_item,2960.00
+2026,2026-03,expense,CPF contributions,line_item,2960.00
+2026,2026-04,expense,CPF contributions,line_item,2960.00
+2026,2026-05,expense,CPF contributions,line_item,2960.00
+2026,2026-06,expense,CPF contributions,line_item,2960.00
+2026,2026-07,expense,CPF contributions,line_item,2960.00
+2026,2026-08,expense,CPF contributions,line_item,2960.00
+2026,2026-09,expense,CPF contributions,line_item,2960.00
+2026,2026-10,expense,CPF contributions,line_item,2960.00
+2026,2026-11,expense,CPF contributions,line_item,2960.00
+2026,2026-12,expense,CPF contributions,line_item,2960.00
+2026,2026-01,expense,CPF employee,line_item,1480.00
+2026,2026-02,expense,CPF employee,line_item,1600.00
+2026,2026-03,expense,CPF employee,line_item,1600.00
+2026,2026-04,expense,CPF employee,line_item,1600.00
+2026,2026-05,expense,CPF employee,line_item,1600.00
+2026,2026-06,expense,CPF employee,line_item,1600.00
+2026,2026-07,expense,CPF employee,line_item,1600.00
+2026,2026-08,expense,CPF employee,line_item,1600.00
+2026,2026-09,expense,CPF employee,line_item,1600.00
+2026,2026-10,expense,CPF employee,line_item,1600.00
+2026,2026-11,expense,CPF employee,line_item,1600.00
+2026,2026-12,expense,CPF employee,line_item,1600.00
+2026,2026-01,expense,CPF employer,line_item,1258.00
+2026,2026-02,expense,CPF employer,line_item,1360.00
+2026,2026-03,expense,CPF employer,line_item,1360.00
+2026,2026-04,expense,CPF employer,line_item,1360.00
+2026,2026-05,expense,CPF employer,line_item,1360.00
+2026,2026-06,expense,CPF employer,line_item,1360.00
+2026,2026-07,expense,CPF employer,line_item,1360.00
+2026,2026-08,expense,CPF employer,line_item,1360.00
+2026,2026-09,expense,CPF employer,line_item,1360.00
+2026,2026-10,expense,CPF employer,line_item,1360.00
+2026,2026-11,expense,CPF employer,line_item,1360.00
+2026,2026-12,expense,CPF employer,line_item,1360.00
+2026,2026-01,expense,OA,line_item,1554.00
+2026,2026-02,expense,OA,line_item,1680.00
+2026,2026-03,expense,OA,line_item,1680.00
+2026,2026-04,expense,OA,line_item,1680.00
+2026,2026-05,expense,OA,line_item,1680.00
+2026,2026-06,expense,OA,line_item,1680.00
+2026,2026-07,expense,OA,line_item,1680.00
+2026,2026-08,expense,OA,line_item,1680.00
+2026,2026-09,expense,OA,line_item,1680.00
+2026,2026-10,expense,OA,line_item,1680.00
+2026,2026-11,expense,OA,line_item,1680.00
+2026,2026-12,expense,OA,line_item,1680.00
+2026,2026-01,expense,SA,line_item,518.00
+2026,2026-02,expense,SA,line_item,560.00
+2026,2026-03,expense,SA,line_item,560.00
+2026,2026-04,expense,SA,line_item,560.00
+2026,2026-05,expense,SA,line_item,560.00
+2026,2026-06,expense,SA,line_item,560.00
+2026,2026-07,expense,SA,line_item,560.00
+2026,2026-08,expense,SA,line_item,560.00
+2026,2026-09,expense,SA,line_item,560.00
+2026,2026-10,expense,SA,line_item,560.00
+2026,2026-11,expense,SA,line_item,560.00
+2026,2026-12,expense,SA,line_item,560.00
+2026,2026-01,expense,MS,line_item,666.00
+2026,2026-02,expense,MS,line_item,720.00
+2026,2026-03,expense,MS,line_item,720.00
+2026,2026-04,expense,MS,line_item,720.00
+2026,2026-05,expense,MS,line_item,720.00
+2026,2026-06,expense,MS,line_item,720.00
+2026,2026-07,expense,MS,line_item,720.00
+2026,2026-08,expense,MS,line_item,720.00
+2026,2026-09,expense,MS,line_item,720.00
+2026,2026-10,expense,MS,line_item,720.00
+2026,2026-11,expense,MS,line_item,720.00
+2026,2026-12,expense,MS,line_item,720.00

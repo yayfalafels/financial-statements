@@ -24,8 +24,8 @@ status: draft
     - [Stage 6: Reconcile](#stage-6-reconcile)
     - [Merge gate](#merge-gate)
   - [Phase 3: Statement closing](#phase-3-statement-closing)
-    - [Stage 7: Statements](#stage-7-statements)
-    - [Stage 8: Publish](#stage-8-publish)
+    - [Statements draft build](#statements-draft-build)
+    - [Finalize publish](#finalize-publish)
 - [Bill payment workstream](#bill-payment-workstream)
   - [Step 1: Bill intake](#step-1-bill-intake)
   - [Step 2: Share allocate](#step-2-share-allocate)
@@ -106,7 +106,7 @@ The tables below list all stages for each workflow. Step-level detail is in the 
 
 ## Monthly close workflow
 
-The monthly close workflow runs as a single orchestrated session. The workflow orchestrator owns stage routing, gate evaluation, and checkpoint enforcement. Runtime execution logic runs in account close runtime or bill and shared-cost runtime modules. All persistence goes through the SQLite adapter. All Google Sheets UI updates go through the Google Sheets adapter.
+The monthly close workflow runs as a single orchestrated session. The workflow orchestrator owns stage routing, gate evaluation, and checkpoint enforcement. Runtime execution logic runs in account close runtime or bill and shared-cost runtime components. All persistence goes through the SQLite adapter. All Google Sheets UI updates go through the Google Sheets adapter.
 
 ### Workflow diagram
 
@@ -131,8 +131,8 @@ flowchart TD
     RC --> MG{"Merge gate all accounts reconcile-complete or overridden"}
 
     subgraph PHASE3["Phase 3: Statement closing"]
-        ST["Stage 7 Statements"]
-        PB["Stage 8 Publish"]
+        ST["Statements draft build"]
+        PB["Finalize publish"]
         ST --> PB
     end
 
@@ -660,7 +660,7 @@ Phase 3 begins after the merge gate passes. It runs once, common to all accounts
 
 ---
 
-### Stage 7: Statements
+### Statements draft build
 
 **Objective:** Produce draft income statement and balance sheet from reconciled close_book records plus forecast data. Present draft to user for review. Enforce book-level identity constraints.
 
@@ -744,7 +744,7 @@ Phase 3 begins after the merge gate passes. It runs once, common to all accounts
 
 ---
 
-### Stage 8: Publish
+### Finalize publish
 
 **Objective:** Finalize the period, generate PDF artifacts, upload to S3, and record the session close.
 
@@ -1039,8 +1039,8 @@ flowchart LR
 
 | step | description                                                               |
 | ---- | ------------------------------------------------------------------------- |
-| M1.1 | mapping CRUD module queries active HB categories without `gl_code`        |
-| M1.2 | mapping CRUD module queries active accounts without asset type assignment  |
+| M1.1 | mapping CRUD service queries active HB categories without `gl_code`       |
+| M1.2 | mapping CRUD service queries active accounts without asset type assignment |
 | M1.3 | results surfaced to user in GS UI or CLI review surface                   |
 
 #### Inputs
@@ -1052,7 +1052,7 @@ flowchart LR
 
 #### Components
 
-- mapping CRUD module, SQLite adapter, Google Sheets adapter or CLI.
+- mapping CRUD service, SQLite adapter, Google Sheets adapter or CLI.
 
 ---
 
@@ -1066,7 +1066,7 @@ flowchart LR
 | ---- | -------------------------------------------------------------------------------- |
 | M2.1 | user enters or confirms `gl_code` assignment for each unmapped category          |
 | M2.2 | user enters or confirms asset type for each unmapped account                     |
-| M2.3 | mapping CRUD module validates entries and persists to mapping schema             |
+| M2.3 | mapping CRUD service validates entries and persists to mapping schema            |
 | M2.4 | audit record created: category/account id, prior value, new value, user, timestamp |
 
 #### User actions
@@ -1098,8 +1098,8 @@ flowchart LR
 
 | step | description                                                                     |
 | ---- | ------------------------------------------------------------------------------- |
-| M3.1 | mapping CRUD module re-evaluates category completeness gate                     |
-| M3.2 | mapping CRUD module re-evaluates account asset type completeness gate           |
+| M3.1 | mapping CRUD service re-evaluates category completeness gate                    |
+| M3.2 | mapping CRUD service re-evaluates account asset type completeness gate          |
 | M3.3 | if both gates pass, orchestrator is notified that reconcile is unblocked        |
 | M3.4 | gate check result recorded in session_audit schema                              |
 

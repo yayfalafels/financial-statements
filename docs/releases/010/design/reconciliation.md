@@ -190,10 +190,11 @@ Both inherit from `BaseReconciliationMethod` for polymorphism, but the inheritan
 - Easy policy updates (e.g., "UOB date tolerance is now 5 days" → update via UI policy form)
 
 **Heuristic class hierarchy is for extensibility:**
-- `Heuristic (ABC)` defines interface: `apply(edits_set) -> reduced_edits_set, diagnostics`
-- `NetZeroPairHeuristic`, `CPFNetZeroHeuristic`, etc. inherit and implement algorithm
-- Config file specifies which heuristics to apply in which order
-- New heuristic: code a class in heuristics.py, then expose and validate it through the UI-managed policy config path
+- `Heuristic (ABC)` defines interface: `apply(edits_df) -> reduced_edits_df`
+- Four reusable concrete classes inherit and each implement one algorithm: `NetZeroPairHeuristic`, `SameAmountZeroSumClusterHeuristic`, `KeywordFilterNetZeroHeuristic`, `PatternCrossSourceNetZeroHeuristic`
+- Config file specifies which heuristics to apply and with what parameters for each account
+- New account rule: add a config entry with an existing heuristic and new parameters — **zero new code**
+- New algorithm type: code a class in heuristics.py, register in factory, then expose through UI config
 
 ### 3. Why Adapters Don't Call Methods or Engine?
 
@@ -415,22 +416,82 @@ The reconciliation engine is organized into five layers with strict, acyclic dep
 - Field validation at construction time
 - Immutable audit fields (created_timestamp, adjustment_id)
 
+**Reference model snippet:**
+
+```python
+from datetime import datetime
+from decimal import Decimal
+from enum import Enum
+from pydantic import BaseModel, Field
+
+
+class AdjustmentStatus(str, Enum):
+  GENERATED = "generated"
+  PENDING_APPROVAL = "pending_approval"
+  APPROVED = "approved"
+  POSTED = "posted"
+
+
+class AdjustmentTransaction(BaseModel):
+  adjustment_id: str
+  session_id: str
+  account_id: str
+  period_key: str
+  adjustment_amount: Decimal = Field(..., decimal_places=2)
+  residual_gap: Decimal = Field(..., decimal_places=2)
+  status: AdjustmentStatus = AdjustmentStatus.GENERATED
+  rule_reference: str
+  category_code: str
+  created_timestamp: datetime
+```
+
 ### Layer 2: Utilities
 
 **Purpose:** Helper functions and utility classes (pure computation)
 
-| id | file                    | classes/functions                     | responsibility                    |
-| -- | ----------------------- | ------------------------------------- | --------------------------------- |
-| 01 | ledger_slice_builder.py | LedgerSliceBuilder                    | deterministic slice build         |
-| 02 | heuristics.py           | HeuristicsEngine, base + rule classes | heuristic reduction and checks    |
-| 03 | config_loader.py        | HeuristicsConfigLoader                | config load and precedence        |
-| 04 | gap_calculator.py       | compute_gap, validate_*               | gap math and balance validations  |
+| id | file              | functions                                 | responsibility                   |
+| -- | -----------       | -----------                                | -----------                      |
+| 01 | ledger_slicer.py  | slice build utilities, balance discovery   | deterministic slice construction |
+| 02 | heuristics.py     | Heuristic (ABC), 4 concrete classes        | heuristic reduction              |
+| 03 | config_loader.py  | config resolution, heuristic loading       | config precedence and discovery  |
+| 04 | matching.py       | forward/backward matching, equivalence     | match validation                 |
+| 05 | pairing.py        | statement-ledger and transfer pairing      | edit pairing recovery            |
+| 06 | gap_calculator.py | gap computation, tolerance validation      | gap calculation and checks       |
+
+**Heuristics layer:** The four concrete heuristic classes are `NetZeroPairHeuristic`, `SameAmountZeroSumClusterHeuristic`, `KeywordFilterNetZeroHeuristic`, and `PatternCrossSourceNetZeroHeuristic`. All inherit from `Heuristic (ABC)` and implement the `apply(edits_df)` contract.
 
 **Design patterns:**
-- Heuristics use abstract base class for extensibility; new heuristics inherit and implement algorithm
-- Config discovery is explicit and ordered (account override → default → general + account-specific)
-- Gap calculation is pure function with no side effects
-- All monetary calculations use `decimal.Decimal`
+- **Stateless utilities are always functions**, not classes. Examples: slice building, gap calculation, config resolution, matching, pairing.
+- **One concrete class per distinct algorithm**: Heuristics inherit from abstract base `Heuristic` for polymorphism; each subclass encapsulates one algorithm.
+- **Config parameters are function arguments**, not instance state. Example: `forward_match(ledger_df, stmt_df, date_tolerance_days=3)`.
+- **State cohesion**: Methods in a class operate on shared instance state. If a class has one method or only @staticmethod decorators, convert to function.
+- **Config discovery is explicit and ordered**: account override → default → general + account-specific (resolved before invocation).
+
+**Reference utility snippets:**
+
+```python
+from decimal import Decimal
+
+
+def resolve_matching_config(config: dict, account: str) -> dict:
+  """Resolve account-specific matching config with default fallback.
+  
+  Precedence: account override → default config.
+  """
+  default_cfg = config["matching_config"]["default"]
+  account_cfg = config["matching_config"].get("accounts", {}).get(account, {})
+  resolved = dict(default_cfg)
+  resolved.update(account_cfg)
+  return resolved
+
+
+def compute_gap(ledger_end: Decimal, edits_sum: Decimal, statement_end: Decimal) -> Decimal:
+  """Calculate reconcile gap with exact decimal arithmetic.
+  
+  gap = (ledger_end + sum(edit_amount)) - statement_end
+  """
+  return (ledger_end + edits_sum - statement_end).quantize(Decimal("0.01"))
+```
 
 ### Layer 3: Methods
 
@@ -460,6 +521,38 @@ class BaseReconciliationMethod(ABC):
 - Backward pass must produce identical edits after heuristics
 - Forward == Backward is mandatory; failure → raise `HeuristicsConsistencyError`
 
+**Reference method snippet:**
+
+```python
+class TransactionLevelMethod(BaseReconciliationMethod):
+  def reconcile(self, account, year, month, **inputs) -> ReconciliationResult:
+    # Slice construction: stateless utility functions
+    ledger = build_ledger_slice(inputs["hb_gl_txn"], account, year, month, inputs["opening_balance"])
+    stmt = build_statement_slice(inputs["statements"], account, year, month, inputs["opening_balance"])
+
+    # Matching: config-driven by date_tolerance_days from session config
+    date_tol = self._session_config["matching_config"][account]["date_tolerance_days"]
+    matches = forward_match(ledger, stmt, date_tolerance_days=date_tol)
+    unmatched_ledger = set(ledger.index) - {m[0] for m in matches}
+    unmatched_stmt = set(stmt.index) - {m[1] for m in matches}
+    
+    # Edit construction: derive from match pairs and unmatched rows
+    edits_forward = self._build_edits(ledger, stmt, unmatched_ledger, unmatched_stmt)
+    edits_backward = self._backward_reduce(ledger, stmt, matches)
+
+    # Heuristics: apply configured heuristics to both forward and backward
+    heuristics = HeuristicsFactory.build_for_account(self._session_config, account)
+    ef = self._apply_heuristics(edits_forward, heuristics)
+    eb = self._apply_heuristics(edits_backward, heuristics)
+    
+    # Validation: forward and backward must be equivalent (mandatory gate)
+    assert_forward_backward_equivalence(ef, eb)
+
+    # Gap calculation: stateless utility function
+    gap = compute_gap(ledger["balance"].iloc[-1], ef["edit_amount"].sum(), stmt["balance"].iloc[-1])
+    return ReconciliationResult(account, year, month, ef, matches, gap)
+```
+
 ### Layer 4: Shared Adapters
 
 **Purpose:** Persistence and external system integration boundaries
@@ -471,7 +564,34 @@ class BaseReconciliationMethod(ABC):
 
 **Key design decision:** Shared adapters depend on models ONLY (not on methods or engine). This preserves adapter independence: persistence logic is orthogonal to reconciliation algorithms.
 
-**Note:** `sqlite_adapter.py` is a sub-boundary within the larger SQL adapter (per architecture principle "SQLite adapter is the only SQL interface"). It is app-wide and exposes reconciliation-specific operations via scoped interfaces.
+
+**Reference adapter snippet:**
+
+```python
+class ReconciliationPersistence:
+  """Reconciliation persistence boundary; no SQL or dialect logic."""
+
+  def __init__(self, sql_adapter):
+    self._sql_adapter = sql_adapter
+
+  def upsert_adjustment(self, rec: AdjustmentTransaction) -> None:
+    self._sql_adapter.upsert(
+      table="close_book_adjustments",
+      data={
+        "adjustment_id": rec.adjustment_id,
+        "session_id": rec.session_id,
+        "account_id": rec.account_id,
+        "period_key": rec.period_key,
+        "adjustment_amount": str(rec.adjustment_amount),
+        "residual_gap": str(rec.residual_gap),
+        "status": rec.status.value,
+        "rule_reference": rec.rule_reference,
+      },
+      conflict_key="adjustment_id",
+    )
+```
+
+The `ReconciliationPersistence` is a domain boundary. It centralizes table name, column mapping, and reconciliation-specific write semantics. Engine and methods stay unaware of persistence shape details.
 
 ### Layer 5: Orchestration
 
@@ -511,6 +631,31 @@ class ReconciliationEngine:
 - Matching algorithm (in TransactionLevelMethod)
 - Gap calculation (in utilities.gap_calculator)
 - Heuristic rules (in utilities.heuristics)
+
+**Reference orchestration snippet:**
+
+```python
+class BaseReconciliationEngine:
+  def reconcile(self, account: str, year: int, month: int, **inputs) -> ReconciliationResult:
+    raise NotImplementedError
+
+
+class ReconciliationEngine(BaseReconciliationEngine):
+  def reconcile(self, account: str, year: int, month: int, **inputs) -> ReconciliationResult:
+    session = self.session_repo.create(account=account, year=year, month=month)
+    group = self.classifier.classify(account)
+    params = self.config_snapshot.resolve(account, group)
+    method = self.dispatcher.get_method(group, params)
+
+    result = method.reconcile(account, year, month, **inputs)
+    validate_postconditions(group, result)  # Stateless validation function
+
+    if result.adjustment_record is not None:
+      self.persistence.upsert_adjustment(result.adjustment_record)
+
+    self.session_repo.close(session.session_id, result)
+    return result
+```
 
 ### Configuration
 
@@ -585,12 +730,12 @@ Step 3: Method dispatch
   → Instantiate TransactionLevelMethod(heuristics_config)
 
 Step 4: Ledger slice construction
-  → LedgerSliceBuilder.build_ledger_slice(hb_gl, "TWH DBS Multi SGD", 2026, 2, balances)
+  → build_ledger_slice(hb_gl, "TWH DBS Multi SGD", 2026, 2, opening_balance)
   → Filter out balance rows (txn_type == "balance")
   → Filter out null amounts
   → Sort by date ASC, then by original index
   → Compute running balance
-  → Discover opening_balance from balances[2026-01]
+  → Discover opening_balance via discover_opening_balance(balances, account, year, month)
   → Return slice with columns: [date, amount, balance, notes, ...]
 
 Step 5: Forward pass matching
@@ -737,6 +882,52 @@ Before matching, two slices are constructed from the source GL sheets for the `(
 
 **Requirement ref:** reconciliation-engine.md § Account-group procedures / Bank statement-process accounts
 
+**Reference slice construction snippet:**
+
+```python
+# Stateless utility functions grouped in a module, not a class.
+# Each performs one deterministic computation on ledger or statement data.
+
+def build_ledger_slice(hb_gl_txn, account: str, year: int, month: int, opening_balance: Decimal):
+  """Build ledger slice with running balance."""
+  scope = hb_gl_txn[
+    (hb_gl_txn["account"] == account)
+    & (hb_gl_txn["year"] == year)
+    & (hb_gl_txn["month"] == month)
+  ].copy()
+  scope = scope[scope["amount"].notna()].sort_values(["date", "index"])
+  scope["running_delta"] = scope["amount"].cumsum()
+  scope["balance"] = opening_balance + scope["running_delta"]
+  return scope[["index", "date", "amount", "balance", "notes"]]
+
+def build_statement_slice(stm_txn, account: str, year: int, month: int, opening_balance: Decimal):
+  """Build statement slice with running balance."""
+  scope = stm_txn[
+    (stm_txn["account"] == account)
+    & (stm_txn["year"] == year)
+    & (stm_txn["month"] == month)
+  ].copy()
+  scope = scope[scope["amount"].notna()].sort_values(["date", "index"])
+  scope["running_delta"] = scope["amount"].cumsum()
+  scope["balance"] = opening_balance + scope["running_delta"]
+  return scope[["index", "date", "amount", "balance", "description"]]
+
+def discover_opening_balance(balances, account: str, year: int, month: int) -> Decimal:
+  """Look up opening balance from prior period end."""
+  prior_month = month - 1 if month > 1 else 12
+  prior_year = year if month > 1 else year - 1
+  candidates = balances[
+    (balances["account"] == account)
+    & (balances["year"] == prior_year)
+    & (balances["month"] == prior_month)
+  ]
+  if candidates.empty:
+    raise ValueError(f"No opening balance for {account} {year}-{month:02d}")
+  return Decimal(str(candidates.iloc[-1]["balance"]))
+```
+
+**Design principle:** Stateless pure functions (no instance state) belong in a module, not a class. Classes bundle behavior with state; functions are used when there is no state to maintain.
+
 #### Forward Pass Algorithm
 
 The forward pass greedily matches ledger and statement transactions that are unambiguously equivalent, then builds an initial edits set from unmatched transactions.
@@ -777,6 +968,31 @@ This property holds **before heuristics are applied** and is preserved by all he
 **Expected outcome:** If GL data are internally consistent — no missing or spurious transactions — the forward edits already yield `gap == 0.00`. However, the set may not yet be minimal due to boundary conditions or timing variations.
 
 **Requirement ref:** reconciliation-engine.md § Transaction-level method class / Forward and backwards algorithm; hb-reconcile/docs/reconcile.md § Forward algorithm
+
+**Reference forward pass snippet:**
+
+```python
+def forward_match(ledger_df, stmt_df, date_tolerance_days: int = 3):
+  """Forward pass: greedy one-to-one matching by amount and date.
+  
+  Returns: list of (ledger_idx, stmt_idx) match pairs.
+  """
+  used_stmt = set()
+  matches = []
+
+  for l_idx, l_row in ledger_df.iterrows():
+    candidates = stmt_df[
+      (~stmt_df.index.isin(used_stmt))
+      & (stmt_df["amount"] == l_row["amount"])
+      & ((stmt_df["date"] - l_row["date"]).abs().dt.days <= date_tolerance_days)
+    ]
+    if len(candidates) == 1:
+      s_idx = candidates.index[0]
+      used_stmt.add(s_idx)
+      matches.append((l_idx, s_idx))
+
+  return matches
+```
 
 #### Backward Pass Algorithm
 
@@ -825,6 +1041,26 @@ _Why it's required:_ Divergence indicates either a heuristic bug (incorrect gap 
 
 **Requirement ref:** hb-reconcile/docs/reconcile.md § Backwards algorithm
 
+**Reference backward equivalence snippet:**
+
+```python
+def assert_forward_backward_equivalence(edits_forward, edits_backward):
+  """Verify forward and backward edit sets are identical (mandatory gate).
+  
+  Raises: ReconciliationInconsistencyError if divergence detected.
+  """
+  sort_cols = ["source", "date", "amount", "edit"]
+  ef = edits_forward.sort_values(sort_cols).reset_index(drop=True)
+  eb = edits_backward.sort_values(sort_cols).reset_index(drop=True)
+
+  if ef.shape != eb.shape or not ef.equals(eb):
+    diff = {
+      "forward_only": ef.merge(eb, how="outer", indicator=True).query("_merge == 'left_only'"),
+      "backward_only": ef.merge(eb, how="outer", indicator=True).query("_merge == 'right_only'"),
+    }
+    raise ReconciliationInconsistencyError(diff)
+```
+
 #### Heuristics Layer
 
 Heuristics remove redundant edits while preserving the gap invariant. All heuristics must satisfy:
@@ -857,35 +1093,316 @@ sum(edit_amount over modified or removed subset) = 0.00
 - **Use case:** Captures ambiguous repetitions — for example, two McDonald's charges for the same amount on consecutive days matched by ambiguity — that form a self-contained zero-sum bubble.
 - **Config source:** `txn_heuristics.json` / `general_heuristics` / `same_amount_zero_sum_cluster`
 
-**Account-specific heuristics configured in `txn_heuristics.json` / `account_heuristics`:**
-
-**1. DBS Multi SGD CPF net-zero cluster (`cpf_net_zero`)**
-- **Account scope:** TWH DBS Multi SGD
-- **Purpose:** Remove CPF-related edits that represent internal fund allocations within the account.
+**3. Keyword filter net-zero (`keyword_filter_net_zero`)**
+- **Purpose:** Remove edits matching specified keywords if they sum to zero. Reusable across any account with keyword-based rules.
 - **Procedure:**
-  1. Select edits whose `note` field contains any of: `"Flintex CPF"`, `"RSK CPF"`, `"CPF OA"`, `"CPF SA"`, `"CPF MA"`.
-  2. Compute the sum of `amount` over the selected subset.
-  3. If `abs(sum_amount) <= amount_tolerance` — default 0.01 — drop the entire subset.
+  1. Select edits whose `note` field contains any of the configured keywords.
+  2. Compute `subset_sum = sum(edit_amount)` over the selected subset.
+  3. If `abs(subset_sum) <= amount_tolerance` — configurable, default 0.01 — drop the entire subset.
 - **Gap invariant:** preserved because the subset's `edit_amount` values sum to zero.
-- **Config source:** `txn_heuristics.json` / `account_heuristics` / `TWH DBS Multi SGD`
-- **Example:** Three edits: `Flintex CPF -5000`, `CPF OA +2500`, `CPF SA +2500`. These net to zero and represent internal CPF structure, not true ledger–statement differences.
+- **Use case:** CPF allocations (DBS Multi), internal transfers, or any account-specific keyword-driven zero-sum cleanup.
+- **Config parameters:** `keywords` (list of strings), `note_field` (which column to search; default "note"), `amount_tolerance` (Decimal).
+- **Example config (DBS Multi SGD):**
+  ```json
+  {
+    "name": "keyword_filter_net_zero",
+    "config": {
+      "keywords": ["Flintex CPF", "RSK CPF", "CPF OA", "CPF SA", "CPF MA"],
+      "note_field": "note",
+      "amount_tolerance": "0.01"
+    }
+  }
+  ```
+- **Example behavior:** Edits `Flintex CPF -5000`, `CPF OA +2500`, `CPF SA +2500` sum to zero → dropped.
 
-**2. UOB One SGD cashback split (`uob_cashback_split`)**
-- **Account scope:** TWH UOB One SGD
-- **Purpose:** Remove cashback edits where one ledger cashback entry is split across multiple statement rebate lines.
+**4. Pattern cross-source net-zero (`pattern_cross_source_net_zero`)**
+- **Purpose:** Remove edit clusters matching patterns from both ledger and statement within a period window if amounts balance. Reusable across any account with pattern-matching rules.
 - **Procedure:**
-  1. Identify ledger `remove` edits where `amount > 0` and `note` contains `"UOB One cashback"`.
-  2. Within the same `(year, month)`, identify statement `add` edits where `amount > 0` and `note` contains `"REBATE"` or `"CASH REBATE"`.
-  3. Check if the sum of statement `amount` values equals the ledger cashback `amount` within `amount_tolerance`.
-  4. Compute the cluster's `edit_amount` sum — zero by construction.
-  5. If the cluster is balanced, drop all edits in the cluster.
-- **Gap invariant:** preserved because the cluster's `edit_amount` values sum to zero.
-- **Config source:** `txn_heuristics.json` / `account_heuristics` / `TWH UOB One SGD`
-- **Example — UOB One Nov-2025:**
-  - Ledger: `UOB One cashback 2025 11 NOV` +119.95 → `remove` edit -119.95
-  - Statement: `ONE CARD ADDITIONAL REBATE` +19.95 → `add` edit +19.95
-  - Statement: `UOB ONE CASH REBATE BILL REDEMPTION` +100.00 → `add` edit +100.00
-  - Cluster sum: 19.95 + 100.00 = 119.95, matching the ledger cashback total. Drop all three edits.
+  1. Identify ledger edits matching `ledger_patterns` in the `note` field, within the same `(year, month)`.
+  2. Identify statement edits matching `statement_patterns` in the `note` field, same period.
+  3. Check if the sum of ledger amounts equals the sum of statement amounts within `amount_tolerance`.
+  4. If balanced, drop the entire cluster.
+- **Gap invariant:** preserved because the cluster's net amounts are zero by definition (balanced).
+- **Use case:** Cashback rebates (UOB One), tax refunds, or any paired ledger-statement entries with amount splits.
+- **Config parameters:** `ledger_patterns` (list of keywords), `statement_patterns` (list of keywords), `amount_tolerance` (Decimal), `period_scope` (default "month").
+- **Example config (UOB One SGD):**
+  ```json
+  {
+    "name": "pattern_cross_source_net_zero",
+    "config": {
+      "ledger_patterns": ["UOB One cashback"],
+      "statement_patterns": ["REBATE", "CASH REBATE"],
+      "amount_tolerance": "0.01",
+      "period_scope": "month"
+    }
+  }
+  ```
+- **Example behavior:**
+  - Ledger: `UOB One cashback 2025 11 NOV` amount=119.95 → remove edit -119.95
+  - Statement: `ONE CARD ADDITIONAL REBATE` amount=19.95 → add edit +19.95
+  - Statement: `UOB ONE CASH REBATE BILL REDEMPTION` amount=100.00 → add edit +100.00
+  - Cluster sum: 19.95 + 100.00 = 119.95 ≈ 119.95 ✓ → drop all three edits.
+
+**Heuristic abstraction and concrete implementations:**
+
+**Design principle: Abstract base class for the contract; one concrete class per distinct algorithm. All account-specific behavior lives in config.**
+
+The `Heuristic` abstract base class (ABC) is the **abstraction**. It defines the contract that all heuristics must follow:
+
+```python
+from abc import ABC, abstractmethod
+from decimal import Decimal
+import pandas as pd
+
+
+class Heuristic(ABC):
+  """Abstract base class: defines what all heuristics must do."""
+  def __init__(self, enabled: bool = True):
+    self._enabled = enabled
+
+  @abstractmethod
+  def apply(self, edits_df):
+    """Remove redundant edits while preserving gap invariant (sum=0).
+    
+    Contract: subclasses must implement this method.
+    """
+    raise NotImplementedError
+
+  @classmethod
+  @abstractmethod
+  def from_config(cls, heur_cfg: dict):
+    """Construct instance from config dict.
+    
+    Contract: subclasses must implement this classmethod.
+    """
+    raise NotImplementedError
+```
+
+**Four reusable heuristic algorithms** inherit from `Heuristic`. Each encapsulates one distinct algorithm. Account-specific behavior is driven purely by config, not by separate classes:
+
+```python
+class NetZeroPairHeuristic(Heuristic):
+  """Concrete implementation: Remove pairs of opposite-amount edits within date window."""
+  def __init__(self, date_tolerance_days: int, amount_tolerance: Decimal, enabled: bool = True):
+    super().__init__(enabled=enabled)
+    self._date_tolerance_days = date_tolerance_days
+    self._amount_tolerance = amount_tolerance
+
+  @classmethod
+  def from_config(cls, heur_cfg: dict):
+    c = heur_cfg.get("config", {})
+    return cls(
+      date_tolerance_days=int(c.get("date_tolerance_days", 3)),
+      amount_tolerance=Decimal(str(c.get("amount_tolerance", "0.01"))),
+      enabled=bool(heur_cfg.get("enabled", True)),
+    )
+
+  def apply(self, edits_df):
+    if not self._enabled:
+      return edits_df
+    # Remove (i, j) pairs where edit_amount[i] == -edit_amount[j] within date_tolerance_days
+    # ... algorithm implementation ...
+    return edits_df
+
+
+class SameAmountZeroSumClusterHeuristic(Heuristic):
+  """Concrete implementation: Remove clusters of same-amount edits from mixed sources that sum to zero."""
+  def __init__(
+    self,
+    amount_tolerance: Decimal,
+    require_mixed_sources: bool = True,
+    min_cluster_size: int = 2,
+    enabled: bool = True,
+  ):
+    super().__init__(enabled=enabled)
+    self._amount_tolerance = amount_tolerance
+    self._require_mixed_sources = require_mixed_sources
+    self._min_cluster_size = min_cluster_size
+
+  @classmethod
+  def from_config(cls, heur_cfg: dict):
+    c = heur_cfg.get("config", {})
+    return cls(
+      amount_tolerance=Decimal(str(c.get("amount_tolerance", "0.01"))),
+      require_mixed_sources=bool(c.get("require_mixed_sources", True)),
+      min_cluster_size=int(c.get("min_cluster_size", 2)),
+      enabled=bool(heur_cfg.get("enabled", True)),
+    )
+
+  def apply(self, edits_df):
+    if not self._enabled:
+      return edits_df
+    # Group by amount; for each group, if mixed sources and cluster_sum ≈ 0, drop all
+    # ... algorithm implementation ...
+    return edits_df
+
+
+class KeywordFilterNetZeroHeuristic(Heuristic):
+  """Concrete implementation: Remove edits matching keywords if they sum to zero.
+  
+  Reusable across accounts: DBS Multi (CPF keywords), or any other keyword-based rules.
+  """
+  def __init__(self, keywords: list, note_field: str = "note", amount_tolerance: Decimal = None, enabled: bool = True):
+    super().__init__(enabled=enabled)
+    self._keywords = keywords
+    self._note_field = note_field
+    self._amount_tolerance = amount_tolerance or Decimal("0.01")
+
+  @classmethod
+  def from_config(cls, heur_cfg: dict):
+    c = heur_cfg.get("config", {})
+    return cls(
+      keywords=list(c.get("keywords", [])),
+      note_field=str(c.get("note_field", "note")),
+      amount_tolerance=Decimal(str(c.get("amount_tolerance", "0.01"))),
+      enabled=bool(heur_cfg.get("enabled", True)),
+    )
+
+  def apply(self, edits_df):
+    if not self._enabled:
+      return edits_df
+    # Select edits where note_field contains any keyword; if subset_sum ≈ 0, drop all
+    # ... algorithm implementation ...
+    return edits_df
+
+
+class PatternCrossSourceNetZeroHeuristic(Heuristic):
+  """Concrete implementation: Remove edit clusters matching patterns from both sources if balanced.
+  
+  Reusable across accounts: UOB One (cashback rebates), or any cross-source pattern matching.
+  """
+  def __init__(
+    self,
+    ledger_patterns: list,
+    statement_patterns: list,
+    amount_tolerance: Decimal = None,
+    period_scope: str = "month",
+    enabled: bool = True,
+  ):
+    super().__init__(enabled=enabled)
+    self._ledger_patterns = ledger_patterns
+    self._statement_patterns = statement_patterns
+    self._amount_tolerance = amount_tolerance or Decimal("0.01")
+    self._period_scope = period_scope
+
+  @classmethod
+  def from_config(cls, heur_cfg: dict):
+    c = heur_cfg.get("config", {})
+    return cls(
+      ledger_patterns=list(c.get("ledger_patterns", [])),
+      statement_patterns=list(c.get("statement_patterns", [])),
+      amount_tolerance=Decimal(str(c.get("amount_tolerance", "0.01"))),
+      period_scope=str(c.get("period_scope", "month")),
+      enabled=bool(heur_cfg.get("enabled", True)),
+    )
+
+  def apply(self, edits_df):
+    if not self._enabled:
+      return edits_df
+    # Find ledger edits matching ledger_patterns and statement edits matching statement_patterns
+    # Within same period_scope, check if amounts balance. If yes, drop cluster.
+    # ... algorithm implementation ...
+    return edits_df
+```
+
+```python
+class HeuristicsFactory:
+  """Registry-based factory for constructing heuristic instances from config."""
+  REGISTRY = {
+    "net_zero_pair": NetZeroPairHeuristic,
+    "same_amount_zero_sum_cluster": SameAmountZeroSumClusterHeuristic,
+    "keyword_filter_net_zero": KeywordFilterNetZeroHeuristic,
+    "pattern_cross_source_net_zero": PatternCrossSourceNetZeroHeuristic,
+  }
+
+  @classmethod
+  def build_for_account(cls, config: dict, account: str) -> list:
+    """Instantiate all enabled heuristics for an account from config.
+    
+    Dispatches by heuristic name; account-specific behavior comes from config params.
+    """
+    specs = []
+    specs.extend(config.get("general_heuristics", []))
+    specs.extend(config.get("account_heuristics", {}).get(account, []))
+    return [cls.REGISTRY[spec["name"]].from_config(spec) for spec in specs]
+```
+
+**The Abstraction (`Heuristic`):**
+- Defines **what** heuristics must do: implement `apply(edits_df)` and `from_config(config_dict)`.
+- Enforces the contract through abstract methods.
+- All heuristics inherit from this abstract base class.
+
+**The Concrete Implementations** (four reusable algorithm classes, zero account-specific code):
+- `NetZeroPairHeuristic`: Removes opposite-amount pairs within date window. Configured for any account/tolerance.
+- `SameAmountZeroSumClusterHeuristic`: Removes same-amount clusters with mixed sources summing to zero. Configurable min cluster size and mixed-source requirement.
+- `KeywordFilterNetZeroHeuristic`: Removes edits matching any keyword list if they sum to zero. Reusable for CPF (DBS Multi), internal transfers, or any keyword-based rules.
+- `PatternCrossSourceNetZeroHeuristic`: Removes edit clusters matching ledger and statement patterns if amounts balance. Reusable for cashback rebates (UOB One), tax refunds, or any cross-source matching.
+
+**Account-specific behavior = pure configuration:**
+- DBS Multi SGD uses `KeywordFilterNetZeroHeuristic` with `keywords=["Flintex CPF", "RSK CPF", "CPF OA", "CPF SA", "CPF MA"]`.
+- UOB One SGD uses `PatternCrossSourceNetZeroHeuristic` with `ledger_patterns=["UOB One cashback"]` and `statement_patterns=["REBATE", "CASH REBATE"]`.
+- A new account can reuse any of these classes with different config parameters — **no new code required**.
+
+**Factory pattern:** `HeuristicsFactory.build_for_account()` dispatches by config name. Registry is explicit and extensible. All account-specific behavior flows through config, not through class explosion.
+
+**Config-driven account behavior:**
+
+```json
+{
+  "general_heuristics": [
+    {
+      "name": "net_zero_pair",
+      "config": {
+        "date_tolerance_days": 3,
+        "amount_tolerance": "0.01"
+      }
+    },
+    {
+      "name": "same_amount_zero_sum_cluster",
+      "config": {
+        "amount_tolerance": "0.01",
+        "require_mixed_sources": true,
+        "min_cluster_size": 2
+      }
+    }
+  ],
+  "account_heuristics": {
+    "TWH DBS Multi SGD": [
+      {
+        "name": "keyword_filter_net_zero",
+        "config": {
+          "keywords": ["Flintex CPF", "RSK CPF", "CPF OA", "CPF SA", "CPF MA"],
+          "note_field": "note",
+          "amount_tolerance": "0.01"
+        }
+      }
+    ],
+    "TWH UOB One SGD": [
+      {
+        "name": "pattern_cross_source_net_zero",
+        "config": {
+          "ledger_patterns": ["UOB One cashback"],
+          "statement_patterns": ["REBATE", "CASH REBATE"],
+          "amount_tolerance": "0.01",
+          "period_scope": "month"
+        }
+      }
+    ],
+    "new_account_xyz": [
+      {
+        "name": "keyword_filter_net_zero",
+        "config": {
+          "keywords": ["internal transfer", "adjustment"],
+          "note_field": "note",
+          "amount_tolerance": "0.01"
+        }
+      }
+    ]
+  }
+}
+```
+
+**Key insight:** Same algorithms, different config. Adding a new account with similar rules requires only a config entry — zero new code.
 
 #### Semantic matching layer
 
@@ -906,6 +1423,35 @@ _actions_
 
 1. reclassify the `remove` edit as an `update` with the `edit_amount` set to the `amount` value of the paired `add` edit. keep all other fields unchanged.
 2. remove the `add` edit.
+
+**Reference statement-ledger pairing snippet:**
+
+```python
+def propose_statement_ledger_pairs(edits_df, date_tolerance_days: int, semantic_match_fn):
+  """Propose add-remove pairs based on date and semantic match.
+  
+  Args:
+    edits_df: DataFrame with columns [edit, date, note, ...]
+    date_tolerance_days: max date delta in days
+    semantic_match_fn: callable(add_note, remove_note) -> bool
+  
+  Returns: list of (add_idx, remove_idx) pairs.
+  """
+  adds = edits_df[edits_df["edit"] == "add"]
+  removes = edits_df[edits_df["edit"] == "remove"]
+  pairs = []
+
+  for add_ix, add_row in adds.iterrows():
+    cands = removes[
+      (removes["date"] - add_row["date"]).abs().dt.days <= date_tolerance_days
+      & removes["note"].map(lambda n: semantic_match_fn(add_row["note"], n))
+    ]
+    if not cands.empty:
+      rm_ix = cands.index[0]
+      pairs.append((add_ix, rm_ix))
+
+  return pairs
+```
 
 #### Transfer-Expense pairing
 Due to the double-entry accounting and zero-sum behavior of the cost center `TWH - Personal`, each transfer into or out of the `TWH - Personal` account should have a corresponding set of expense transaction(s) in the ledger for the same period which sum to -1* the transfer amount, and close to and usually on the same transfer date.  any `add`, `remove` or `update` without a corresponding CRUD action to the expenses would break this relationship and voilate the zero sum condition for the cost center account. As a default fallback, this step is manual and it is up to the user to manually repair and apply these updates to the expense transactions in HomeBudget manually to restore the zero-sum condition.
@@ -939,6 +1485,31 @@ delete the expense transaction
 
 1. update the expense `amount`=-1* the transfer `amount`
 
+**Reference transfer-expense pairing snippet:**
+
+```python
+def propose_transfer_expense_pairs(transfer_edits, hb_exp, date_tolerance_days: int):
+  """Propose transfer-expense pairs based on amount and date match.
+  
+  Args:
+    transfer_edits: DataFrame with edit records from statement-ledger pairing
+    hb_exp: DataFrame with HomeBudget expense transactions
+    date_tolerance_days: max date delta in days
+  
+  Returns: list of (transfer_idx, expense_idx) pairs.
+  """
+  pairs = []
+  for t_ix, t_row in transfer_edits.iterrows():
+    cands = hb_exp[
+      (hb_exp["date"] - t_row["date"]).abs().dt.days <= date_tolerance_days
+      & (hb_exp["amount"] == -t_row["amount"])
+    ]
+    if not cands.empty:
+      e_ix = cands.iloc[0].name
+      pairs.append((t_ix, e_ix))
+  return pairs
+```
+
 #### Method Parameters
 
 Method behavior is controlled by account-specific parameters stored in `txn_heuristics.json` and `tolerance_config.json`.
@@ -957,7 +1528,7 @@ Both files must be validated during pre-flight at close-session startup, then fr
 **Config management boundary:**
 - User-managed reconciliation policy values are edited through the approved UI interface only.
 - Direct manual edits to JSON policy files are out of contract for operational runs.
-- Runtime modules treat config files as backend artifacts behind the UI and config loader boundary.
+- Runtime components treat config files as backend artifacts behind the UI and config loader boundary.
 
 **Config source:** `reference/hb-reconcile/account_settings/txn_heuristics.json`
 
@@ -1111,6 +1682,29 @@ After computing the residual gap, the method classifies the variance into one of
 2. Reconciliation is closed with verification checkpoint.
 
 **Requirement ref:** reconciliation-engine.md § Shared reconciliation patterns / Variance interpretation and adjustment behavior; § Account-group procedures / Cash reconciliation
+
+**Reference balance-level snippet:**
+
+```python
+class BalanceLevelMethod(BaseReconciliationMethod):
+  def reconcile(self, account, year, month, **inputs):
+    primary_balance = inputs["primary_balance"]
+    comparison_balance = inputs["comparison_balance"]
+    staged_adjustments = inputs.get("staged_adjustments", 0)
+    tolerance_threshold = inputs["tolerance_threshold"]
+
+    residual_gap = primary_balance - comparison_balance - staged_adjustments
+    abs_gap = abs(residual_gap)
+
+    if abs_gap == 0:
+      variance_class = "zero"
+    elif abs_gap <= tolerance_threshold:
+      variance_class = "within_tolerance"
+    else:
+      variance_class = "exceeds_tolerance"
+
+    return residual_gap, variance_class
+```
 
 #### Balance-level Method Invocation Contract
 

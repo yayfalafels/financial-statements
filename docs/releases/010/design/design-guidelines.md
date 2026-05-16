@@ -114,7 +114,7 @@ Group each module by: module-level constants, public classes, public functions, 
 
 ## API guidelines
 
-The backend API contract is a first-class integration boundary between Google Sheets flows, CLI operations, and runtime modules.
+The backend API contract is a first-class integration boundary between Google Sheets flows, CLI operations, and runtime components.
 
 Route design:
 

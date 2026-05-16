@@ -1,26 +1,39 @@
 # Project tracking: Design
 
 This document defines scope and tasks for milestone 04, design documentation, for release 0.1.0 POC.
-
-Cross-reference boundary:
-
 - This is a project tracking artifact and is not part of the design documentation set at docs/releases/010/design.
 - Design documents must not reference this document or any task tracking IDs.
 
-## Table of contents
+# 04 (open) design
 
-- [Summary](#summary)
-- [Scope](#scope)
-- [Inputs and target outputs](#inputs-and-target-outputs)
+- [Overview](#overview)
 - [Milestone task table](#milestone-task-table)
-- [Task details](#task-details)
+- [04.01 (closed) design scope baseline](#0401-closed-design-scope-baseline)
+- [04.03 (closed) architecture and boundaries](#0403-closed-architecture-and-boundaries)
+    - [04.03.01 (closed) system architecture](#040301-closed-system-architecture)
+    - [04.03.04 (closed) topic map](#040304-closed-topic-map)
+    - [04.03.05 (closed) tech stack runtime and dependencies](#040305-closed-tech-stack-runtime-and-dependencies)
+    - [04.03.06 (closed) design patterns and conventions](#040306-closed-design-patterns-and-conventions)
+- [04.04 (open) domain behavior](#0404-open-domain-behavior)
+    - [04.04.02 (closed) reconciliation](#040402-closed-reconciliation)
+    - [04.04.03 (open) statements](#040403-open-statements)
+    - [04.04.04 (pending) data pipeline](#040404-pending-data-pipeline)
+    - [04.04.05 (pending) bill payment](#040405-pending-bill-payment)
+- [04.05 (pending) UI and interaction](#0405-pending-ui-and-interaction)
+- [04.06 (pending) data model and lineage](#0406-pending-data-model-and-lineage)
+- [04.07 (pending) integration](#0407-pending-integration)
+- [04.08 (pending) error and exception handling](#0408-pending-error-and-exception-handling)
+- [04.09 (pending) design quality gate review](#0409-pending-design-quality-gate-review)
+- [04.10 (pending) implementation handoff package](#0410-pending-implementation-handoff-package)
 
-## Summary
+## Overview
+
+**Summary**
 
 Milestone 04 translates approved requirements into implementable design documentation under docs/releases/010/design.
 The design plan covers architecture boundaries, data and interaction contracts, workflow behavior, and traceability needed for implementation and test planning.
 
-## Scope
+**Scope**
 
 In scope:
 
@@ -36,7 +49,7 @@ Out of scope:
 - MVP or later release expansion.
 - Data migration solution design.
 
-## Inputs and target outputs
+**Inputs and target outputs**
 
 Primary requirement input set:
 
@@ -46,7 +59,7 @@ Target design output set:
 
 - docs/releases/010/design/*.md
 
-## Milestone task table
+## Milestone tasks
 
 | seq | id    | status  | task                               |
 | --- | ----- | ------- | ---------------------------------- |
@@ -60,9 +73,7 @@ Target design output set:
 | 08  | 04.09 | pending | design quality gate review         |
 | 09  | 04.10 | pending | implementation handoff package     |
 
-## Task details
-
-_04.01 (closed) design scope baseline_
+## 04.01 (closed) design scope baseline
 
 - Confirm release boundary and milestone objective for design documentation.
 - Confirm source of truth for requirements and target design output path.
@@ -82,7 +93,7 @@ Subtasks:
 | 03  | 04.01.03 | closed  | design output path lock         |
 | 04  | 04.01.04 | closed  | closure criteria define         |
 
-_04.03 (open) architecture and boundaries_
+## 04.03 (closed) architecture and boundaries
 
 - Define end to end architecture, layer boundaries, and service responsibilities.
 - Define read and write boundaries across Google Sheets, HomeBudget, files, and sqlite.
@@ -115,7 +126,7 @@ Subtasks:
 | 05  | 04.03.05 | closed  | tech stack runtime and dependencies                |
 | 06  | 04.03.06 | closed  | design patterns and conventions                    |
 
-_04.03.01 (closed) system architecture_
+### 04.03.01 (closed) system architecture
 
 Closure evidence:
 
@@ -123,7 +134,7 @@ Closure evidence:
 - Architecture includes component catalog table from raw data sources through backend, sqlite, and Google Sheets UI.
 - Architecture includes system diagram and component-level specifications with functions, constraints, requirements, and interfaces.
 
-_04.03.04 (closed) topic map_
+### 04.03.04 (closed) topic map
 
 Design document output inventory mapping all 20 design documents to task origins:
 
@@ -150,7 +161,7 @@ Design document output inventory mapping all 20 design documents to task origins
 | 19  | design-index.md          | 04.10.01     | design doc index, status, requirement traceability   |
 | 20  | design-issues.md         | 04.09-04.10  | open decisions register, deferred items, closure log |
 
-_04.03.05 (closed) tech stack runtime and dependencies_
+### 04.03.05 (closed) tech stack runtime and dependencies
 
 Closure evidence:
 
@@ -160,7 +171,7 @@ Closure evidence:
 - Workflow stage stack matrix completed for monthly close stages, bill payment workstream stages, and mapping maintenance workflow stages from docs/releases/010/design/workflows.md.
 - Library register documented with required and optional dependencies tied to functional requirements.
 
-_04.03.06 (closed) design patterns and conventions_
+### 04.03.06 (closed) design patterns and conventions
 
 Closure evidence:
 
@@ -170,7 +181,7 @@ Closure evidence:
 - Config-driven pattern section added with config domains, startup validation, session configuration freeze policy, precedence rules, and secret reference policy.
 - Parameterization section added with stage, reconciliation, ingest, and publish parameter classes, validation rules, and audit persistence requirements.
 
-_04.04 (pending) domain behavior_
+## 04.04 (open) domain behavior
 
 - Draft design documentation for each domain behavior component: workflow orchestration, reconciliation, statement building, data pipeline, and bill payment.
 
@@ -197,7 +208,7 @@ Subtasks:
 | 04  | 04.04.04 | pending | data-pipeline                |
 | 05  | 04.04.05 | pending | bill-payment                 |
 
-_04.04.02 (closed) reconciliation_
+### 04.04.02 (closed) reconciliation
 
 Design the reconciliation engine: the match algorithm, tolerance rules, variance handling, and per-account-group procedures for the reconcile stage of the monthly close workflow.
 
@@ -511,14 +522,339 @@ _04.04.02.04.10 (drop) cash tolerance not configurable per subtype_
 **Resolution:**
 Defer to v0.2.0 or later release. For v0.1.0 POC, confirm that ±SGD 20 threshold is acceptable across all cash accounts at deployment. Plan subtype-specific tolerance configuration (petty_cash_tolerance, safe_tolerance) for future release when multi-account cash is deployed.
 
-_04.04.03 (open) statements_
+### 04.04.03 (open) statements
 
+Design the statements module: builder class hierarchy, lifecycle state machine, aggregation contracts, output artifact rules, and publish coordination for statements draft build and finalize publish operations in the monthly close workflow.
 
+Target output: `docs/releases/010/design/statements.md`
 
+Closure criteria:
 
+- Module boundary between statement builder, orchestrator, adapters, and publish runtime is explicit.
+- OOP class hierarchy and layered module layout are specified with illustrative code snippets, consistent with `reconciliation.md` patterns.
+- Inputs from `close_book`, account dimensions, and reconcile session outputs are defined with required fields.
+- Statement layout config is defined: section structure, line item classification, header hierarchy, and deterministic ordering for income statement and balance sheet, driven by `statement_config.json`.
+- PDF renderer library choice is documented with rationale and dependency contract.
+- Lifecycle state model (`draft`, `reviewed`, `finalized`, `reopened`) and transition guards are defined.
+- Publish contract defines artifact set, versioning, lineage fields, and storage path policy.
+- Implementation constraints (Decimal arithmetic, determinism, idempotency) are specified.
+- No unresolved design gap blocks statements draft build or finalize publish implementation.
 
+Primary sources:
 
-_04.05 (pending) UI and interaction_
+- `docs/releases/010/requirements/financial-statements.md` — statement structure, sections, and roll-up expectations.
+- `docs/releases/010/requirements/statements-lifecycle.md` — lifecycle states, finalization, reopen, publish, and immutability policy.
+- `docs/releases/010/design/workflows.md` (statements draft build and finalize publish) — orchestrator integration and gate context.
+- `docs/releases/010/design/reconciliation.md` — reconcile session output contract and OOP dispatch pattern reference.
+- `docs/releases/010/design/architecture.md` — statement builder and publish boundary placement.
+- `docs/releases/010/design/data-flow.md` — upstream lineage into `close_book` and downstream artifact sinks.
+- `docs/releases/010/design/design-guidelines.md` — API, config, naming, and parameterization conventions.
+
+Topics the design document must specify:
+
+- Module boundary: statements module vs orchestrator, adapters, and publish runtime.
+- OOP class hierarchy: builder, lifecycle controller, and publish runtime classes with dispatch contract.
+- Module layout: layered repository structure following `reconciliation.md` pattern.
+- Library dependency: PDF renderer selection (WeasyPrint or ReportLab) with rationale.
+- Invocation contract: statements draft build call inputs, outputs, statuses, and blocking conditions.
+- Statement data contract: canonical input schema from `close_book` and required mapping dimensions.
+- Statement layout config: `statement_config.json` schema defining sections, line item classification mappings, header hierarchy, and deterministic ordering for each statement type.
+- Aggregation behavior: section total formulas, roll-up rules, and how builder resolves layout from config at runtime.
+- Validation and balancing checks: identity checks, completeness checks, and fail-closed conditions.
+- Implementation constraints: Decimal arithmetic, determinism guarantees, and idempotency contract.
+- Lifecycle contract: draft or review or finalize or reopen transitions with required user checkpoints.
+- Publish contract: PDF set, optional tabular exports, artifact naming, version tags, and lineage metadata.
+- Audit and reproducibility: session linkage fields, config snapshot references, and rerun idempotency rules.
+
+Out of scope for this document:
+
+- Stage sequencing and merge gate orchestration rules (owned by workflows.md).
+- Reconciliation match algorithm and tolerance design (owned by reconciliation.md).
+- Source adapter parsing contracts (owned by 04.07 integration docs).
+- Error taxonomy across all modules (owned by error-handling.md).
+
+| seq | id          | status | task                                       |
+| --- | ----------- | ------ | ------------------------------------------ |
+| 01  | 04.04.03.01 | closed | module boundary, class hierarchy, snippets |
+| 02  | 04.04.03.02 | closed | library dependency and module layout       |
+| 03  | 04.04.03.03 | closed | invocation and data contracts              |
+| 04  | 04.04.03.04 | closed | statement layout config schema             |
+| 05  | 04.04.03.05 | closed | aggregation, validation, and constraints   |
+| 06  | 04.04.03.06 | closed | lifecycle state machine                    |
+| 07  | 04.04.03.07 | closed | publish contract and artifact rules        |
+| 08  | 04.04.03.08 | closed | audit, reproducibility, and lineage        |
+| 09  | 04.04.03.09 | closed | audit review gap identification            |
+| 10  | 04.04.03.11 | open   | sample statements                          |
+| 11  | 04.04.03.10 | pending| resolve gaps                               |
+
+_04.04.03.09 (closed) audit review gap identification_
+
+review the target current state, against the closure criteria, consistiency with design intent from architecture, workflows, other design documents, guidance from this document, and primary data sources using skill `data-sources-inspect`. inventory the list of gaps here in this section, using the format reference from 04.04.02.
+
+_04.04.03.11 (open) sample statements_
+
+use a python script to create set of sample financial statements as csv files
+
+target script:  `.dev/scripts/python/04.04.03.11-generate-sample-statements.py`
+starget reports location: `sample-data/statements/*`
+design references: `statements.md`, `forecasts.md` `data-model.md`
+
+instructions
+- actual values for current reporting year 2026 actuals and forecast from the two google sheet for financial statements and ibkr 
+    - config `ibkr-iba.json`
+    - config `financial-statements.json`
+        - `balance_sheet`: balance sheet
+        - `income_statement`: income statement
+        - do not use information from any other sheet ie `hb_gl`, `hb_xfr` to generate the csv files. all the information you need should come from only these two sheets.
+- formatted using design schema 
+- you are expected to use this exercise to refine and update the data model (schemas), statements, forecast design as you learn and iterate on the sample statements
+
+accounting rules and user specific patterns
+
+- reference `accounting-logic.md` and `account-classification.md`
+- account `TWH - Personal` is the only account where expenses are booked, all others use transfers into and out of this account
+- all non-investment related income in SGD is booked in `TWH DBS Multi SGD` and for USD in `TWH CITI USD`
+- some SGD investment related income is booked in `TWH DBS Multi SGD`, but not for 2026
+- investment income is booked in USD in `TWH IB USD`
+- there are two tax authorities - IRAS for SGD, and IRS for USD. The tax liability for USD is completely due to investment income from IBKR and tax liability in SGD is completely due to salary income in SGD.
+
+Two tax liability credit accounts
+tax liabilities are booked as accruals to these credit accounts until they are paid, which are booked as transfers to these credit accounts from the respective cash accounts which made the payment.
+1. IRAS SGD         *future feature, not yet implemented. for now booked as actual expenses monthy GIRO form payment from `TWH DBS Multi SGD`
+2. IRS USD          *currently implemented with IRS Tax liability credit account also tracked on IBKR workbook
+
+extracting data from current financial statements google sheet:
+
+- refer to skill `data-sources-inspect` and existing scripts for guidance on how to inspect the google sheet and extract the relevant data for the statements
+- pay close attention to differentiating between header aggregate rows and line-item rows
+- do not create any new virtual env, re-use the existing virtual env at `env` which already has sqlite-gsheet package installed.
+
+income statement and balance sheet relationships and definitions
+
+income statement contains detailed breakdown of income and expenses
+
+IBKR has two accounts
+- credit account `TWH IB USD` where all the cash profit and loss, cash transfers and BUY/SELL trades linked to the position account
+- position account `TWH IB Positions` where all capital gain/loss are booked on a mark-to-market basis, and linked to the credit account for trades
+
+these relationships should hold for both actuals and forecasts for any given period
+
+1. net savings = personal income from salary + misc income - expenses including tax liability
+2. personal income from salary = gross salary + employer CPF contribution
+3. investment income = liquid investment income + retirement income
+4. net income = net savings + investment income + mark-to-market forex to reporting currency
+5. liquid investment income = ibkr cash profit and loss + liquid capital gains and loss
+6. tax liability = tax liability SGD IRAS + tax liability USD IRS
+
+how the two are related to one another
+
+6. change in net assets = net income
+7. change in cash + credit accounts = net savings + ibkr cash profit and loss - net trades BUY-SELL - net deposits/withdrawals to retirement accounts
+8. change in liquid investment accounts = liquid capital gains and loss + net trades BUY-SELL
+9. change in retirement accounts = net income retirement + net deposits (contributions) /withdrawals
+
+how forecasting works
+
+1. net savings from expenses and income in reporting currency SGD
+    1.2 expense roll-up from individual budget line-items - take note of higher education expenses
+    1.3 income from salary forecast
+2. IBKR custom worksheet cash profit and loss, capital gains and losses and net trades in account currency USD
+3. CPF contributions to retirement rules-based on salary, interest rate specs, forecasted MS withdrawals in reporting currency SGD
+4. IBKR IRA in USD assumes zero capital gain and loss plus manual entry deposits withdrawals for education expenses from 1.2
+5. compute IBKR position ending balances in USD from 2. and EQ8
+6. compute CPF ending balance by OA, SA, and MA from 3. and EQ9 - treat MS withdrawals as negative contributions
+7. compute IRA ending balance from 4. and EQ9
+8. set target ending balances for all cash and credit accounts (DBS = 5,000, UOB = -2,000, etc..) in worksheet except `TWH IB USD`
+9. compute `TWH IB USD` ending balance from 1, 8 and EQ7 
+10. mark-to-market forex based on forecasted USD.SGD exchange rate
+
+since all other cash and credit accounts aside from DBS and IBKR are fixed set to constant balances, the will have trivial 0 values for income, expense, only a few will have some non-zero transfer where manually input (CPF MS).
+
+for DBS, you should find that these relationships hold, assuming 8 fixed cash and credit balances and 9.
+
+10. DBS transfers to `TWH - Personal` cost center = expenses
+11. DBS transfers to `TWH IB USD` = personal income from salary + misc income - transfers to `TWH - Personal` cost center (expenses) + IRS tax liability accrual - CPF contributions
+
+statement reports: input tables
+
+1. `close_book_gl` input transaction level from `close_book` in base account currency
+2. `income_by_type` income by income type from month 1 to curent month of reporting year in reporting currency
+3. `expenses_by_type` expenses breakdown by expense type from month 1 to curent month of reporting year in reporting currency
+4. `aggregates_balances_base` aggregates and balances by account and month from month 1 to curent month of reporting year in base currency
+5. `aggregates_balances_reporting` aggregates and balances by account and month from month 1 to curent month of reporting year in reporting currency
+6. `forecast_income_by_type` forecast income by income type for all forecast months in reporting year in reporting currency
+7. `forecast_expenses_by_type` forecast expense breakdown by expense type for all forecast months in reporting year in reporting currency
+8. `forecast_cash_flows` forecast cash flows beginning, ending balances by month and account for all forecast months in reporting year in account currency
+
+statement reports: consolidated reports
+
+1. `consolidated_income_expense` consolidated income and expense statement with section and line-item breakdown, in reporting currency, for current reporting year
+2. `consolidated_balance_sheet` consolidated balance sheet with section and line-item breakdown, in reporting currency, for current reporting year
+
+_04.04.03.10 (pending) resolve gaps_
+
+| seq | id             | status  | risk | type | issue                                      | classification | resolution                                   |
+| --- | -------------- | ------- | ---- | ---- | ------------------------------------------ | -------------- | -------------------------------------------- |
+| 01  | 04.04.03.10.01 | pending |  3   | bug  | statement layout coverage not fully pinned | real gap       | add required line-item coverage contract     |
+| 02  | 04.04.03.10.03 | pending |  2   | bug  | lifecycle checkpoint persistence unclear   | real gap       | define reviewed/finalized persistence schema |
+| 03  | 04.04.03.10.05 | pending |  2   | enh  | publish idempotency payload hash undefined | real gap       | define canonical hash payload contract       |
+| 04  | 04.04.03.10.02 | pending |  2   | enh  | config artifact naming collision risk      | partial gap    | separate build config and source ingest keys |
+| 05  | 04.04.03.10.04 | pending |  2   | enh  | identity check equation boundary ambiguous | partial gap    | add identity normalization and adjustment set |
+
+_04.04.03.10.01 (pending) statement layout coverage not fully pinned_
+
+**Risk Level:** 3 (Critical)
+
+**Context:** Requirements define explicit income statement and balance sheet section and line expectations, including CPF tracking informational lines, expense section ordering, and net-income composition.
+
+**Current state:** `statements.md` defines config schema and examples, but does not define a minimum required coverage list that must be present in `statement_config.json` before draft build can pass.
+
+**Why It's an Issue:** Closure criteria require statement layout config to define section structure, line-item classification, header hierarchy, and deterministic ordering for both statements. Without a required-coverage contract, implementations can pass schema validation while still omitting mandatory requirement lines.
+
+**Resolution:**
+1. Add a required coverage contract for both statement types with mandatory section and line keys.
+2. Add a blocking validation gate that fails draft build if required coverage is incomplete.
+3. Tie the coverage gate output to `blocking_items` in the draft build response.
+
+_04.04.03.10.02 (pending) config artifact naming collision risk_
+
+**Risk Level:** 2 (Medium)
+
+**Context:** Primary-source inspection shows `reference/hb-finances/statement_config.json` is account-source ingestion configuration, while statements design uses `statement_config.json` as layout and derivation policy.
+
+**Current state:** Statements design uses one filename label for statement layout policy and formula behavior. Source evidence uses the same filename for unrelated source-account ingestion paths.
+
+**Why It's an Issue:** Shared naming with different semantics can cause wrong-file binding in implementation and review workflows. This is a partial gap because schema contracts are defined, but config identity boundaries are not.
+
+**Resolution:**
+1. Define separate config key names and paths for statement layout policy vs source-ingest configuration.
+2. Require `config_snapshot_id` to bind to statement-layout policy only.
+3. Add startup validation that rejects mismatched config domain at load time.
+
+_04.04.03.10.03 (pending) lifecycle checkpoint persistence unclear_
+
+**Risk Level:** 2 (Medium)
+
+**Context:** Lifecycle requirements require draft, reviewed, finalized, reopened transitions with lineage and close-record retention.
+
+**Current state:** `statements.md` defines lifecycle states and transitions but does not specify exact persisted checkpoint fields for `reviewed` transition and re-finalization event trail.
+
+**Why It's an Issue:** Publish blocking depends on review checkpoint evidence. Without explicit persistence schema ownership and required fields, implementations can diverge on where and how review evidence is stored.
+
+**Resolution:**
+1. Define lifecycle checkpoint schema with required fields for each transition event.
+2. Define storage ownership for review checkpoint and reopen history records.
+3. Require finalize stage to verify persisted checkpoint row existence and hash match.
+
+_04.04.03.10.04 (pending) identity check equation boundary ambiguous_
+
+**Risk Level:** 2 (Medium)
+
+**Context:** Statements design includes identity checks including net-income and net-worth consistency.
+
+**Current state:** `statements.md` states `net income equals change in net assets` but does not specify normalization for non-income balance movements such as owner flows, internal transfers, and classification-only adjustments.
+
+**Why It's an Issue:** A direct identity equation can misclassify valid periods as failures when excluded movements are present. This is a partial gap in validation-contract specificity.
+
+**Resolution:**
+1. Define normalized identity equation components and excluded movement classes.
+2. Define tolerance and rounding contract for identity checks in Decimal terms.
+3. Add explicit blocker messages for identity failures by component delta.
+
+_04.04.03.10.05 (pending) publish idempotency payload hash undefined_
+
+**Risk Level:** 2 (Medium)
+
+**Context:** Statements design requires idempotent finalize publish behavior and conflict detection on same key with different payloads.
+
+**Current state:** `statements.md` references `payload_hash` checks but does not define canonical payload fields, ordering, serialization, or hash algorithm.
+
+**Why It's an Issue:** Without a canonical hash contract, implementations may compute non-equivalent hashes for semantically identical payloads or fail to detect changed payloads.
+
+**Resolution:**
+1. Define canonical payload field set and deterministic field ordering for hash input.
+2. Define serialization format and hash algorithm.
+3. Persist canonical payload snapshot alongside hash for replay diagnostics.
+
+### 04.04.04 (pending) data pipeline
+
+Design data-pipeline contracts across architecture components: staged ingest, normalization, close_book assembly, and lineage controls for monthly close.
+
+Intent and scope clarification:
+
+- This task defines cross-component data contracts and stage handoffs, not a new standalone architecture component.
+- Scope is limited to content that must be authored inside `docs/releases/010/design/data-pipeline.md`.
+- This task does not redesign `reconciliation engine` or `statement builder`; it defines upstream datasets they consume and the lineage guarantees they require.
+- References to other docs are evidence inputs only; this task does not require editing any design doc other than `data-pipeline.md`.
+- Terminology standard note: architecture-level actors must use `component` terminology. Use `module` only for within-component code organization. Canonical definitions are in `docs/releases/010/requirements/glossary.md` and apply to all future release 010 design docs.
+
+Target output:
+
+- docs/releases/010/design/data-pipeline.md
+
+Closure criteria:
+
+- Component boundary between workflow orchestrator, account close runtime, bill and shared-cost runtime, source adapters, sqlite adapter, and sqlite app database is explicit.
+- Runtime ownership and interaction topology contracts are specified for stage execution ownership in `account close runtime` and `bill and shared-cost runtime`, consistent with `reconciliation.md` boundary style.
+- Stage contracts are defined from raw ingest through canonical tables and `close_book` outputs.
+- Config contracts are defined for schema mapping, validation rules, and deterministic ordering controls.
+- Idempotency, restart safety, and transaction boundary rules are explicit for each stage.
+- Lineage and reproducibility fields are defined for every materialized output dataset.
+- All required scope is captured inside `docs/releases/010/design/data-pipeline.md` without requiring updates to other design docs.
+- No unresolved design gap blocks pipeline implementation from forex through statements draft build.
+
+In-scope architecture components:
+
+- `workflow orchestrator` — stage routing, checkpoint, and handoff ownership.
+- `account close runtime` — account-domain ingest and transform execution.
+- `bill and shared-cost runtime` — bill-domain ingest and transform execution.
+- `source adapters` — source-specific extraction and normalization boundary.
+- `sqlite adapter` — persistence gateway for stage outputs and checkpoints.
+- `sqlite app database` — canonical staging and `close_book` storage schemas.
+
+Primary sources:
+
+- `docs/releases/010/requirements/source-systems-and-lineage.md` — source ownership, lineage expectations, reproducibility intent.
+- `docs/releases/010/requirements/bank-statements.md` — statement ingest rules and schema constraints.
+- `docs/releases/010/design/workflows.md` (forex through statements draft build) — orchestration boundaries and stage handoff context.
+- `docs/releases/010/design/reconciliation.md` — component boundary, organization pattern, and contract-detail reference.
+- `docs/releases/010/design/architecture.md` — component boundaries and persistence ownership.
+- `docs/releases/010/design/data-flow.md` — upstream and downstream dataset lineage paths.
+- `docs/releases/010/design/design-guidelines.md` — naming, API, config, and parameterization conventions.
+
+Topics the design document must specify:
+
+- Component boundary: workflow orchestrator, account close runtime, bill and shared-cost runtime, source adapters, sqlite adapter, and sqlite app database.
+- Runtime ownership contract: orchestration, stage execution, adapter boundaries, and persistence gateway responsibilities.
+- Component scope boundary: no redesign of `reconciliation engine` or `statement builder`; define only upstream inputs and handoff guarantees.
+- Interaction topology: layered interaction sequence mapped to runtime components and adapter boundaries, mirroring `reconciliation.md` patterns.
+- Stage invocation contract: inputs, outputs, statuses, blocking conditions, and retry semantics per stage.
+- Canonical data contracts: required schemas for raw, normalized, reconciled, and close_book-ready datasets.
+- Transformation rules: deterministic ordering, key derivation, deduplication, and Decimal-safe amount handling.
+- Idempotency and recovery: rerun behavior, checkpoint keys, and transaction rollback boundaries.
+- Validation gates: schema checks, completeness checks, balancing checks, and fail-closed behavior.
+- Lineage and reproducibility: session linkage fields, config snapshot references, and artifact hash requirements.
+
+Out of scope for this document:
+
+- Reconciliation method algorithm internals and tolerance policy details (owned by reconciliation.md).
+- Statement rendering, lifecycle, and publish artifact policy (owned by statements.md).
+- Source-specific parser contracts (owned by 04.07 integration docs).
+- Global error taxonomy across all modules (owned by error-handling.md).
+- Editing or reconciling status across other design docs; only this document is in scope for updates.
+
+| seq | id          | status  | task                                           |
+| --- | ----------- | ------- | ---------------------------------------------- |
+| 01  | 04.04.04.01 | pending | workflow orchestrator stage handoff contract   |
+| 02  | 04.04.04.02 | pending | account close runtime stage execution contract |
+| 03  | 04.04.04.03 | pending | bill and shared-cost runtime data contract     |
+| 04  | 04.04.04.04 | pending | source adapters ingest-normalize boundary      |
+| 05  | 04.04.04.05 | pending | sqlite adapter write and checkpoint contract   |
+| 06  | 04.04.04.06 | pending | sqlite schema ownership and lineage fields     |
+| 07  | 04.04.04.07 | pending | downstream consumer handoff contract           |
+| 08  | 04.04.04.08 | pending | stage determinism and idempotency gates        |
+
+## 04.05 (pending) UI and interaction
 
 - Define Google Sheets workbook structure, page inventory, and user touchpoint map for the close session.
 - Define CLI command surface and GAS optional extension scope.
@@ -549,10 +885,16 @@ UI design placeholder for 04.04.02.04.04 (config startup validation and safety g
 4. Define safety controls: no direct end-user JSON file editing path in normal operation.
 5. Define audit display requirements: show effective config version/snapshot used for the session.
 
-_04.06 (pending) data model and lineage_
+## 04.06 (pending) data model and lineage
 
 - Define canonical entities, keys, and transformation stages from source ingestion to statement outputs.
 - Define lineage tracking rules and reproducibility controls for period close outputs.
+
+apply design constraints from data-pipeline to data-model design:
+- Use the canonical dataset and field contracts from data-pipeline as the source of truth for entity and key definitions.
+- Use stage schema ownership boundaries from data-pipeline for raw, normalized, reconciled, and close_book layers.
+- Use lineage and reproducibility fields from data-pipeline as required fields in data-model lineage sections.
+- Do not redefine transformation behavior in data-model; reference data-pipeline for stage transform rules.
 
 Target outputs:
 
@@ -573,10 +915,17 @@ Subtasks:
 | 03  | 04.06.03 | pending | lineage fields                  |
 | 04  | 04.06.04 | pending | reproducibility rules           |
 
-_04.07 (pending) integration_ 
+## 04.07 (pending) integration
 
 - Define full component design for all integration adapters: HomeBudget wrapper, Google Sheets adapter, and source adapters for bank statements, IBKR, and bill and cash inputs.
 - Define input validation, retries, and failure signaling at integration boundaries.
+
+Integration designs must align adapter contracts to `docs/releases/010/design/data-pipeline.md`:
+
+- **Source adapters:** `bank-statements.md`, `ibkr.md`, `cpf.md` - must map outputs to data-pipeline ingest and normalize contracts.
+- **HomeBudget** and **Google Sheets** adapter docs must consume data-pipeline downstream handoff contracts without redefining upstream schemas.
+- Adapter-level idempotency keys and checkpoint semantics must align with data-pipeline stage determinism rules.
+- Adapter-level lineage anchors must include the minimum lineage fields defined by data-pipeline.
 
 Target outputs:
 
@@ -602,7 +951,7 @@ Subtasks:
 | 04  | 04.07.04 | pending | ibkr.md                 |
 | 05  | 04.07.05 | pending | cpf.md                  |
 
-_04.08 (pending) error and exception handling_
+## 04.08 (pending) error and exception handling
 
 - Define error taxonomy, propagation paths, and user review checkpoints.
 - Define recoverable versus blocking failure handling for close-cycle flows.
@@ -626,7 +975,7 @@ Subtasks:
 | 03  | 04.08.03 | pending | user recovery flow              |
 | 04  | 04.08.04 | pending | blocking criteria               |
 
-_04.09 (pending) design quality gate review_
+## 04.09 (pending) design quality gate review
 
 - Review design package for completeness, consistency, and requirement traceability.
 - Confirm readiness for test strategy and implementation handoff.
@@ -650,7 +999,7 @@ Subtasks:
 | 03  | 04.09.03 | pending | open issues triage              |
 | 04  | 04.09.04 | pending | closure decision draft          |
 
-_04.10 (pending) implementation handoff package_
+## 04.10 (pending) implementation handoff package
 
 - Publish implementation-ready design index and unresolved decision register.
 - Hand off to test strategy and implementation milestones.

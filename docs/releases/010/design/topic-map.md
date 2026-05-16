@@ -120,12 +120,12 @@ These components are covered within the design doc of their parent or primary co
 | id | component             | covering design doc  | notes                                                       |
 | -- | --------------------- | -------------------- | ----------------------------------------------------------- |
 | 01 | source adapters       | data-pipeline.md     | bank CSV, IBKR CSV, PDF archive grouped under pipeline      |
-| 02 | mapping CRUD module   | data-pipeline.md     | category mapping lifecycle is part of pipeline design       |
+| 02 | mapping CRUD service  | data-pipeline.md     | category mapping lifecycle is part of pipeline design       |
 | 03 | SQLite adapter        | architecture.md      | backend-neutral sql boundary; boundary convention only      |
 | 04 | Google Sheets adapter | google-sheets.md     | app sheet read and write boundary in Google Sheets design   |
 | 05 | AWS storage adapter   | statements.md        | artifact publish and archive path in statements design      |
-| 06 | logging module        | error-handling.md    | audit event and log policy alongside error handling         |
-| 07 | error handling module | error-handling.md    | shared error policy and exception mapping                   |
+| 06 | logging service       | error-handling.md    | audit event and log policy alongside error handling         |
+| 07 | error handling service| error-handling.md    | shared error policy and exception mapping                   |
 | 08 | CLI                   | user-interface.md    | CLI surface and automation in user interface design         |
 | 09 | GAS for Sheets UI     | user-interface.md    | optional click-event bridge; noted as optional extension    |
 

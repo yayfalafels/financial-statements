@@ -1,0 +1,11 @@
+reporting_year,period_month,expense_type,account_name,account_currency,amount_account_currency,fx_rate_month_end,reporting_currency,amount_reporting
+2026,2026-03,personal_expense,TWH - Personal,SGD,-7093.97,1.0000,SGD,-7093.97
+2026,2026-04,personal_expense,TWH - Personal,SGD,-5580.56,1.0000,SGD,-5580.56
+2026,2026-05,personal_expense,TWH - Personal,SGD,-4063.85,1.0000,SGD,-4063.85
+2026,2026-06,personal_expense,TWH - Personal,SGD,-2905.79,1.0000,SGD,-2905.79
+2026,2026-07,personal_expense,TWH - Personal,SGD,-2905.79,1.0000,SGD,-2905.79
+2026,2026-08,personal_expense,TWH - Personal,SGD,-2905.79,1.0000,SGD,-2905.79
+2026,2026-09,personal_expense,TWH - Personal,SGD,-2905.79,1.0000,SGD,-2905.79
+2026,2026-10,personal_expense,TWH - Personal,SGD,-940.00,1.0000,SGD,-940.00
+2026,2026-11,personal_expense,TWH - Personal,SGD,-655.79,1.0000,SGD,-655.79
+2026,2026-12,personal_expense,TWH - Personal,SGD,-1390.08,1.0000,SGD,-1390.08

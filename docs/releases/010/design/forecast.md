@@ -88,7 +88,7 @@ Sheet-calculated outputs include:
 6. Runtime persists topic tables and account aggregate table.
 7. Runtime updates current table rows for current and future months.
 8. Runtime appends historized snapshots for audit and recovery.
-9. Stage 7 statement build combines actuals and forecast for reporting-year projections.
+9. Statements draft build combines actuals and forecast for reporting-year projections.
 10. Forex translation runs on forecast account-currency outputs to produce common currency projections.
 
 ## Governing equations
@@ -141,6 +141,10 @@ Common currency projection is produced by applying forex translation equations f
 
 ## Data model and tables
 
+**Currency basis rule:**
+
+> All forecast tables, including `forecast.forecast_account_monthly` and all topic tables, must store monetary values only in the account's native currency. No reporting currency (e.g., SGD) columns or precomputed reporting-currency values are permitted in the forecast tables. All reporting-currency conversion is performed by the statement builder after ingest, using the applicable forex rates for each period and account. Any presence of reporting-currency fields in forecast tables is a design violation.
+
 Forecast persistence uses an account aggregate table and specialized topic tables.
 
 ### 1. forecast.forecast_account_monthly
@@ -169,29 +173,31 @@ Unique key: `reporting_year + period_month + account_id`.
 
 ### 2. forecast.forecast_expense_budget_monthly
 
-| id | column         | type    | description                       |
-| -- | -------------- | ------- | --------------------------------- |
-| 01 | id             | integer | surrogate primary key             |
-| 02 | reporting_year | integer | forecast reporting year           |
-| 03 | period_month   | text    | YYYY-MM                           |
-| 04 | gl_code        | text    | expense category code             |
-| 05 | amount         | numeric | budget amount in account currency |
-| 06 | source_sheet   | text    | Google Sheets source tab          |
-| 07 | run_id         | text    | forecast run lineage id           |
-| 08 | updated_at     | text    | UTC ISO-8601                      |
+| id | column             | type    | description                       |
+| -- | ------------------ | ------- | --------------------------------- |
+| 01 | id                 | integer | surrogate primary key             |
+| 02 | reporting_year     | integer | forecast reporting year           |
+| 03 | reporting_currency | text    | forecast reporting currency       |
+| 04 | period_month       | text    | YYYY-MM                           |
+| 05 | gl_code            | text    | expense category code             |
+| 06 | amount             | numeric | budget amount in account currency |
+| 07 | source_sheet       | text    | Google Sheets source tab          |
+| 08 | run_id             | text    | forecast run lineage id           |
+| 09 | updated_at         | text    | UTC ISO-8601                      |
 
 ### 3. forecast.forecast_income_monthly
 
-| id | column         | type    | description                      |
-| -- | -------------- | ------- | -------------------------------- |
-| 01 | id             | integer | surrogate primary key            |
-| 02 | reporting_year | integer | forecast reporting year          |
-| 03 | period_month   | text    | YYYY-MM                          |
-| 04 | income_source  | text    | salary, dividend, other          |
-| 05 | account_id     | text    | receiving account                |
-| 06 | amount         | numeric | income amount in account currency |
-| 07 | run_id         | text    | forecast run lineage id          |
-| 08 | updated_at     | text    | UTC ISO-8601                     |
+| id | column             | type    | description                      |
+| -- | ------------------ | ------- | -------------------------------- |
+| 01 | id                 | integer | surrogate primary key            |
+| 02 | reporting_year     | integer | forecast reporting year          |
+| 03 | reporting_currency | text    | forecast reporting currency      |
+| 04 | period_month       | text    | YYYY-MM                          |
+| 05 | income_source      | text    | salary, dividend, other          |
+| 06 | account_id         | text    | receiving account                |
+| 07 | amount             | numeric | income amount in account currency |
+| 08 | run_id             | text    | forecast run lineage id          |
+| 09 | updated_at         | text    | UTC ISO-8601                     |
 
 ### 4. forecast.forecast_ibkr_monthly
 
@@ -199,16 +205,17 @@ Unique key: `reporting_year + period_month + account_id`.
 | -- | --------------------- | ------- | ---------------------------------- |
 | 01 | id                    | integer | surrogate primary key              |
 | 02 | reporting_year        | integer | forecast reporting year            |
-| 03 | period_month          | text    | YYYY-MM                            |
-| 04 | net_trade_amount      | numeric | projected net trades               |
-| 05 | projected_return_amount | numeric | projected IBKR return             |
-| 06 | leverage_ratio        | numeric | projected leverage                 |
-| 07 | margin_usage_ratio    | numeric | projected margin usage             |
-| 08 | leverage_limit        | numeric | user-defined leverage limit        |
-| 09 | margin_limit          | numeric | user-defined margin limit          |
-| 10 | is_limit_breached     | integer | 1 if breached else 0               |
-| 11 | run_id                | text    | forecast run lineage id            |
-| 12 | updated_at            | text    | UTC ISO-8601                       |
+| 03 | reporting_currency    | text    | forecast reporting currency        |
+| 04 | period_month          | text    | YYYY-MM                            |
+| 05 | net_trade_amount      | numeric | projected net trades               |
+| 06 | projected_return_amount | numeric | projected IBKR return            |
+| 07 | leverage_ratio        | numeric | projected leverage                 |
+| 08 | margin_usage_ratio    | numeric | projected margin usage             |
+| 09 | leverage_limit        | numeric | user-defined leverage limit        |
+| 10 | margin_limit          | numeric | user-defined margin limit          |
+| 11 | is_limit_breached     | integer | 1 if breached else 0               |
+| 12 | run_id                | text    | forecast run lineage id            |
+| 13 | updated_at            | text    | UTC ISO-8601                       |
 
 ### 5. forecast.forecast_cpf_monthly
 
@@ -216,15 +223,16 @@ Unique key: `reporting_year + period_month + account_id`.
 | -- | ---------------------- | ------- | ------------------------------- |
 | 01 | id                     | integer | surrogate primary key           |
 | 02 | reporting_year         | integer | forecast reporting year         |
-| 03 | period_month           | text    | YYYY-MM                         |
-| 04 | deduction_amount       | numeric | total CPF deduction             |
-| 05 | oa_allocation_amount   | numeric | OA allocation                   |
-| 06 | sa_allocation_amount   | numeric | SA allocation                   |
-| 07 | ma_allocation_amount   | numeric | MA allocation                   |
-| 08 | ra_allocation_amount   | numeric | RA allocation                   |
-| 09 | projected_return_amount | numeric | projected CPF return            |
-| 10 | run_id                 | text    | forecast run lineage id         |
-| 11 | updated_at             | text    | UTC ISO-8601                    |
+| 03 | reporting_currency     | text    | forecast reporting currency     |
+| 04 | period_month           | text    | YYYY-MM                         |
+| 05 | deduction_amount       | numeric | total CPF deduction             |
+| 06 | oa_allocation_amount   | numeric | OA allocation                   |
+| 07 | sa_allocation_amount   | numeric | SA allocation                   |
+| 08 | ma_allocation_amount   | numeric | MA allocation                   |
+| 09 | ra_allocation_amount   | numeric | RA allocation                   |
+| 10 | projected_return_amount | numeric | projected CPF return            |
+| 11 | run_id                 | text    | forecast run lineage id         |
+| 12 | updated_at             | text    | UTC ISO-8601                    |
 
 ### 6. forecast.forecast_tax_monthly
 
@@ -232,13 +240,15 @@ Unique key: `reporting_year + period_month + account_id`.
 | -- | ------------------------- | ------- | --------------------------------- |
 | 01 | id                        | integer | surrogate primary key             |
 | 02 | reporting_year            | integer | forecast reporting year           |
-| 03 | period_month              | text    | YYYY-MM                           |
-| 04 | salary_tax_amount         | numeric | expected salary-tax component     |
-| 05 | ibkr_tax_amount           | numeric | expected IBKR-tax component       |
-| 06 | total_tax_liability_amount | numeric | total expected tax liability      |
-| 07 | tax_liability_account_id  | text    | liability account                 |
-| 08 | run_id                    | text    | forecast run lineage id           |
-| 09 | updated_at                | text    | UTC ISO-8601                      |
+| 03 | tax_currency              | text    | forecast tax currency             |
+| 04 | taxing_authority          | text    | forecast taxing authority        |
+| 05 | period_month              | text    | YYYY-MM                           |
+| 06 | salary_tax_amount         | numeric | expected salary-tax component     |
+| 07 | capital_gain_loss_tax_amt | numeric | expected IBKR-tax component       |
+| 08 | total_tax_liability_amount | numeric | total expected tax liability      |
+| 09 | tax_liability_account_id  | text    | liability account                 |
+| 10 | run_id                    | text    | forecast run lineage id           |
+| 11 | updated_at                | text    | UTC ISO-8601                      |
 
 ### 7. forecast.forecast_transfer_solver_monthly
 
@@ -248,12 +258,13 @@ Unique key: `reporting_year + period_month + account_id`.
 | 02 | reporting_year            | integer | forecast reporting year             |
 | 03 | period_month              | text    | YYYY-MM                             |
 | 04 | account_id                | text    | target account                      |
-| 05 | target_closing_balance    | numeric | user-specified target               |
-| 06 | unconstrained_closing_balance | numeric | computed before implied transfers |
-| 07 | implied_transfer_amount   | numeric | balancing transfer                  |
-| 08 | counterparty_account_id   | text    | transfer counterparty               |
-| 09 | run_id                    | text    | forecast run lineage id             |
-| 10 | updated_at                | text    | UTC ISO-8601                        |
+| 05 | account_currency          | text    | target account currency             |
+| 06 | target_closing_balance    | numeric | user-specified target               |
+| 07 | unconstrained_closing_balance | numeric | computed before implied transfers |
+| 08 | implied_transfer_amount   | numeric | balancing transfer                  |
+| 09 | counterparty_account_id   | text    | transfer counterparty               |
+| 10 | run_id                    | text    | forecast run lineage id             |
+| 11 | updated_at                | text    | UTC ISO-8601                        |
 
 ### 8. forecast.forecast_snapshot
 

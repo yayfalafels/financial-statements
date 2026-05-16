@@ -12,7 +12,7 @@ status: draft
 
 ## Summary
 
-This document defines monthly forex translation for statement consolidation to a single reporting currency basis. The design uses a dedicated set of `close_book` forex aggregate tables at account-month level and produces period-level forex mark-to-market outputs for Stage 7 statements.
+This document defines monthly forex translation for statement consolidation to a single reporting currency basis. The design uses a dedicated set of `close_book` forex aggregate tables at account-month level and produces period-level forex mark-to-market outputs for statements draft build.
 
 This design is separate from transaction-level forex settlement adjustments used in account reconcile for forex card charge settlement differences.
 
@@ -26,7 +26,7 @@ This design is separate from transaction-level forex settlement adjustments used
 - [Aggregation method](#aggregation-method)
 - [Rate timing basis](#rate-timing-basis)
 - [SCD and update policy](#scd-and-update-policy)
-- [Stage 7 execution algorithm](#stage-7-execution-algorithm)
+- [Statements draft build execution algorithm](#statements-draft-build-execution-algorithm)
 - [Validation and controls](#validation-and-controls)
 - [Error handling](#error-handling)
 
@@ -38,7 +38,7 @@ The design is in scope for:
 
 - FX-denominated assets and liabilities included in statement build.
 - Account-month rollup values for beginning, transactions, ending, and forex M2M in reporting currency.
-- Stage 7 statement build reads from forex aggregate tables in `close_book`.
+- Statements draft build reads from forex aggregate tables in `close_book`.
 
 The design is out of scope for:
 
@@ -47,10 +47,10 @@ The design is out of scope for:
 
 ## Workflow placement
 
-Forex translation for statement consolidation is owned by Stage 7 statements.
+Forex translation for statement consolidation is owned by statements draft build.
 
 - Stage 5 and Stage 6 remain account sync and reconcile workflows.
-- Stage 7 executes the account-month forex translation pipeline and writes statement-ready forex aggregates to `close_book`.
+- Statements draft build executes the account-month forex translation pipeline and writes statement-ready forex aggregates to `close_book`.
 - Statement builder then aggregates translated balances and forex M2M outputs with other statement sections.
 
 ## Translation policy
@@ -219,9 +219,9 @@ Forecast months:
 - Forecast rows update on each run using current spot-driven rate assumptions.
 - Snapshot versions are appended on every run.
 
-## Stage 7 execution algorithm
+## Statements draft build execution algorithm
 
-Stage 7 executes forex translation before final statement aggregation.
+Statements draft build executes forex translation before final statement aggregation.
 
 1. Resolve target period and reporting year horizon.
 2. Load required FX rates and source balances and transactions.
@@ -230,7 +230,7 @@ Stage 7 executes forex translation before final statement aggregation.
 5. Apply period-state policy, immutable for historical months and upsert for current and forecast months.
 6. Write `forex_account_monthly` and append `forex_account_monthly_snapshot`.
 7. Run identity validation and variance controls.
-8. Expose Stage 7 statement builder read model from `forex_account_monthly` current rows.
+8. Expose statements draft build read model from `forex_account_monthly` current rows.
 
 ## Validation and controls
 

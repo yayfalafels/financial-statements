@@ -86,13 +86,13 @@ Design sources used for functional requirements:
 | 14  | bill and shared runtime    | run bill intake allocation and posting           | python 3.12.10    | pandas, decimal                              |
 | 15  | source adapters            | parse normalize and stage source records         | python 3.12.10    | pandas, csv, openpyxl                        |
 | 16  | homebudget wrapper adapter | execute hb reads and controlled writes           | python 3.12.10    | homebudget>=2.1.1                            |
-| 17  | mapping crud module        | manage mapping lifecycle and gate checks         | python 3.12.10    | sqlite3                                     |
+| 17  | mapping crud service       | manage mapping lifecycle and gate checks         | python 3.12.10    | sqlite3                                     |
 | 18  | sqlite adapter             | provide single sql boundary for all schemas      | python 3.12.10    | sqlite3                                     |
 | 18A | google sheets adapter      | execute sheet reads writes and status write-back | python 3.12.10    | google-api-python-client, google-auth        |
 | 19  | reconciliation engine      | execute match variance tolerance and adjustment  | python 3.12.10    | decimal, pandas                              |
 | 20  | statement builder          | produce income statement and balance sheet       | python 3.12.10    | pandas, decimal, jinja2, reportlab, weasyprint optional |
-| 21  | logging module             | emit audit and run diagnostics                   | python 3.12.10    | logging, json                                |
-| 22  | error handling module      | classify and propagate typed errors              | python 3.12.10    | pydantic, traceback                          |
+| 21  | logging service            | emit audit and run diagnostics                   | python 3.12.10    | logging, json                                |
+| 22  | error handling service     | classify and propagate typed errors              | python 3.12.10    | pydantic, traceback                          |
 | 23  | sqlite app database        | persist app owned schemas and lineage anchors    | sqlite local file | sqlite                                       |
 
 ## Workflow stage stack matrix

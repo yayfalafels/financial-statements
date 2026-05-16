@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-05-16T09:38:41.750111+00:00",
+  "reporting_year": 2026,
+  "current_month_cutoff": 2,
+  "checks": {
+    "no_expenses_in_non_personal_actual_accounts": {
+      "ok": true,
+      "violation_count": 0
+    },
+    "net_assets_change_equals_normalized_net_income": {
+      "ok": true,
+      "period_count": 12
+    }
+  }
+}
